@@ -1,35 +1,18 @@
 import React from 'react';
-// import App from '../../App';
-import Button from '@material-ui/core/Button';
+import {
+  useParams
+} from "react-router-dom";
 
-class Monument extends React.Component {
-  constructor(props) {
-    super(props);
-    console.log('Init Monument')
-    this.state = { open: false };
-  }
-
-  handleClick = () => {
-    console.log('handleClick');
-
-    this.setState(state => ({
-      open: true
-    }));
-
-    this.props.addMonument('test')
-  };
-
-  render() {
-    console.log('render')
-
-    return (
-      <div>
-        {!this.state.open && this.props.monument}
-        {!this.state.open && <Button color="primary" variant="contained" onClick={this.handleClick}>Click</Button>}
-        { this.state.open ? 'Deleted' : ''}
-      </div>
-    );
-  }
+function Monument() {
+  let { id } = useParams();
+  console.log("Link choose:",id)
+  return (
+    <div>
+      <h1>
+        ID: {id}
+      </h1>
+    </div>
+  )
 }
 
 export default Monument;
