@@ -3,7 +3,7 @@
 # Create your own branch
 1. Open cmd (comand line) and enter command "git clone https://github.com/EgorOnufreychuk/omm_playground.git"  ![Alt text](https://github.com/EgorOnufreychuk/omm_images/blob/master/1.png)
 2. Make сhanges you need
-3. Then you have two ways to commit ("git add ." - commit all files with one commit or "git add <file path>" to commit each file separately)
+3. Then you have two ways to commit ("git add ." - commit all files with one commit or "git add /file path/" to commit each file separately)
    Personally, I prefer to comment on each file separately, so I will show it way
 4. Add your changes :
     1. "git status" to track modified files 
