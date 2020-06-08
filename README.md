@@ -8,7 +8,7 @@
 4. Add your changes :
     1. "git status" to track modified files 
     ![Alt text](https://github.com/EgorOnufreychuk/omm_images/blob/master/4.1.png)
-    2. "git add <file path>" and "git commit -m "commit"" to commit every modifed file
+    2. "git add "file path"" and "git commit -m "commit"" to commit every modifed file
     ![Alt text](https://github.com/EgorOnufreychuk/omm_images/blob/master/4.2.png)
 5. Create your branch 
     1. "git checkout -b "<branch_name>"" to create your branch
