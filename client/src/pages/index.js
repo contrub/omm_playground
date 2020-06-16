@@ -1,9 +1,8 @@
-import Home from './Home'
-import About from './About'
-import Monuments from './Monuments'
-import Monument from './Monument'
-import Login from './Login'
-
+import Home from './home'
+import About from './about'
+import Monuments from './monuments'
+import Monument from './monument'
+import Login from './login'
 export {
   Home,
   About,
