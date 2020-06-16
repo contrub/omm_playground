@@ -9,6 +9,8 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import Search from './search';
 
+import { withRouter } from "react-router";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -23,6 +25,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = (props) => {
   const classes = useStyles();
+  console.log('Router Props: ', props);
+
   return (
     <AppBar position="static">
       <Toolbar>
@@ -33,10 +37,10 @@ const Header = (props) => {
           Open Monument Map
         </Typography>
         <Search submitSearch={props.submitSearch}/>
-        <Button color="inherit">Login</Button>
+        <Button color="inherit" onClick={() => props.history.push('/login')}>Login</Button>
       </Toolbar>
     </AppBar>
   )
 };
 
-export default Header;
+export default withRouter(Header);
