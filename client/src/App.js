@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
 import Header from './components/Header/';
-import Side_bar from './components/Header/side_bar';
+import Sidebar from './components/Header/side_bar';
 
 import {
   BrowserRouter as Router
@@ -37,7 +37,7 @@ class App extends Component {
             btntext="login"
             openDrawer={this.openDrawer}
           />
-          <Side_bar
+          <Sidebar
             closeDrawer={this.closeDrawer}
             isOpen={this.state.isOpen}
           />
