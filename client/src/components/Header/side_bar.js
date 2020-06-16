@@ -31,19 +31,19 @@ class Sidebar extends Component {
                   <ListItemText primary={'Home'} />
                   </ListItem>
                 </Link>
-                <Link to={Link_to_monument} onClick={this.props.onLinkClick}>
+                <Link to='/about' onClick={this.props.onLinkClick}>
                   <ListItem button>
                   <ListItemIcon>{<ContactSupportIcon/>}</ListItemIcon>
                   <ListItemText primary={'About'} />
                   </ListItem>
                 </Link>
-                <Link to='/monument/123' onClick={this.props.onLinkClick}>
+                <Link to='/login' onClick={this.props.onLinkClick}>
                   <ListItem button>
                   <ListItemIcon>{<ExitToAppIcon/>}</ListItemIcon>
                   <ListItemText primary={'Login'} />
                   </ListItem>
                 </Link>
-                <Link to='/monument/321' onClick={this.props.onLinkClick}>
+                <Link to={Link_to_monument} onClick={this.props.onLinkClick}>
                   <ListItem button>
                   <ListItemIcon>{<AccountBalanceIcon/>}</ListItemIcon>
                   <ListItemText primary={'Monument'} />
