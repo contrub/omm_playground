@@ -41,7 +41,7 @@ class Sidebar extends Component {
                   <ListItemText primary={'Login'} />
                   </ListItem>
                 </Link>
-                <Link to='/monuments_list' onClick={this.props.onLinkClick}>
+                <Link to='/monuments' onClick={this.props.onLinkClick}>
                   <ListItem button>
                   <ListItemIcon>{<AccountBalanceIcon/>}</ListItemIcon>
                   <ListItemText primary={'Monuments'} />
