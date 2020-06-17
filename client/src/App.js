@@ -5,13 +5,16 @@ import Sidebar from './components/Header/side_bar';
 import Home from './pages/home'
 import About from './pages/about'
 import Login from './pages/login'
-import Monument from './pages/monument'
+import Monuments from './pages/monuments'
+import Ekaterina from './pages/monuments/Ekaterina'
+import Orange from './pages/monuments/Orange'
+import Duc from './pages/monuments/Duс'
 import {
   BrowserRouter as Router,
   Switch,
   Route,
 } from "react-router-dom";
-
+ 
 class App extends Component {
   state = {
     isOpen: false
@@ -57,8 +60,17 @@ class App extends Component {
           <Route path="/login">
             <Login />
           </Route>
-          <Route path="/monument/:id">
-            <Monument />
+          <Route path="/monuments_list">
+            <Monuments />
+          </Route>
+          <Route path="/monuments/ekaterina">
+            <Ekaterina />
+          </Route>
+          <Route path="/monuments/orange">
+            <Orange />
+          </Route>
+          <Route path="/monuments/duc_de_richelie">
+            <Duc />
           </Route>
         </Switch>
       </Router>
