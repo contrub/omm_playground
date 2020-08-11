@@ -1,5 +1,5 @@
 # omm-playground
-⚠️master branch is protected, so you need to create your branch⚠️
+⚠️master branch is protected, so you need to create your branch⚠️\n
 git clone https://github.com/EgorOnufreychuk/omm_playground.git -b <branch name> - clone branch from rep
 # Create your own branch
 1. Open cmd (command line) and enter command "git clone https://github.com/EgorOnufreychuk/omm_playground.git"  ![Alt text](https://github.com/EgorOnufreychuk/omm_images/blob/master/1.png)
