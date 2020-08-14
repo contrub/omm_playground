@@ -17,11 +17,10 @@ export default function MonumentById(props) {
     const classes = useStyles();
     return (
         <div className={classes.page}>
-            <h1 className={classes.pageName}>{props.title}</h1>
+            <h1 className={classes.pageName}>{props.name}</h1>
             <p>
-                <img alt='' width="40%" className={classes.image} src={props.src}/>
                 {props.description}
-                </p>
+            </p>
             <Link to="/monuments">Back</Link>
         </div>
     )

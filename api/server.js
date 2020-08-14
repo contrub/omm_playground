@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const app = express();
-const port = 8000;
+port = process.env.port || 8000
 const whitelist = ['http://localhost:3000']
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -23,7 +23,7 @@ app.use(cors({
 
 mongoose
   .connect(
-    'mongodb://mongo:27017/omm',
+    'mongodb://localhost:27017/OMM',
     {
       useUnifiedTopology: true,
       useNewUrlParser: true
@@ -34,7 +34,7 @@ mongoose
 
 const Monument = require('./models/Monument');
 
-app.get('/api/monuments', function (req, res) {
+app.get('/monuments', function (req, res) {
   Monument.find()
     .then(items => res.json(items))
     .catch(err => {
@@ -86,3 +86,4 @@ app.delete('/api/monuments/:id', function (req, res) {
 })
 
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
+
