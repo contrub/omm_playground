@@ -1,52 +1,31 @@
 ﻿import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import { Link } from 'react-router-dom';
-const useStyles = makeStyles((theme) => ({
-    root: {
-      flexGrow: 1,
-    },
-    paper: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-      borderRadius: '10px'
-    },
-    monuments: {
-        margin: '4%',
-    },
-    monumentName: {
-        color: 'green',
-        fontSize: '20px',
-    },
-    image: {
-        width: '960',
-        height: '640'
-    }
-  }));
+import axios from 'axios'
 export default function Monuments() {
-    const classes = useStyles();
-    return (
-    <Grid container spacing={3}>
-        <Grid item xs={3} className={classes.monuments}>
-          <Paper className={classes.paper}> 
-            <p className={classes.monumentName}>Monument of Catherine II</p>
-            <Link to="/monuments/ekaterina">Full Information</Link>
-          </Paper>
-        </Grid>
-        <Grid item xs={3} className={classes.monuments}>
-          <Paper className={classes.paper}>
-            <p className={classes.monumentName}>Monument of Orange</p>
-            <Link to="/monuments/orange">Full Information</Link>
-          </Paper>
-        </Grid>
-        <Grid item xs={3} className={classes.monuments}>
-            <Paper className={classes.paper}>
-                <p className={classes.monumentName}>Monument to Duke de Richelieu</p>
-            <Link to="/monuments/duc_de_richelie">Full Information</Link>
-          </Paper>
-        </Grid>
-    </Grid>
-    )
+  function renderHTML(name, description, address, date, monumentView) {
+  let htm = `<td align="center">${name}</td><td align="center">${description}</td><td align="center">${address}</td><td align="center">${date}</td><td align="center">${monumentView}</td>`
+    document.getElementById('monumentss').insertAdjacentHTML('beforeend',htm)
+  }
+
+  ready()
+  
+  function ready(){
+    console.log("Connection to MongoDB base ....")
+    axios.get('http://localhost:8000/monuments')
+    .then((res) => {
+      console.log('MongoDB connection successful')
+      const data = res.data 
+      const len = Object.keys(data).length
+      var monumnetsSheet = document.getElementById('monumentss')
+      monumnetsSheet.insertAdjacentHTML('afterbegin','<th>name</th><th>description</th><th>address</th><th>date</th><th>monumentView</th>')
+      for (let i = 0; i < len; i++){
+        renderHTML(data[i].name, data[i].description, data[i].address, data[i].date, data[i].registryNumber) 
+      }
+    }).catch((e) => {
+      alert('Error connect MongoDB')
+      console.log('Error connection MongoDB base:',e)
+    })
+  }
+  return (
+    <table border="1" width="100%" id='monumentss' />
+  )
 }
