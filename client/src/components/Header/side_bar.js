@@ -19,7 +19,7 @@ const styles = {
 class Sidebar extends Component {
     render() {
         // const { classes } = this.props;
-      console.log(this.props)
+        // console.log(this.props)
       return (
         <Drawer anchor={"left"} open={this.props.isOpen} onClose={this.props.closeDrawer}>
             <div className="sidebar-navigation">
