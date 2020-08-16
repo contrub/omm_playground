@@ -5,9 +5,9 @@ export default function Monuments() {
   let htm = `<td align="center">${name}</td><td align="center">${description}</td><td align="center">${address}</td><td align="center">${date}</td><td align="center">${monumentView}</td>`
     document.getElementById('monumentss').insertAdjacentHTML('beforeend',htm)
   }
-
-  ready()
-  
+  if (document.getElementById('monumentss') == null) {
+    ready()
+  }
   function ready(){
     console.log("Connection to MongoDB base ....")
     axios.get('http://localhost:8000/monuments')
@@ -15,8 +15,8 @@ export default function Monuments() {
       console.log('MongoDB connection successful')
       const data = res.data 
       const len = Object.keys(data).length
-      var monumnetsSheet = document.getElementById('monumentss')
-      monumnetsSheet.insertAdjacentHTML('afterbegin','<th>name</th><th>description</th><th>address</th><th>date</th><th>monumentView</th>')
+      var monumentsSheet = document.getElementById('monumentss')
+      monumentsSheet.insertAdjacentHTML('afterbegin','<th>name</th><th>description</th><th>address</th><th>date</th><th>monumentView</th>')
       for (let i = 0; i < len; i++){
         renderHTML(data[i].name, data[i].description, data[i].address, data[i].date, data[i].registryNumber) 
       }
