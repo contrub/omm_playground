@@ -34,7 +34,7 @@ mongoose
 
 const Monument = require('./models/Monument');
 
-app.get('/monuments', function (req, res) {
+app.get('api/monuments', function (req, res) {
   Monument.find()
     .then(items => res.json(items))
     .catch(err => {
