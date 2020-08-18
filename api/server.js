@@ -34,7 +34,7 @@ mongoose
 
 const Monument = require('./models/Monument');
 
-app.get('api/monuments', function (req, res) {
+app.get('/api/monuments', function (req, res) {
   Monument.find()
     .then(items => res.json(items))
     .catch(err => {
@@ -54,6 +54,8 @@ app.get('/api/monuments/:id', function (req, res) {
 });
 
 app.put('/api/monuments/:id', function (req, res) {
+  console.log('update $3')
+  console.log(req.params.id)
   Monument 
     .update({_id: req.params.id}, req.body)
     .then((item) => res.json(item))
@@ -65,7 +67,6 @@ app.put('/api/monuments/:id', function (req, res) {
 
 app.post('/api/monuments', (req, res) => {
   const newMonument = new Monument(req.body);
-
   newMonument
     .save()
     .then((item) => res.json(item))
