@@ -9,5 +9,8 @@ export default {
   },
   deleteMonument(id) {
     return api.remove(`/monuments/${id}`);
+  },
+  updateMonument(params) {
+    return api.update(`/monuments/${params._id}`, params)
   }
 };

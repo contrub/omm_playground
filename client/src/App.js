@@ -6,6 +6,8 @@ import Home from './pages/home'
 import About from './pages/about'
 import Login from './pages/login'
 import Monuments from './pages/monuments'
+import Creation from './pages/create'
+import MonumentById from './pages/monument'
 import {
   BrowserRouter as Router,
   Switch,
@@ -61,8 +63,14 @@ class App extends Component {
           <Route path="/login">
             <Login />
           </Route>
+          <Route path="/create">
+            <Creation />
+          </Route>
           <Route exact path="/monuments">
             <Monuments />
+          </Route>
+          <Route path="">
+            <MonumentById path="/monuments/:id"/>
           </Route>
         </Switch>
       </Router>
