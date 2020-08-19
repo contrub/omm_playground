@@ -21,6 +21,8 @@ app.use(cors({
   }
 }));
 
+mongoose.Promise = global.Promise
+
 mongoose
   .connect(
     'mongodb://localhost:27017/OMM',
@@ -54,8 +56,6 @@ app.get('/api/monuments/:id', function (req, res) {
 });
 
 app.put('/api/monuments/:id', function (req, res) {
-  console.log('update $3')
-  console.log(req.params.id)
   Monument 
     .update({_id: req.params.id}, req.body)
     .then((item) => res.json(item))
@@ -63,6 +63,7 @@ app.put('/api/monuments/:id', function (req, res) {
       res.status(500).send('Something Wrong!')
       console.log(err)
     })
+  console.log('Monument ' + req.body.name + ' was updated!')
 });
 
 app.post('/api/monuments', (req, res) => {
@@ -74,16 +75,18 @@ app.post('/api/monuments', (req, res) => {
       res.status(500).send('Something Wrong!')
       console.log(err)
     });
+  console.log('Monument ' + req.body.name + ' was created!')
 });
 
 app.delete('/api/monuments/:id', function (req, res) {
   Monument
     .deleteOne({ _id: req.params.id })
-    .then(() => res.send(200))
+    .then(() => res.sendStatus(200))
     .catch(err => {
       res.status(500).send('Something Wrong!')
       console.log(err)
     });
+  console.log('Monument ' + req.params.id + ' was deleted!')
 })
 
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
