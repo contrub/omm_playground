@@ -5,8 +5,8 @@ export default function Monuments() {
     ready()
   }
 
-  function renderSheet(name, description, address, date, monumentView, _id) {
-    let htm = `<td align="center">${name}</td><td align="center">${description}</td><td align="center">${address}</td><td align="center">${date}</td><td align="center">${monumentView}</td><td align="center"><a href="/monuments/${_id}">${_id}</a></td><td><input onclick={if(value=='false'){value='true'}else{value='false'}} type='checkbox' id=${_id} value='false' class='check'/></td>`
+  function renderSheet(name, description, address, date, monumentView, registryNumber, _id) {
+    let htm = `<td align="center">${name}</td><td align="center">${description}</td><td align="center">${address}</td><td align="center">${date}</td><td align="center">${monumentView}</td><td align="center">${registryNumber}</td><td align="center"><a href="/monuments/${_id}">${_id}</a></td><td><input onclick={if(value=='false'){value='true'}else{value='false'}} type='checkbox' id=${_id} value='false' class='check'/></td>`
     document.getElementById('monuments').insertAdjacentHTML('beforeend',htm)
   }
 
@@ -25,7 +25,7 @@ export default function Monuments() {
       }
     }
     if (unchecked === document.getElementsByClassName('check').length) {
-      document.getElementById('message').innerHTML = '<h1 color="red">No monument has been selected!<h1>'
+      document.getElementById('message').innerHTML = '<h1>No monument has been selected!<h1>'
     }
   }
 
@@ -41,13 +41,14 @@ export default function Monuments() {
           <th>address</th>
           <th>date</th>
           <th>monumentView</th>
+          <th>registryNumber</th>
           <th>_id</th>
           <th>
             <input id="select-all" type="checkbox"/>
           </th>
         `)
         for (let i = 0; i < len; i++){
-          renderSheet(res[i].name, res[i].description, res[i].address, res[i].date, res[i].registryNumber,res[i]._id,<button>d</button>) }
+          renderSheet(res[i].name, res[i].description, res[i].address, res[i].date, res[i].monumentView, res[i].registryNumber,res[i]._id,<button>d</button>) }
         document.getElementById('buttons').insertAdjacentHTML('afterbegin',`<Button id='deleteButton'>Delete selected monuments</Button>`)
         document.getElementById('buttons').insertAdjacentHTML('beforeend',`<button id='createButton'>Create monument</button>`)
         document.getElementById('deleteButton').onclick = deleteMonuments

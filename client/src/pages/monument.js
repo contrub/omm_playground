@@ -13,7 +13,7 @@ export default function MonumentById() {
                 address : monument[2].value,
                 date : monument[3].value,
                 monumentView : monument[4].value,
-                registryNumber : monument[4].value},
+                registryNumber : monument[5].value},
                 id)
             alert(`Monument ${monument[0].value} was updated !`)
             window.location.href = '/monuments'
