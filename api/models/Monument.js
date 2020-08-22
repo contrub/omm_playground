@@ -22,6 +22,8 @@ const MonumentSchema = new Schema({
   registryNumber: {
     type: String
   }
+}, {
+  versionKey: false // You should be aware of the outcome after set to false
 });
 
 module.exports = Monument = mongoose.model('monument', MonumentSchema);
