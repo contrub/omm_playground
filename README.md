@@ -20,4 +20,3 @@ git clone https://github.com/EgorOnufreychuk/omm_playground.git -b Egor - clone 
 1. cd omm_playground/client
 2. npm i 
 3. npm start 
->>>>>>> 23391f7a34aee52f08eeeb60b103f3165f8dd4d1
