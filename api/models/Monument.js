@@ -23,7 +23,7 @@ const MonumentSchema = new Schema({
     type: String
   }
 }, {
-  versionKey: false // You should be aware of the outcome after set to false
+  versionKey: false
 });
 
 module.exports = Monument = mongoose.model('monument', MonumentSchema);
