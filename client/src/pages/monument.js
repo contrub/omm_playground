@@ -1,69 +1,55 @@
 ﻿import React from 'react';
 import MonumentService from '../services/MonumentService'
-export default function MonumentById() {
-    let id = window.location.href.split('/')[4]
+import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
 
-    function updateMonument() {
-        try {
-            let monument = document.getElementsByClassName("form")
-            MonumentService.updateMonument({
-                _id : id,
-                name : monument[0].value,
-                description : monument[1].value,
-                address : monument[2].value,
-                date : monument[3].value,
-                monumentView : monument[4].value,
-                registryNumber : monument[5].value},
-                id)
-            alert(`Monument ${monument[0].value} was updated !`)
-            window.location.href = '/monuments'
-        } catch(e) {
-            console.log(e)
-        }
-    }
+const mapStyles = {
+    width: '70%',
+    height: '70%',
+    margin: '0 auto'
+  };
 
-    function fetchMonuments() {
-        MonumentService.fetchMonuments()
-        .then((res) => {
-            var id_ = []
-            for (let i = 0; i < Object.keys(res).length; i++) {
-                id_.push(res[i]._id)
-            }
-            let selID = id_.indexOf(window.location.href.split('/')[4])
-            let name = res[selID].name
-            let description = res[selID].description
-            let date = res[selID].date.split('T')[0]
-            let address = res[selID].address
-            let monumentView = res[selID].monumentView
-            let registryNumber = res[selID].registryNumber
-            document.getElementById('updateForm').insertAdjacentHTML('afterbegin',`
-                <form id="upd">
-                    Name: <input required type = "text" class = "form" value = '${name}'/>
-                    <br/>
-                    Description: <input required type = "text" class = "form" value = '${description}'/>
-                    <br/>
-                    Address: <input required type = "text" class = "form" value = '${address}'/>
-                    <br/>
-                    Date: <input type = "date" value = ${date} class = "form"/>
-                    <br/>
-                    MonumentView: <input required type = "text" class = "form" value = '${monumentView}'/>
-                    <br/>
-                    RegistryNumber: <input required type = "text" class = "form" value='${registryNumber}'/>
-                    <br/>
-                </form>
-                <button id='update'>Update</button>`
-            )
-            document.getElementById('update').onclick = updateMonument
-        }).catch((e) => {
-            console.log(e)
+const nameStyles = {
+    textAlign: 'center',
+    fontFamily: 'cursive'
+}
+
+export class MonumentById extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+          monumentInfo: []
+        }; 
+      }
+
+      componentDidMount = async() => {
+        let index = window.location.href.split('/')[4]
+        await MonumentService.fetchMonuments()
+          .then(result => {
+            this.setState({
+                monumentInfo: result[index]
+            })
         })
     }
 
-    if (document.getElementById('updateForm') == null) {
-        fetchMonuments()
+    render() {
+        return (
+            <>
+                <h1 style={nameStyles}> {this.state.monumentInfo.name} </h1>
+                <p> {this.state.monumentInfo.description} </p>
+                <Map
+                google={this.props.google}
+                zoom={13}
+                style={mapStyles}
+                initialCenter={{ lat: 46.481000, lng: 30.736673}}
+                >
+                <Marker position={{ lat: this.state.monumentInfo.lat, lng: this.state.monumentInfo.lng}} />
+                </Map>
+            </>
+        )
     }
-
-    return (
-        <div id='updateForm'/>
-    )
 }
+
+export default GoogleApiWrapper({
+    apiKey: 'GoogleMapsToken'
+  })(MonumentById); // cause 2 problems in console.log
