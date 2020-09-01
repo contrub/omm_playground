@@ -42,7 +42,7 @@ class Monuments extends React.Component {
       return (
         <React.Fragment key={index}>
           <Grid item xs={4}>
-            <Paper className={classes.paper} onClick={() => alert(entry.name)}>
+            <Paper className={classes.paper} onClick={() => window.location.href=`monuments/${index}`}>
               {entry.name}
               <img alt="monument" src="https://img.icons8.com/material/4ac144/256/camera.png"/>
             </Paper>
