@@ -65,8 +65,8 @@ class App extends Component {
           <Route exact path="/monuments">
             <Monuments />
           </Route>
-          <Route path="">
-            <MonumentById path="/monuments/:id"/>
+          <Route path="/monuments/:id">
+            <MonumentById />
           </Route>
         </Switch>
       </Router>
