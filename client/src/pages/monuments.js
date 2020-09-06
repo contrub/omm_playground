@@ -1,22 +1,8 @@
 import React from 'react';
 import MonumentService from '../services/MonumentService'
-import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
+import './monuments.css'
 
-const styles = theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: '#da614e',
-    margin: 10
-  },
-});
-
-class Monuments extends React.Component {
+export default class Monuments extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,30 +22,24 @@ class Monuments extends React.Component {
     }
   }
   render() {
-    const {classes} = this.props
     const {monuments} = this.state
     const result = monuments.map((entry, index) => {
       return (
-        <React.Fragment key={index}>
-          <Grid item xs={4}>
-            <Paper className={classes.paper} onClick={() => window.location.href=`monuments/${index}`}>
+        <div className='holder' key={index}>
+          <img alt='monument' style={{maxWidth: '100%', maxHeight: '100%'}} src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Monument_to_Catherine_II_in_SPB.jpg"/>
+          <a onClick={() => window.location.href = `monuments/${index}`}> 
+            <div className='block'>
               {entry.name}
-              <img alt="monument" src="https://img.icons8.com/material/4ac144/256/camera.png"/>
-            </Paper>
-          </Grid>
-        </React.Fragment>
-      )
+            </div>
+          </a>
+        </div>
+      ) // 30 line - can't integrate href template to have link to every monument without 'onClick'
     });
     return (
-      <div className={classes.root}>
-        <Grid container spacing={1}>
-          <Grid container item xs={12} spacing={3}>
-            {result}
-          </Grid>
-        </Grid>
+      <div className='root'>
+        {result}
       </div>
     )
   }
 }
 
-export default withStyles(styles, {withTheme: true})(Monuments)
