@@ -9,8 +9,6 @@ Monument Schema:
     "monumentView": String,
     "registryNumber": int64
 }
-# Clone repository
-git clone https://github.com/EgorOnufreychuk/omm_playground.git -b Egor - clone branch
 # Start MongoDB server 
 1. cd omm_playground/api
 2. npm i express
