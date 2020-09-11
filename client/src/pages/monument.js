@@ -1,5 +1,8 @@
 ﻿import React from 'react';
 import MonumentService from '../services/MonumentService'
+
+// По какой то причине не работает в докер контейнере, не может найти этот пакет
+// возможно стоит рассмотреть возможность использовать чистые гугл карты без реакта
 import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
 
 const mapStyles = {
@@ -15,6 +18,7 @@ const nameStyles = {
 
 export class MonumentById extends React.Component {
 
+  // Конструктор не обязателен
     constructor(props) {
         super(props);
         this.state = {
@@ -23,7 +27,9 @@ export class MonumentById extends React.Component {
       }
 
       componentDidMount = async() => {
+      // Использовать react-router
         let index = window.location.href.split('/')[4]
+
         await MonumentService.fetchMonuments()
           .then(result => {
             this.setState({
@@ -35,7 +41,11 @@ export class MonumentById extends React.Component {
     render() {
         return (
             <>
-                <h1 style={nameStyles}> {this.state.monumentInfo.name} </h1>
+                <h1 /* Использовать не инлайн css*/ style={nameStyles}> {
+                  // Уязвимое место, если MonumentService.fetchMonuments() вернет null или undefined то программа упадет так как
+                  // в этой строке будет попытка взять поле name у null или undefined
+                  this.state.monumentInfo.name
+                } </h1>
                 <p> {this.state.monumentInfo.description} </p>
                 <Map
                 google={this.props.google}
