@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:12.16.3-alpine
 RUN npm i -g nodemon
 RUN mkdir -p /api
 COPY package*.json /api/

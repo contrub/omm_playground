@@ -15,19 +15,20 @@ services:
         - "8000:8000"
     command: "npm run serve"
 
-#  client:
-#    build:
-#      context: ./client
-#    volumes:
-#      - ./client:/client:rw,cached
-#      - /client/node_modules
-#    depends_on:
-#      - api
-#    restart: always
-#    ports:
-#      - "3000:3000"
-#      - "3001:3001"
-#    command: "npm start"
+  client:
+    build:
+      context: ./client
+    volumes:
+      - ./client:/client:rw,cached
+      - /client/node_modules
+    depends_on:
+      - api
+    restart: always
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    stdin_open: true
+    command: "npm start"
 
   mongo:
     container_name: omm_mongo
