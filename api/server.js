@@ -10,8 +10,11 @@ const whitelist = ['http://localhost:3000']
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors({
-  origin: function(origin, callback){
+  origin: function(origin, callback) {
+
     if(!origin) return callback(null, true);
+    // For postman chrome plugin
+    if (origin && origin.match(/chrome-extension/) && origin.match(/chrome-extension/).length) return callback(null, true);
     if(whitelist.indexOf(origin) === -1){
       var message = "The CORS policy for this origin doesn`t " +
       "allow access from the particular origin.";
