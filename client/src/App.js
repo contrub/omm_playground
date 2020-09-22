@@ -7,11 +7,14 @@ import About from './pages/about'
 import Login from './pages/login'
 import Monuments from './pages/monuments'
 import MonumentById from './pages/monument'
+import Signup from "./pages/signup";
+import history from './history';
 import {
-  BrowserRouter as Router,
+  Router,
   Switch,
   Route
 } from "react-router-dom";
+import PasswordReset from "./pages/reset";
 
 class App extends Component {
   state = {
@@ -38,7 +41,7 @@ class App extends Component {
   render() {
     // console.log(this.state)
     return (
-      <Router>
+      <Router history={history}>
         <div className="App">
           <Header
             submitSearch={this.submitSearch}
@@ -53,7 +56,7 @@ class App extends Component {
           />
         </div>
         <Switch>
-          <Route path="/home">
+          <Route path="/home" >
             <Home />
           </Route>
           <Route path="/about">
@@ -67,6 +70,12 @@ class App extends Component {
           </Route>
           <Route path="/monuments/:id">
             <MonumentById />
+          </Route>
+          <Route path="/signup">
+            <Signup/>
+          </Route>
+          <Route path="/reset">
+            <PasswordReset />
           </Route>
         </Switch>
       </Router>

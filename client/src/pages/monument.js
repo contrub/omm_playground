@@ -1,55 +1,34 @@
 ﻿import React from 'react';
 import MonumentService from '../services/MonumentService'
-import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
+import {withRouter} from "react-router";
+import nav from "../nav";
 
-const mapStyles = {
-    width: '70%',
-    height: '70%',
-    margin: '0 auto'
-  };
 
-const nameStyles = {
-    textAlign: 'center',
-    fontFamily: 'cursive'
-}
+class MonumentById extends React.Component {
 
-export class MonumentById extends React.Component {
+    state = {
+      monumentInfo: []
+    }
 
-    constructor(props) {
-        super(props);
-        this.state = {
-          monumentInfo: []
-        }; 
-      }
-
-      componentDidMount = async() => {
-        let index = window.location.href.split('/')[4]
-        await MonumentService.fetchMonuments()
-          .then(result => {
-            this.setState({
-                monumentInfo: result[index]
-            })
+    componentDidMount = async() => {
+      nav(this.props.match.url)
+      let id = this.props.match.params.id
+      await MonumentService.fetchMonuments()
+        .then(result => {
+          this.setState({
+            monumentInfo: result.find(monument => monument._id === id)
+           })
         })
     }
 
     render() {
         return (
-            <>
-                <h1 style={nameStyles}> {this.state.monumentInfo.name} </h1>
+            <div>
+                <h1> {this.state.monumentInfo.name} </h1>
                 <p> {this.state.monumentInfo.description} </p>
-                <Map
-                google={this.props.google}
-                zoom={13}
-                style={mapStyles}
-                initialCenter={{ lat: 46.481000, lng: 30.736673}}
-                >
-                <Marker position={{ lat: this.state.monumentInfo.lat, lng: this.state.monumentInfo.lng}} />
-                </Map>
-            </>
+            </div>
         )
     }
 }
 
-export default GoogleApiWrapper({
-    apiKey: 'GoogleMapsToken'
-  })(MonumentById); // cause 2 problems in console.log
+export default withRouter(MonumentById)

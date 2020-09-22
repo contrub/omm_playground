@@ -1,7 +1,18 @@
 ﻿import React from 'react';
-function About() {
-    return (
+import {withRouter} from "react-router";
+import nav from "../nav";
+
+class About extends React.Component{
+
+    componentDidMount = () => {
+      nav(this.props.match.url)
+    }
+
+  render() {
+      return (
         <h2>About</h2>
-    )
+      )
+    }
+
 }
-export default About
+export default withRouter(About)
