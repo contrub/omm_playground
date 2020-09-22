@@ -1,5 +1,4 @@
 ﻿import React from "react";
-<<<<<<< HEAD
 import { Link }  from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -212,7 +211,6 @@ class Login extends React.Component {
 
 export default withStyles(styles, {withTheme: true})(Login)
 
-=======
 /* ToDo:
 UI
 1. Реализовать компонет текстового поля из Material-UI https://material-ui.com/ru/components/text-fields/
@@ -225,34 +223,4 @@ UI
 8. Общие стили на странице
 https://material-ui.com/ru/getting-started/templates/sign-in/
 */
-export default function Login() {
 
-    return (
-            <form>
-                <h3>Sign In</h3>
-
-                <div className="form-group">
-                    <label>Email address</label>
-                    <input type="email" className="form-control" placeholder="Enter email" />
-                </div>
-
-                <div className="form-group">
-                    <label>Password</label>
-                    <input type="password" className="form-control" placeholder="Enter password" />
-                </div>
-
-                <div className="form-group">
-                    <div className="custom-control custom-checkbox">
-                        <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                        <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
-                    </div>
-                </div>
-
-                <button type="submit" className="btn btn-primary btn-block">Submit</button>
-                <p className="forgot-password text-right">
-                    Forgot <a href="reset">password?</a>
-                </p>
-            </form>
-        )
-    }
->>>>>>> 2df922f287d242f6ac94ffb26d72d20297f15446

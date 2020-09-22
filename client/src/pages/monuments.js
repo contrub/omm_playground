@@ -34,7 +34,7 @@ class Monuments extends React.Component {
           <img alt='monument' style={{maxWidth: '100%', maxHeight: '100%'}} src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Monument_to_Catherine_II_in_SPB.jpg"/>
           <Link href={`monuments/${entry._id}`}>
             <div className='block'>
-              {entr`y.name}
+              {entry.name}
             </div>
           </Link>
         </div>
