@@ -1,12 +1,6 @@
-﻿import React from 'react';
-import {withRouter} from "react-router";
-import nav from "../nav";
+﻿import React from 'react'
 
 class Home extends React.Component{
-
-  componentDidMount = () => {
-    nav(this.props.match.url)
-  }
 
   render() {
       return (
@@ -15,4 +9,4 @@ class Home extends React.Component{
     }
 }
 
-export default withRouter(Home)
+export default Home

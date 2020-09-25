@@ -1,8 +1,6 @@
 ﻿import React from 'react';
 import MonumentService from '../services/MonumentService'
 import {withRouter} from "react-router";
-import nav from "../nav";
-
 
 class MonumentById extends React.Component {
 
@@ -11,7 +9,6 @@ class MonumentById extends React.Component {
     }
 
     componentDidMount = async() => {
-      nav(this.props.match.url)
       let id = this.props.match.params.id
       await MonumentService.fetchMonuments()
         .then(result => {
@@ -20,7 +17,7 @@ class MonumentById extends React.Component {
            })
         })
     }
-
+//
     render() {
         return (
             <div>

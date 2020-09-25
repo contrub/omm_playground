@@ -14,8 +14,6 @@ import isEmail from "validator/es/lib/isEmail";
 import isEmpty from "validator/es/lib/isEmpty";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import nav from "../nav";
-import {withRouter} from "react-router";
 
 const styles = theme => ({
   paper: {
@@ -29,7 +27,7 @@ const styles = theme => ({
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: '100%',
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -56,10 +54,6 @@ class Login extends React.Component {
       },
       errors: {}
     }
-  }
-
-  componentDidMount = () => {
-    // nav(this.props.match.url)
   }
 
   handleValidation = () => {
@@ -205,22 +199,6 @@ class Login extends React.Component {
   }
 }
 
-// 1. Кликабельный <Link to=''/> (<a to='path'/> вместо <a href='path'>) (https://reactrouter.com/web/example/basic)
-// 2. PostMan : создание статичного памятника Alexander Column ()
-// 3. Где будут храниться логины и пароли пользователей + в каком виде ? (https://habr.com/ru/company/acribia/blog/413157/)
-
+//  Где будут храниться логины и пароли пользователей + в каком виде ? (https://habr.com/ru/company/acribia/blog/413157/)
 export default withStyles(styles, {withTheme: true})(Login)
-
-/* ToDo:
-UI
-1. Реализовать компонет текстового поля из Material-UI https://material-ui.com/ru/components/text-fields/
-2. Реализовать компонет кнопки из Material-UI https://material-ui.com/ru/components/buttons/
-3. Реализовать чекбокс из Material-UI https://material-ui.com/ru/components/checkboxes/
-4. Переход по ссылке на страницу reset password с помощью react-router https://stackoverflow.com/questions/42701129/how-to-push-to-history-in-react-router-v4
-5. Валидация текстовых полей + реализовать компонент ошибки под текстовым полем https://www.npmjs.com/package/validator https://material-ui.com/ru/components/text-fields/
-6. Валидация данных на бекенде
-7. Реализовать ендпоинт на бекенде - ToDo
-8. Общие стили на странице
-https://material-ui.com/ru/getting-started/templates/sign-in/
-*/
 

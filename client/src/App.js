@@ -8,9 +8,8 @@ import Login from './pages/login'
 import Monuments from './pages/monuments'
 import MonumentById from './pages/monument'
 import Signup from "./pages/signup";
-import history from './history';
 import {
-  Router,
+  BrowserRouter,
   Switch,
   Route
 } from "react-router-dom";
@@ -41,7 +40,7 @@ class App extends Component {
   render() {
     // console.log(this.state)
     return (
-      <Router history={history}>
+      <BrowserRouter>
         <div className="App">
           <Header
             submitSearch={this.submitSearch}
@@ -78,7 +77,7 @@ class App extends Component {
             <PasswordReset />
           </Route>
         </Switch>
-      </Router>
+      </BrowserRouter>
     )
   }
 }

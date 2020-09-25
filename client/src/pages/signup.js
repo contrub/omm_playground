@@ -1,12 +1,6 @@
 import React from "react";
-import {withRouter} from "react-router";
-import nav from "../nav";
 
 class Signup extends React.Component {
-
-  componentDidMount = () => {
-    nav(this.props.match.url)
-  }
 
   render() {
     return (
@@ -17,4 +11,4 @@ class Signup extends React.Component {
   }
 }
 
-export default withRouter(Signup)
+export default Signup
