@@ -6,6 +6,8 @@ const cors = require('cors');
 const app = express();
 const port = 8000;
 const whitelist = ['http://localhost:3000']
+mongoose.Promise = global.Promise; // fixed DeprecationWarning
+// (node:35)  DeprecationWarning: Mongoose: mpromise (mongoose's default promise library) is deprecated, plug in your own promise library instead: http://mongoosejs.com/docs/promises.html
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
