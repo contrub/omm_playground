@@ -52,74 +52,120 @@ class Login extends React.Component {
         email: '',
         password: ''
       },
-      errors: {}
+      errors: {},
+      isValid: false
     }
   }
 
-  handleValidation = () => {
+  handleFieldValidation = (name) => {
     let inputs = this.state.inputs;
-    let errors = {};
-    let formIsValid = true;
+    let errors = this.state.errors;
     console.log(inputs)
     console.log(errors)
-    if (isEmpty(inputs["password"])) {
-      formIsValid = false;
-      errors["password"] = "Cannot be empty";
-    } else {
-
-      const mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
-      const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#%&])(?=.{8,})");
-
-      if (!mediumRegex.test(inputs["password"])) {
-        formIsValid = false;
-        errors["password"] = "low password";
-      } else if (!strongRegex.test(inputs["password"])) {
-        formIsValid = false;
-        errors["password"] = "medium password";
+    if (name === "email") {
+      if (inputs["email"] !== undefined) {
+        if (isEmpty(inputs["email"])){
+          errors["email"] = "Cannot be empty";
+          this.setState({isValid: false})
+        } else {
+          if (!isEmail(inputs["email"])) {
+            errors["email"] = "Email is not valid";
+            this.setState({isValid: false})
+          } else {
+            errors["email"] = ""
+            this.setState({isValid: true})
+          }
+        }
       } else {
-        errors["password"] = ""
+        errors["email"] = "Cannot be empty";
+        this.setState({isValid: false})
+      }
+    } else if (name === "password") {
+      if (inputs["password"] !== undefined) {
+        if (isEmpty(inputs["password"])) {
+          errors["password"] = "Cannot be empty";
+          this.setState({isValid: false})
+        } else {
+
+          const mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
+          const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#%&])(?=.{8,})");
+
+          if (!mediumRegex.test(inputs["password"])) {
+            errors["password"] = "low password";
+            this.setState({isValid: false})
+          } else if (!strongRegex.test(inputs["password"])) {
+            errors["password"] = "medium password";
+            this.setState({isValid: false})
+          } else {
+            errors["password"] = ""
+            if (inputs["password"] === inputs["passwordCopy"]) {
+              errors["passwordCopy"] = ""
+            }
+            this.setState({isValid: true})
+          }
+        }
+      } else {
+        errors["password"] = "Cannot be empty";
+        this.setState({isValid: false})
+      }
+    } else {
+      if (inputs["passwordCopy"] !== undefined) {
+        if (isEmpty(inputs["passwordCopy"])) {
+          errors["passwordCopy"] = "Cannot be empty";
+          this.setState({isValid: false})
+        } else {
+          if (errors.password !== "") {
+            errors["passwordCopy"] = "Password wasn't validated"
+            this.setState({isValid: false})
+          } else if (inputs.password !== inputs.passwordCopy) {
+            errors["passwordCopy"] = "Repeat password!";
+            this.setState({isValid: false})
+          } else {
+            errors["passwordCopy"] = ""
+            this.setState({isValid: true})
+          }
+        }
+      } else {
+        errors["passwordCopy"] = "Cannot be empty";
+        this.setState({isValid: false})
       }
     }
-
-    if (isEmpty(inputs["email"])){
-      formIsValid = false;
-      errors["email"] = "Cannot be empty";
-    } else {
-      if (!isEmail(inputs["email"])) {
-        formIsValid = false;
-        errors["email"] = "Email is not valid";
-      } else {
-        errors["email"] = ""
-      }
+    if (inputs["email"] === '' || inputs["password"] === '' || inputs["passwordCopy"] === '') {
+      this.setState({isValid: false})
     }
-
     this.setState({errors: errors});
-    return formIsValid;
   }
 
   contactSubmit = (e) => {
     e.preventDefault();
 
-    if (this.handleValidation()) {
+    if (this.state.isValid) {
       alert("Form submitted");
+    } else {
+      this.handleFieldValidation('email')
+      this.handleFieldValidation('password')
+      this.handleFieldValidation('passwordCopy')
+      alert("Validation error")
     }
-    
   }
 
   handleChange = (input, e) => {
     let inputs = this.state.inputs;
     inputs[input] = e.target.value;
     this.setState({input: inputs[input]});
+    this.handleFieldValidation(input)
   }
 
   showPassword = () => {
     if (document.getElementById('password').type === 'password') {
       document.getElementById('password').type = 'text'
+      document.getElementById('passwordCopy').type = 'text'
     } else {
       document.getElementById('password').type = 'password'
+      document.getElementById('passwordCopy').type = 'password'
     }
   }
-
+// 1. Вилидация input с value type "undefined" только при помощи лог.условия (inputs['email'] !== undefined) ?
   render() {
 
     const { classes } = this.props;
@@ -161,6 +207,20 @@ class Login extends React.Component {
                   autoComplete="current-password"
                 />
                 <div className={classes.errors}>{this.state.errors["password"]}</div>
+                <TextField
+                  onChange={this.handleChange.bind(this, "passwordCopy")}
+                  value={this.state.inputs["passwordCopy"]}
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="passwordCopy"
+                  label="Repeat Password"
+                  type="password"
+                  id="passwordCopy"
+                  autoComplete="current-password"
+                />
+                <div className={classes.errors}>{this.state.errors["passwordCopy"]}</div>
                 <FormControlLabel
                   control={<Checkbox value="remember" color="primary" />}
                   label="Remember me"
