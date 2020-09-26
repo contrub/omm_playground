@@ -35,7 +35,7 @@ class Sidebar extends Component {
                   <ListItemText primary={'About'} />
                   </ListItem>
                 </Link>
-                <Link to='/login' onClick={this.props.onLinkClick}>
+                <Link to='/sign' onClick={this.props.onLinkClick}>
                   <ListItem button>
                   <ListItemIcon>{<ExitToAppIcon/>}</ListItemIcon>
                   <ListItemText primary={'Login'} />
@@ -54,4 +54,3 @@ class Sidebar extends Component {
   }
   
 export default withStyles(styles)(Sidebar);
-  

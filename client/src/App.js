@@ -61,7 +61,7 @@ class App extends Component {
           <Route path="/about">
             <About />
           </Route>
-          <Route path="/login">
+          <Route path="/sign">
             <Login />
           </Route>
           <Route exact path="/monuments">
