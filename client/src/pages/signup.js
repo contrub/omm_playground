@@ -40,6 +40,11 @@ const styles = theme => ({
   },
   showPass: {
     left: '200px'
+  },
+  passwordCheck: {
+    color: 'red',
+    fontFamily: 'Gill Sans',
+    fontSize: '17px'
   }
 });
 
@@ -51,7 +56,8 @@ class SignUp extends React.Component {
     this.state = {
       inputs: {
         email: '',
-        password: ''
+        password: '',
+        passwordCopy: ''
       },
       errors: {},
       isValid: false
@@ -61,117 +67,215 @@ class SignUp extends React.Component {
   handleFieldValidation = (name) => {
     let inputs = this.state.inputs;
     let errors = this.state.errors;
-    console.log(inputs)
-    console.log(errors)
-    if (name === "email") {
-      if (inputs["email"] !== undefined) {
-        if (isEmpty(inputs["email"])){
-          errors["email"] = "Cannot be empty";
-          console.log(document.getElementById("email"))
-          this.setState({isValid: false})
-        } else {
-          if (!isEmail(inputs["email"])) {
-            errors["email"] = "Email is not valid";
-            this.setState({isValid: false})
-          } else {
-            errors["email"] = ""
-            this.setState({isValid: true})
-          }
-        }
-      } else {
-        errors["email"] = "Cannot be empty";
-        this.setState({isValid: false})
-      }
-    } else if (name === "password") {
-      if (inputs["password"] !== undefined) {
-        if (isEmpty(inputs["password"])) {
-          errors["password"] = "Cannot be empty";
-          this.setState({isValid: false})
-        } else {
+    const minCharactersRegex = new RegExp("^(?=.{8,})")
+    const numberCheckRegex = new RegExp("^(?=.*[0-9])")
+    const lowercaseCheckRegex = new RegExp("^(?=.*[a-z])")
+    const uppercaseCheckRegex = new RegExp("^(?=.*[A-Z])")
+    const specialCheckRegex = new RegExp("^(?=.*[!@#%&])")
 
-          const mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
-          const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#%&])(?=.{8,})");
+    console.log(this.state)
 
-          if (!mediumRegex.test(inputs["password"])) {
-            errors["password"] = "low password";
-            this.setState({isValid: false})
-          } else if (!strongRegex.test(inputs["password"])) {
-            errors["password"] = "medium password";
-            this.setState({isValid: false})
-          } else {
-            errors["password"] = ""
-            if (inputs["password"] === inputs["passwordCopy"]) {
-              errors["passwordCopy"] = ""
-            }
-            this.setState({isValid: true})
-          }
-        }
-      } else {
-        errors["password"] = "Cannot be empty";
-        this.setState({isValid: false})
-      }
-    } else {
+    if (name === "passwordCopy") {
+
       if (inputs["passwordCopy"] !== undefined) {
+
         if (isEmpty(inputs["passwordCopy"])) {
+
           errors["passwordCopy"] = "Cannot be empty";
           this.setState({isValid: false})
+
         } else {
+
           if (errors.password !== "") {
+
             errors["passwordCopy"] = "Password wasn't validated"
             this.setState({isValid: false})
-          } else if (inputs.password !== inputs.passwordCopy) {
+
+          }
+
+          if (inputs.password !== inputs.passwordCopy) {
+
             errors["passwordCopy"] = "Repeat password!";
             this.setState({isValid: false})
+
           } else {
+
             errors["passwordCopy"] = ""
             this.setState({isValid: true})
+
           }
         }
       } else {
+
         errors["passwordCopy"] = "Cannot be empty";
         this.setState({isValid: false})
+
       }
     }
-    if (inputs["email"] === '' || inputs["password"] === '' || inputs["passwordCopy"] === '') {
-      this.setState({isValid: false})
+
+    if (name === "email") {
+
+      if (inputs["email"] !== undefined) {
+
+        if (isEmpty(inputs["email"])){
+
+          errors["email"] = "Cannot be empty";
+          this.setState({isValid: false})
+
+        } else {
+
+          if (!isEmail(inputs["email"])) {
+
+            errors["email"] = "Email is not valid";
+            this.setState({isValid: false})
+
+          } else {
+
+            errors["email"] = ""
+            this.setState({isValid: true})
+
+          }
+        }
+      } else {
+
+        errors["email"] = "Cannot be empty";
+        this.setState({isValid: false})
+
+      }
     }
+
+    if (name === "password") {
+
+      document.getElementById('passwordRequirements').hidden = false
+
+      if (inputs["password"] !== undefined) {
+
+        if (minCharactersRegex.test(inputs["password"])) {
+
+          document.getElementById('quantityCheck').style.color = 'green'
+          this.setState({isValid: true})
+          errors["passwordCopy"] = "";
+
+        } else {
+
+          document.getElementById('quantityCheck').style.color = 'red'
+          this.setState({isValid: false})
+          errors["passwordCopy"] = "Password wasn't validated"
+
+        }
+
+        if (numberCheckRegex.test(inputs["password"])) {
+
+          document.getElementById('numberCheck').style.color = 'green'
+          this.setState({isValid: true})
+          errors["passwordCopy"] = "";
+
+        } else {
+
+          document.getElementById('numberCheck').style.color = 'red'
+          this.setState({isValid: false})
+          errors["passwordCopy"] = "Password wasn't validated"
+
+        }
+
+        if (lowercaseCheckRegex.test(inputs["password"])) {
+
+          document.getElementById('lowercaseCheck').style.color = 'green'
+          this.setState({isValid: true})
+          errors["passwordCopy"] = "";
+
+        } else {
+
+          document.getElementById('lowercaseCheck').style.color = 'red'
+          this.setState({isValid: false})
+          errors["passwordCopy"] = "Password wasn't validated"
+
+        }
+
+        if (uppercaseCheckRegex.test(inputs["password"])) {
+
+          document.getElementById('uppercaseCheck').style.color = 'green'
+          this.setState({isValid: true})
+          errors["passwordCopy"] = "";
+
+        } else {
+
+          document.getElementById('uppercaseCheck').style.color = 'red'
+          this.setState({isValid: false})
+          errors["passwordCopy"] = "Password wasn't validated"
+
+        }
+
+        if (specialCheckRegex.test(inputs["password"])) {
+
+          document.getElementById('specialCharacterCheck').style.color = 'green'
+          this.setState({isValid: true})
+          errors["passwordCopy"] = "";
+
+        } else {
+
+          document.getElementById('specialCharacterCheck').style.color = 'red'
+          this.setState({isValid: false})
+          errors["passwordCopy"] = "Password wasn't validated"
+
+        }
+
+    }
+
+    if (inputs["email"] === '' || inputs["password"] === '' || inputs["passwordCopy"] === '') {
+
+      this.setState({isValid: false})
+
+    }
+
     this.setState({errors: errors});
-  }
+  }}
 
   contactSubmit = (e) => {
+
     e.preventDefault();
 
     if (this.state.isValid) {
+
       alert("Form submitted");
+
     } else {
+
       this.handleFieldValidation('email')
       this.handleFieldValidation('password')
       this.handleFieldValidation('passwordCopy')
       alert("Validation error")
+
     }
   }
 
   handleChange = (input, e) => {
+
     let inputs = this.state.inputs;
     inputs[input] = e.target.value;
     this.setState({input: inputs[input]});
     this.handleFieldValidation(input)
+
   }
 
   showPassword = () => {
+
     if (document.getElementById('password').type === 'password') {
+
       document.getElementById('password').type = 'text'
       document.getElementById('passwordCopy').type = 'text'
+
     } else {
+
       document.getElementById('password').type = 'password'
       document.getElementById('passwordCopy').type = 'password'
+
     }
   }
 // 1. Вилидация input с value type "undefined" только при помощи лог.условия (inputs['email'] !== undefined) ?
   render() {
 
-    const { classes } = this.props;
-    console.log(this.state)
+    const { classes } = this.props
 
     return (
       <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
@@ -211,9 +315,13 @@ class SignUp extends React.Component {
               id="password"
               autoComplete="current-password"
             />
-            <div className={classes.errors}>{this.state.errors["password"]}</div>
-
-
+            <ul id='passwordRequirements' hidden>
+              <li className={classes.passwordCheck} id='quantityCheck'>At least 8 characters</li>
+              <li className={classes.passwordCheck} id='numberCheck'>Contains at least 1 number</li>
+              <li className={classes.passwordCheck} id='lowercaseCheck'>Contains at least lowercase letter</li>
+              <li className={classes.passwordCheck} id='uppercaseCheck'>Contains at least uppercase letter</li>
+              <li className={classes.passwordCheck} id='specialCharacterCheck'>Contains a special character (!@#%&)</li>
+            </ul>
             <TextField
               onChange={this.handleChange.bind(this, "passwordCopy")}
               value={this.state.inputs["passwordCopy"]}
