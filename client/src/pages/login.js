@@ -43,6 +43,7 @@ const styles = theme => ({
 class SignIn extends React.Component {
 
   constructor(props){
+
     super(props);
 
     this.state = {
@@ -59,29 +60,41 @@ class SignIn extends React.Component {
   }
 
   contactSubmit = (e) => {
+
     e.preventDefault();
     let inputs = this.state.inputs;
     let result = this.state.db.find(user => user.password === inputs.password)
     if (result === undefined) {
+
       alert('User undefined')
+
     } else {
+
       console.log(result)
       alert('Successful login')
       window.location.href = '/monuments' // заменить на react component
+
     }
   }
 
   handleChange = (input, e) => {
+
     let inputs = this.state.inputs;
     inputs[input] = e.target.value;
     this.setState({input: inputs[input]});
+
   }
 
   showPassword = () => {
+
     if (document.getElementById('password').type === 'password') {
+
       document.getElementById('password').type = 'text'
+
     } else {
+
       document.getElementById('password').type = 'password'
+
     }
   }
 
