@@ -1,7 +1,7 @@
 import React from 'react';
 import MonumentService from '../services/MonumentService'
 import './monuments.css'
-import Link from "react-router-dom";
+import {Link} from "react-router-dom";
 
 class Monuments extends React.Component {
   state = {
