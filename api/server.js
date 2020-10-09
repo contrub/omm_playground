@@ -38,6 +38,9 @@ mongoose
   .catch(err => console.log(err));
 
 const Monument = require('./models/Monument');
+const User = require('./models/User')
+
+// Monuments
 
 app.get('/api/monuments', function (req, res) {
   Monument.find()
@@ -90,4 +93,59 @@ app.delete('/api/monuments/:id', function (req, res) {
     });
 })
 
+// Users
+
+app.get('/api/users', function (req, res) {
+
+  User.find()
+    .then(items => res.json(items))
+    .catch(err => {
+      res.status(500).send('Something Wrong!')
+      console.log(err)
+    });
+});
+
+app.get('/api/users/:id', function (req, res) {
+  User
+    .find({ _id: req.params.email })
+    .then(item => res.json(item))
+    .catch(err => {
+      res.status(500).send('Something Wrong!')
+      console.log(err)
+    });
+});
+
+app.put('/api/users/:id', function (req, res) {
+  User
+    .update({_id: req.params.email}, req.body)
+    .then((item) => res.json(item))
+    .catch(err => {
+      res.status(500).send('Something Wrong!')
+      console.log(err)
+    })
+});
+
+app.post('/api/users', (req, res) => {
+  const newMonument = new User(req.body);
+
+  newMonument
+    .save()
+    .then((item) => res.json(item))
+    .catch(err => {
+      res.status(500).send('Something Wrong!')
+      console.log(err)
+    });
+});
+
+app.delete('/api/users/:id', function (req, res) {
+  User
+    .deleteOne({ _id: req.params.id })
+    .then(() => res.send(200))
+    .catch(err => {
+      res.status(500).send('Something Wrong!')
+      console.log(err)
+    });
+})
+
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
+
