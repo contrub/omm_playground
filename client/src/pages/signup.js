@@ -15,6 +15,7 @@ import isEmpty from "validator/es/lib/isEmpty";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import UserService from '../services/UserSevice'
 
 const styles = theme => ({
   paper: {
@@ -75,152 +76,97 @@ class SignUp extends React.Component {
 
     console.log(this.state)
 
-    if (name === "passwordCopy") {
-
-      if (inputs["passwordCopy"] !== undefined) {
-
-        if (isEmpty(inputs["passwordCopy"])) {
-
-          errors["passwordCopy"] = "Cannot be empty";
-          this.setState({isValid: false})
-
-        } else {
-
-          if (errors.password !== "") {
-
-            errors["passwordCopy"] = "Password wasn't validated"
-            this.setState({isValid: false})
-
-          }
-
-          if (inputs.password !== inputs.passwordCopy) {
-
-            errors["passwordCopy"] = "Repeat password!";
-            this.setState({isValid: false})
-
-          } else {
-
-            errors["passwordCopy"] = ""
-            this.setState({isValid: true})
-
-          }
-        }
-      } else {
-
-        errors["passwordCopy"] = "Cannot be empty";
-        this.setState({isValid: false})
-
-      }
-    }
-
     if (name === "email") {
-
       if (inputs["email"] !== undefined) {
-
         if (isEmpty(inputs["email"])){
-
           errors["email"] = "Cannot be empty";
           this.setState({isValid: false})
-
         } else {
-
           if (!isEmail(inputs["email"])) {
-
             errors["email"] = "Email is not valid";
             this.setState({isValid: false})
-
           } else {
-
             errors["email"] = ""
             this.setState({isValid: true})
-
           }
         }
       } else {
-
         errors["email"] = "Cannot be empty";
         this.setState({isValid: false})
-
       }
     }
 
-    if (name === "password") {
+    document.getElementById('passwordRequirements').hidden = false
+    if (inputs["password"] !== undefined) {
+      if (minCharactersRegex.test(inputs["password"])) {
+        document.getElementById('quantityCheck').style.color = 'green'
+        this.setState({isValid: true})
+        errors["passwordCopy"] = "";
+      } else {
+        document.getElementById('quantityCheck').style.color = 'red'
+        this.setState({isValid: false})
+        errors["passwordCopy"] = "Password wasn't validated"
+      }
+      if (numberCheckRegex.test(inputs["password"])) {
+        document.getElementById('numberCheck').style.color = 'green'
+        this.setState({isValid: true})
+        errors["passwordCopy"] = "";
+      } else {
+        document.getElementById('numberCheck').style.color = 'red'
+        this.setState({isValid: false})
+        errors["passwordCopy"] = "Password wasn't validated"
+      }
+      if (lowercaseCheckRegex.test(inputs["password"])) {
+        document.getElementById('lowercaseCheck').style.color = 'green'
+        this.setState({isValid: true})
+        errors["passwordCopy"] = "";
+      } else {
+        document.getElementById('lowercaseCheck').style.color = 'red'
+        this.setState({isValid: false})
+        errors["passwordCopy"] = "Password wasn't validated"
+      }
+      if (uppercaseCheckRegex.test(inputs["password"])) {
+        document.getElementById('uppercaseCheck').style.color = 'green'
+        this.setState({isValid: true})
+        errors["passwordCopy"] = "";
+      } else {
+        document.getElementById('uppercaseCheck').style.color = 'red'
+        this.setState({isValid: false})
+        errors["passwordCopy"] = "Password wasn't validated"
+      }
+      if (specialCheckRegex.test(inputs["password"])) {
+        document.getElementById('specialCharacterCheck').style.color = 'green'
+        this.setState({isValid: true})
+        errors["passwordCopy"] = "";
+      } else {
+        document.getElementById('specialCharacterCheck').style.color = 'red'
+        this.setState({isValid: false})
+        errors["passwordCopy"] = "Password wasn't validated"
+      } if (minCharactersRegex.test(inputs["password"]) && numberCheckRegex.test(inputs["password"]) && numberCheckRegex.test(inputs["password"]) && lowercaseCheckRegex.test(inputs["password"]) && uppercaseCheckRegex.test(inputs["password"]) && specialCheckRegex.test(inputs["password"])) {
+        document.getElementById('passwordRequirements').hidden = true
+      }
 
-      document.getElementById('passwordRequirements').hidden = false
-
-      if (inputs["password"] !== undefined) {
-
-        if (minCharactersRegex.test(inputs["password"])) {
-
-          document.getElementById('quantityCheck').style.color = 'green'
-          this.setState({isValid: true})
-          errors["passwordCopy"] = "";
-
-        } else {
-
-          document.getElementById('quantityCheck').style.color = 'red'
+      if (inputs["passwordCopy"] !== undefined) {
+        if (isEmpty(inputs["passwordCopy"])) {
+          errors["passwordCopy"] = "Cannot be empty";
           this.setState({isValid: false})
-          errors["passwordCopy"] = "Password wasn't validated"
-
-        }
-
-        if (numberCheckRegex.test(inputs["password"])) {
-
-          document.getElementById('numberCheck').style.color = 'green'
-          this.setState({isValid: true})
-          errors["passwordCopy"] = "";
-
         } else {
-
-          document.getElementById('numberCheck').style.color = 'red'
-          this.setState({isValid: false})
-          errors["passwordCopy"] = "Password wasn't validated"
-
+          if (errors.password !== "") {
+            errors["passwordCopy"] = "Password wasn't validated"
+            this.setState({isValid: false})
+          }
+          if (inputs.password !== inputs.passwordCopy) {
+            errors["passwordCopy"] = "Repeat password!";
+            this.setState({isValid: false})
+          } else {
+            errors["passwordCopy"] = ""
+            this.setState({isValid: true})
+          }
         }
-
-        if (lowercaseCheckRegex.test(inputs["password"])) {
-
-          document.getElementById('lowercaseCheck').style.color = 'green'
-          this.setState({isValid: true})
-          errors["passwordCopy"] = "";
-
-        } else {
-
-          document.getElementById('lowercaseCheck').style.color = 'red'
-          this.setState({isValid: false})
-          errors["passwordCopy"] = "Password wasn't validated"
-
-        }
-
-        if (uppercaseCheckRegex.test(inputs["password"])) {
-
-          document.getElementById('uppercaseCheck').style.color = 'green'
-          this.setState({isValid: true})
-          errors["passwordCopy"] = "";
-
-        } else {
-
-          document.getElementById('uppercaseCheck').style.color = 'red'
-          this.setState({isValid: false})
-          errors["passwordCopy"] = "Password wasn't validated"
-
-        }
-
-        if (specialCheckRegex.test(inputs["password"])) {
-
-          document.getElementById('specialCharacterCheck').style.color = 'green'
-          this.setState({isValid: true})
-          errors["passwordCopy"] = "";
-
-        } else {
-
-          document.getElementById('specialCharacterCheck').style.color = 'red'
-          this.setState({isValid: false})
-          errors["passwordCopy"] = "Password wasn't validated"
-
-        }
-
-    }
+      } else {
+        errors["passwordCopy"] = "Cannot be empty";
+        this.setState({isValid: false})
+      }
 
     if (inputs["email"] === '' || inputs["password"] === '' || inputs["passwordCopy"] === '') {
 
@@ -238,6 +184,29 @@ class SignUp extends React.Component {
     if (this.state.isValid) {
 
       alert("Form submitted");
+
+      UserService.getUsers()
+        .then(res => {
+          console.log(res)
+          let user = res.find(user => user.email === this.state.inputs.email)
+          if (user === undefined) {
+            UserService.createUser({
+              email: this.state.inputs.email,
+              password: this.state.inputs.password
+            }).then(r => {
+              console.log(r)
+              alert('User was created!')
+              window.location.href = '/monuments' // заменить на react component
+            })
+          } else {
+            alert('User with this email exists!')
+          }
+        })
+
+      // UserService.createUser({
+      //   email: this.state.inputs.email,
+      //   password: this.state.inputs.password
+      // }).then(res => console.log(res))
 
     } else {
 
