@@ -12,6 +12,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import withStyles from "@material-ui/core/styles/withStyles";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import UserService from '../services/UserSevice'
+import isEmpty from "validator/es/lib/isEmpty";
 
 const styles = theme => ({
   paper: {
@@ -51,10 +53,6 @@ class SignIn extends React.Component {
         email: '',
         password: ''
       },
-      db: [
-        {login: 'admin@gmail.com', password: 'adminADMIN1234!'},
-        {login: 'user@gmail.com', password: 'userUSER1234!'}
-      ],
       isValid: false
     }
   }
@@ -62,18 +60,26 @@ class SignIn extends React.Component {
   contactSubmit = (e) => {
 
     e.preventDefault();
-    let inputs = this.state.inputs;
-    let result = this.state.db.find(user => user.password === inputs.password)
-    if (result === undefined) {
+    let email = this.state.inputs.email
+    let password = this.state.inputs.password
 
-      alert('User undefined')
-
+    if (!isEmpty(email) && !isEmpty(password)) {
+      UserService.getUser(email)
+        .then(res => {
+          if (res.length === 0) {
+            alert('User undefined')
+          } else {
+            let userType = res[0].userType
+            alert('Successful login')
+            if (userType === 'admin') {
+              window.location.href = '/users'
+            } else {
+              window.location.href = '/monuments'
+            }
+          }
+        })
     } else {
-
-      console.log(result)
-      alert('Successful login')
-      window.location.href = '/monuments' // заменить на react component
-
+      alert("Form can't be empty!")
     }
   }
 
