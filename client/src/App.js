@@ -2,12 +2,13 @@ import React, {Component} from 'react';
 import './App.css';
 import Header from './components/Header/';
 import Sidebar from './components/Header/side_bar';
-import Home from './pages/home'
-import About from './pages/about'
-import Login from './pages/login'
-import Monuments from './pages/monuments'
-import MonumentById from './pages/monument'
+import Home from './pages/home';
+import About from './pages/about';
+import Login from './pages/login';
+import Monuments from './pages/monuments';
+import MonumentById from './pages/monument';
 import Signup from "./pages/signup";
+import Users from "./pages/users";
 import {
   BrowserRouter,
   Switch,
@@ -75,6 +76,9 @@ class App extends Component {
           </Route>
           <Route path="/reset">
             <PasswordReset />
+          </Route>
+          <Route path="/users">
+            <Users />
           </Route>
         </Switch>
       </BrowserRouter>
