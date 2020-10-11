@@ -40,13 +40,13 @@ mongoose
 const Monument = require('./models/Monument');
 const User = require('./models/User')
 
-// Monuments
+// Monument
 
 app.get('/api/monuments', function (req, res) {
   Monument.find()
     .then(items => res.json(items))
     .catch(err => {
-      res.status(500).send('Something Wrong!')
+      res.sendStatus(500)
       console.log(err)
     });
 });
@@ -56,7 +56,7 @@ app.get('/api/monuments/:id', function (req, res) {
     .find({ _id: req.params.id })
     .then(item => res.json(item))
     .catch(err => {
-      res.status(500).send('Something Wrong!')
+      res.sendStatus(500)
       console.log(err)
     });
 });
@@ -66,7 +66,7 @@ app.put('/api/monuments/:id', function (req, res) {
     .update({_id: req.params.id}, req.body)
     .then((item) => res.json(item))
     .catch(err => {
-      res.status(500).send('Something Wrong!')
+      res.sendStatus(500)
       console.log(err)
     })
 });
@@ -78,7 +78,7 @@ app.post('/api/monuments', (req, res) => {
     .save()
     .then((item) => res.json(item))
     .catch(err => {
-      res.status(500).send('Something Wrong!')
+      res.sendStatus(500)
       console.log(err)
     });
 });
@@ -86,9 +86,9 @@ app.post('/api/monuments', (req, res) => {
 app.delete('/api/monuments/:id', function (req, res) {
   Monument
     .deleteOne({ _id: req.params.id })
-    .then(() => res.send(200))
+    .then(() => res.sendStatus(200))
     .catch(err => {
-      res.status(500).send('Something Wrong!')
+      res.sendStatus(500)
       console.log(err)
     });
 })
@@ -100,27 +100,27 @@ app.get('/api/users', function (req, res) {
   User.find()
     .then(items => res.json(items))
     .catch(err => {
-      res.status(500).send('Something Wrong!')
+      res.sendStatus(500)
       console.log(err)
     });
 });
 
-app.get('/api/users/:id', function (req, res) {
+app.get('/api/users/:email', function (req, res) {
   User
-    .find({ _id: req.params.email })
+    .find({ email: req.params.email })
     .then(item => res.json(item))
     .catch(err => {
-      res.status(500).send('Something Wrong!')
+      res.sendStatus(404)
       console.log(err)
     });
 });
 
-app.put('/api/users/:id', function (req, res) {
+app.put('/api/users/:email', function (req, res) {
   User
-    .update({_id: req.params.email}, req.body)
+    .update({email: req.params.email}, req.body)
     .then((item) => res.json(item))
     .catch(err => {
-      res.status(500).send('Something Wrong!')
+      res.sendStatus(500)
       console.log(err)
     })
 });
@@ -132,17 +132,17 @@ app.post('/api/users', (req, res) => {
     .save()
     .then((item) => res.json(item))
     .catch(err => {
-      res.status(500).send('Something Wrong!')
+      res.sendStatus(500)
       console.log(err)
     });
 });
 
-app.delete('/api/users/:id', function (req, res) {
+app.delete('/api/users/:email', function (req, res) {
   User
-    .deleteOne({ _id: req.params.id })
-    .then(() => res.send(200))
+    .deleteOne({ email: req.params.email })
+    .then(() => res.sendStatus(200))
     .catch(err => {
-      res.status(500).send('Something Wrong!')
+      res.sendStatus(500)
       console.log(err)
     });
 })
