@@ -185,11 +185,9 @@ class SignUp extends React.Component {
 
       alert("Form submitted");
 
-      UserService.getUsers()
+      UserService.getUser(this.state.inputs.email)
         .then(res => {
-          console.log(res)
-          let user = res.find(user => user.email === this.state.inputs.email)
-          if (user === undefined) {
+          if (!res.length) {
             UserService.createUser({
               email: this.state.inputs.email,
               password: this.state.inputs.password
@@ -199,14 +197,9 @@ class SignUp extends React.Component {
               window.location.href = '/monuments' // заменить на react component
             })
           } else {
-            alert('User with this email exists!')
+            alert('User with this email already exists!')
           }
         })
-
-      // UserService.createUser({
-      //   email: this.state.inputs.email,
-      //   password: this.state.inputs.password
-      // }).then(res => console.log(res))
 
     } else {
 
@@ -254,7 +247,7 @@ class SignUp extends React.Component {
             <VpnKeyIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+            Sign up
           </Typography>
           <form className={classes.form} noValidate>
             <TextField
