@@ -70,15 +70,11 @@ class SignIn extends React.Component {
           if (res.length === 0) {
             alert('User undefined')
           } else {
-            let userType = res[0].userType
             let db_password = res[0].password
             if (db_password === password) {
+              console.log(document.cookie)
               alert('Successful login')
-              if (userType === 'admin') {
-                window.location.href = '/users'
-              } else {
-                window.location.href = '/monuments'
-              }
+              window.location.href = '/monuments'
             } else {
               alert('Incorrect password')
             }
