@@ -126,9 +126,9 @@ app.put('/api/users/:email', function (req, res) {
 });
 
 app.post('/api/users', (req, res) => {
-  const newMonument = new User(req.body);
+  const newUser = new User(req.body);
 
-  newMonument
+  newUser
     .save()
     .then((item) => res.json(item))
     .catch(err => {
