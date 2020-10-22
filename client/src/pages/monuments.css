@@ -1,21 +1,31 @@
 ﻿.holder{
     position:relative;
-    padding: 10px;
+    width: 100%;
+    min-height: 100px;
     top: 10%;
     left: 10%;
-    min-height: 100px;
+    right: 10%;
+    flex: 1 1 auto;
+    margin: 0 5px;
+    border: 2px solid #D4D4D4; /* Ширина и цвет границ*/
+    border-radius: 10px; /* Радиус границ*/
+    box-shadow: 0 0 15px #A9A9A9; /* Размер и цвет тени блока*/
 }
 
 .block{
     position:absolute;
-    left:0;
-    bottom:0;
-    right:0;
+    width: 100%;
     top:0;
+    left:0;
+    right:0;
+    bottom:0;
     background:rgba(255,255,255, 0.7);
+    overflow: hidden;
     text-align: center;
-    padding:5px;
     display: none;
+    border: 2px solid #D4D4D4; /* Ширина и цвет границ*/
+    border-radius: 10px; /* Радиус границ*/
+    box-shadow: 0 0 15px #A9A9A9; /* Размер и цвет тени блока*/
 }
 
 .holder:hover .block{
@@ -27,4 +37,17 @@
     grid-gap: 5px;
     grid-template-columns: repeat(auto-fit, 100px);
     grid-template-rows: repeat(2, 100px);
+}
+
+.image {
+    display: block;
+    border-radius: 10px;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }

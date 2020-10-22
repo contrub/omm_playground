@@ -7,7 +7,7 @@ class Monuments extends React.Component {
   state = {
       monuments: []
   }
-  
+
   componentDidMount = async() => {
     console.log('Fetching monuments...')
     await MonumentService.fetchMonuments()
@@ -24,19 +24,19 @@ class Monuments extends React.Component {
 
   render() {
 
-    const {monuments} = this.state
-    const result = monuments.map((entry) => {
-      return (
-        <div className='holder' key={entry._id}>
-          <img alt='monument' style={{maxWidth: '100%', maxHeight: '100%'}} src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Monument_to_Catherine_II_in_SPB.jpg"/>
-          <Link to={`monuments/${entry._id}`}>
-            <div className='block'>
-              {entry.name}
-            </div>
-          </Link>
-        </div>
-      )
-    });
+      const {monuments} = this.state
+      const result = monuments.map((entry) => {
+        return (
+          <div className='holder' key={entry._id}>
+            <img alt='monument' style={{maxWidth: '100%', maxHeight: '100%'}} src="https://ua.igotoworld.com/frontend/webcontent/websites/1/images/gallery/20636_800x600_odessa.jpg"/>
+            <Link to={`monuments/${entry._id}`}>
+              <div className='block'>
+                {entry.name}
+              </div>
+            </Link>
+          </div>
+        )
+      })
 
     return (
       <div className='root'>
