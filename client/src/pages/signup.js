@@ -16,7 +16,6 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import UserService from '../services/UserSevice'
-import Cookies from 'js-cookie'
 
 const styles = theme => ({
   paper: {
@@ -194,7 +193,6 @@ class SignUp extends React.Component {
               password: this.state.inputs.password
             }).then(r => {
               console.log(r)
-              Cookies.set('isAuth','true')
               alert('User was created!')
               window.location.href = '/monuments' // заменить на react component
             })
