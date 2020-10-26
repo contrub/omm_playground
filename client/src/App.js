@@ -10,6 +10,7 @@ import MonumentById from './pages/monument';
 import Signup from "./pages/signup";
 import Users from "./pages/users";
 import UserService from './services/UserSevice'
+import Cookies from 'js-cookie'
 import {
   BrowserRouter,
   Switch,
@@ -25,6 +26,25 @@ class App extends Component {
       isOpen: false,
       isAuth: false
     }
+  }
+
+  UNSAFE_componentWillMount() {
+    const email = Cookies.get('email')
+    // this.props.router.push('/login')
+    if (!email) {
+      alert('Failed authentication')
+    } else {
+      UserService.getUser(email)
+        .then(res => {
+          console.log(res)
+          if (res.length === 0) {
+            alert('Failed authentication')
+          } else {
+            alert('Successful authentication')
+          }
+        })
+    }
+
   }
 
   // UNSAFE_componentWillMount() {
@@ -117,4 +137,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default App
