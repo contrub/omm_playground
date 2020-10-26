@@ -72,8 +72,6 @@ class SignIn extends React.Component {
           } else {
             let db_password = res[0].password
             if (db_password === password) {
-              console.log(document.cookie)
-              alert('Successful login')
               window.location.href = '/monuments'
             } else {
               alert('Incorrect password')
@@ -184,6 +182,5 @@ class SignIn extends React.Component {
   }
 }
 
-//  Где будут храниться логины и пароли пользователей + в каком виде ? (https://habr.com/ru/company/acribia/blog/413157/)
 export default withStyles(styles, {withTheme: true})(SignIn)
 
