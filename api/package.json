@@ -17,8 +17,6 @@
   },
   "dependencies": {
     "cores": "^0.8.5",
-    "google-maps-react": "^2.0.6",
-    "js.cookie": "0.0.4",
     "mongodb": "^3.6.2",
     "mongoose": "^5.10.9"
   }
