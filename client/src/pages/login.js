@@ -64,20 +64,12 @@ class SignIn extends React.Component {
     let password = this.state.inputs.password
 
     if (!isEmpty(email) && !isEmpty(password)) {
-      UserService.getUser(email)
+      UserService.getUser({email: email, password: password})
         .then(res => {
           console.log(res)
-          if (res.length === 0) {
-            alert('User undefined')
-          } else {
-            let db_password = res[0].password
-            if (db_password === password) {
-              window.location.href = '/monuments'
-            } else {
-              alert('Incorrect password')
-            }
+
           }
-        })
+        )
     } else {
       alert("Form can't be empty!")
     }
@@ -107,7 +99,6 @@ class SignIn extends React.Component {
   render() {
 
     const { classes } = this.props;
-    console.log(this.state)
 
     return (
         <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>

@@ -74,8 +74,6 @@ class SignUp extends React.Component {
     const uppercaseCheckRegex = new RegExp("^(?=.*[A-Z])")
     const specialCheckRegex = new RegExp("^(?=.*[!@#%&])")
 
-    console.log(this.state)
-
     if (name === "email") {
       if (inputs["email"] !== undefined) {
         if (isEmpty(inputs["email"])){
@@ -194,7 +192,6 @@ class SignUp extends React.Component {
             }).then(r => {
               console.log(r)
               alert('User was created!')
-              window.location.href = '/monuments' // заменить на react component
             })
           } else {
             alert('User with this email already exists!')
