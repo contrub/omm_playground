@@ -10,7 +10,6 @@ import MonumentById from './pages/monument';
 import Signup from "./pages/signup";
 import Users from "./pages/users";
 import UserService from './services/UserSevice'
-import Cookies from 'js-cookie'
 import {
   BrowserRouter,
   Switch,
@@ -28,49 +27,25 @@ class App extends Component {
     }
   }
 
-  UNSAFE_componentWillMount() {
-    const email = Cookies.get('email')
-    // this.props.router.push('/login')
-    if (!email) {
-      alert('Failed authentication')
-    } else {
-      UserService.getUser(email)
-        .then(res => {
-          console.log(res)
-          if (res.length === 0) {
-            alert('Failed authentication')
-          } else {
-            alert('Successful authentication')
-          }
-        })
-    }
-
-  }
-
   // UNSAFE_componentWillMount() {
   //   const email = Cookies.get('email')
-  //
+  //   // this.props.router.push('/login')
   //   if (!email) {
-  //     this.props.router.push('/sign')
+  //     alert('Failed authentication')
   //   } else {
   //     UserService.getUser(email)
   //       .then(res => {
   //         console.log(res)
-  //         if (!res.length === 0) {
-  //           this.props.router.push('/sign')
+  //         if (res.length === 0) {
+  //           alert('Failed authentication')
   //         } else {
-  //           let db_password = res[0].password
-  //           if (db_password === password) {
-  //             console.log(document.cookie)
-  //             alert('Successful login')
-  //             window.location.href = '/monuments'
-  //           } else {
-  //             alert('Incorrect password')
-  //           }
+  //           alert('Successful authentication')
   //         }
   //       })
   //   }
+  //
   // }
+
 
   submitSearch = (data) => {
     setTimeout(() => console.log(data), 1000);
