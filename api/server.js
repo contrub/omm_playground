@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const crypto = require('crypto')
 
 const app = express();
 const port = 8000;
@@ -93,6 +94,18 @@ app.delete('/api/monuments/:id', function (req, res) {
     });
 })
 
+app.delete('/api/db/monuments/clear', function (req, res) {
+
+  Monument
+    .deleteMany({})
+    .then(() => res.sendStatus(200))
+    .catch(err => {
+      res.sendStatus(500)
+      console.log(err)
+    })
+
+});
+
 // Users
 
 app.get('/api/users', function (req, res) {
@@ -106,8 +119,11 @@ app.get('/api/users', function (req, res) {
 });
 
 app.get('/api/users/:email', function (req, res) {
+
+  let email = crypto.createHash('sha256').update(req.params.email).digest('hex')
+
   User
-    .find({ email: req.params.email })
+    .find({email: email})
     .then(item => res.json(item))
     .catch(err => {
       res.sendStatus(404)
@@ -116,8 +132,18 @@ app.get('/api/users/:email', function (req, res) {
 });
 
 app.put('/api/users/:email', function (req, res) {
+
+  let email = crypto.createHash('sha256').update(req.params.email).digest('hex')
+  let password = crypto.createHash('sha256').update(req.body.password).digest('hex')
+
+  let newData = {
+    email: email,
+    password: password,
+    userType: req.body.userType
+  }
+
   User
-    .update({email: req.params.email}, req.body)
+    .update({email: email}, newData)
     .then((item) => res.json(item))
     .catch(err => {
       res.sendStatus(500)
@@ -125,8 +151,17 @@ app.put('/api/users/:email', function (req, res) {
     })
 });
 
-app.post('/api/users', (req, res) => {
-  const newUser = new User(req.body);
+app.post('/api/users', function (req, res) {
+
+  let hash = crypto.createHash('sha256').update(req.body.email + req.body.password).digest('hex')
+  let email = crypto.createHash('sha256').update(req.body.email).digest('hex')
+  let password = crypto.createHash('sha256').update(req.body.password).digest('hex')
+
+  let newUser = new User({
+    hash: hash,
+    email: email,
+    password: password
+  });
 
   newUser
     .save()
@@ -138,14 +173,29 @@ app.post('/api/users', (req, res) => {
 });
 
 app.delete('/api/users/:email', function (req, res) {
+
+  let email = crypto.createHash('sha256').update(req.params.email).digest('hex')
+
   User
-    .deleteOne({ email: req.params.email })
+    .deleteOne({ email: email })
     .then(() => res.sendStatus(200))
     .catch(err => {
       res.sendStatus(500)
       console.log(err)
     });
 })
+
+app.delete('/api/db/users/clear', function (req, res) {
+
+  User
+    .deleteMany({})
+    .then(() => res.sendStatus(200))
+    .catch(err => {
+      res.sendStatus(500)
+      console.log(err)
+    })
+
+});
 
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
 
