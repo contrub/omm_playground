@@ -2,11 +2,12 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { createServer } = require('http');
 const crypto = require('crypto')
 
 const app = express();
 const port = 8000;
-const whitelist = ['http://localhost:3000']
+const whitelist = ['http://localhost:3000', 'mongodb+srv://ommAdmin:L5icohuVNLKYDHkW@cluster0.qs1ej.mongodb.net/OMM?retryWrites=true&w=majority']
 mongoose.Promise = global.Promise; // fixed DeprecationWarning
 // (node:35)  DeprecationWarning: Mongoose: mpromise (mongoose's default promise library) is deprecated, plug in your own promise library instead: http://mongoosejs.com/docs/promises.html
 
@@ -29,7 +30,7 @@ app.use(cors({
 
 mongoose
   .connect(
-    'mongodb://mongo:27017/omm',
+    'mongodb+srv://ommAdmin:L5icohuVNLKYDHkW@cluster0.qs1ej.mongodb.net/OMM?retryWrites=true&w=majority',
     {
       useUnifiedTopology: true,
       useNewUrlParser: true
@@ -40,6 +41,17 @@ mongoose
 
 const Monument = require('./models/Monument');
 const User = require('./models/User')
+
+function makeSault(len) {
+  let text = "";
+  let possible = "abcdefghijklmnopqrstuvwxyz";
+
+  for (len; len > 0; len-- ) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  return text;
+}
 
 // Monument
 
@@ -133,17 +145,18 @@ app.get('/api/users/:email', function (req, res) {
 
 app.put('/api/users/:email', function (req, res) {
 
-  let email = crypto.createHash('sha256').update(req.params.email).digest('hex')
-  let password = crypto.createHash('sha256').update(req.body.password).digest('hex')
+  let email = req.body.email
+  let salt = makeSault(15)
+  let password = crypto.createHash('sha256').update(req.body.salt + req.body.password + req.body.salt).digest('hex')
 
   let newData = {
     email: email,
     password: password,
-    userType: req.body.userType
+    hash: salt
   }
 
   User
-    .update({email: email}, newData)
+    .updateOne({email: email}, newData)
     .then((item) => res.json(item))
     .catch(err => {
       res.sendStatus(500)
@@ -153,12 +166,12 @@ app.put('/api/users/:email', function (req, res) {
 
 app.post('/api/users', function (req, res) {
 
-  let hash = crypto.createHash('sha256').update(req.body.email + req.body.password).digest('hex')
-  let email = crypto.createHash('sha256').update(req.body.email).digest('hex')
-  let password = crypto.createHash('sha256').update(req.body.password).digest('hex')
+  let salt = makeSault(15)
+  let email = req.body.email
+  let password = crypto.createHash('sha256').update(salt + req.body.password + salt).digest('hex')
 
   let newUser = new User({
-    hash: hash,
+    hash: salt,
     email: email,
     password: password
   });
@@ -174,7 +187,7 @@ app.post('/api/users', function (req, res) {
 
 app.delete('/api/users/:email', function (req, res) {
 
-  let email = crypto.createHash('sha256').update(req.params.email).digest('hex')
+  let email = req.params.email
 
   User
     .deleteOne({ email: email })
@@ -197,5 +210,6 @@ app.delete('/api/db/users/clear', function (req, res) {
 
 });
 
+const server = createServer(app)
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
 
