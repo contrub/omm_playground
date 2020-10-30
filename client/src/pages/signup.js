@@ -189,10 +189,12 @@ class SignUp extends React.Component {
             UserService.createUser({
               email: this.state.inputs.email,
               password: this.state.inputs.password
-            }).then(r => {
-              console.log(r)
-              alert('User was created!')
             })
+              .then(r => console.log(r))
+              .catch(err => {
+                console.log(123)
+                alert('Error')
+              })
           } else {
             alert('User with this email already exists!')
           }
@@ -231,7 +233,7 @@ class SignUp extends React.Component {
 
     }
   }
-// 1. Вилидация input с value type "undefined" только при помощи лог.условия (inputs['email'] !== undefined) ?
+
   render() {
 
     const { classes } = this.props
