@@ -7,7 +7,7 @@ const crypto = require('crypto')
 
 const app = express();
 const port = 8000;
-const whitelist = ['http://localhost:3000', 'mongodb+srv://ommAdmin:L5icohuVNLKYDHkW@cluster0.qs1ej.mongodb.net/OMM?retryWrites=true&w=majority']
+const whitelist = ['http://localhost:3000']
 mongoose.Promise = global.Promise; // fixed DeprecationWarning
 // (node:35)  DeprecationWarning: Mongoose: mpromise (mongoose's default promise library) is deprecated, plug in your own promise library instead: http://mongoosejs.com/docs/promises.html
 
