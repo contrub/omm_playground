@@ -35,7 +35,8 @@ const styles = theme => ({
   },
   errors: {
     textAlign: 'center',
-    color: 'red'
+    color: 'red',
+    margin: '0 0 16px'
   },
   showPass: {
     left: '200px'
@@ -66,17 +67,25 @@ class SignIn extends React.Component {
     if (!isEmpty(email) && !isEmpty(password)) {
       UserService.getUser({email: email, password: password})
         .then(res => {
-          console.log(res)
-
+          if (res.length) {
+            if (res[0].password) {
+              document.getElementById('validError').innerText = ""
+              window.location.href = '/monuments'
+            } else {
+              document.getElementById('validError').innerText = "Wrong password"
+            }
+          } else {
+            document.getElementById('validError').innerText = "We couldn't find an account with this email address"
           }
-        )
+        })
     } else {
-      alert("Form can't be empty!")
+      document.getElementById('validError').innerText = "Form can't be empty!"
     }
   }
 
   handleChange = (input, e) => {
 
+    document.getElementById('validError').innerText = ""
     let inputs = this.state.inputs;
     inputs[input] = e.target.value;
     this.setState({input: inputs[input]});
@@ -155,6 +164,7 @@ class SignIn extends React.Component {
                   Sign In
                 </Button>
               </form>
+              <div id='validError' className={classes.errors}/>
               <Grid container>
                 <Grid item xs>
                   <Link to='/reset'>

@@ -132,22 +132,28 @@ app.get('/api/users', function (req, res) {
 
 app.get('/api/users/:email', function (req, res) {
 
-  let email = crypto.createHash('sha256').update(req.params.email).digest('hex')
-
   User
-    .find({email: email})
-    .then(item => res.json(item))
-    .catch(err => {
-      res.sendStatus(404)
-      console.log(err)
-    });
+    .find({email: req.query.email})
+    .then((item) => {
+      if (!item.length) {
+        res.json(item)
+      } else {
+        let password = crypto.createHash('sha256').update(item[0].hash + req.query.password + item[0].hash).digest('hex')
+        if (password === item[0].password) {
+          res.json(item)
+        } else {
+          res.json([{email: item[0].email}])
+        }
+      }
+    })
 });
 
 app.put('/api/users/:email', function (req, res) {
 
-  let email = req.body.email
+  let email = req.query.email
   let salt = makeSault(15)
-  let password = crypto.createHash('sha256').update(req.body.salt + req.body.password + req.body.salt).digest('hex')
+  console.log(req.query.hash)
+  let password = crypto.createHash('sha256').update(req.query.salt + req.query.password + req.query.salt).digest('hex')
 
   let newData = {
     email: email,

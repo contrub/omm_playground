@@ -7,8 +7,8 @@ export default {
   getUsers() {
     return api.get("/users")
   },
-  getUser(email) {
-    return api.get(`/users/${email}`)
+  getUser(params) {
+    return api.get(`/users/${params.email}`, params)
   },
   updateUser(params) {
     return api.update(`/users/${params.email}`, params)

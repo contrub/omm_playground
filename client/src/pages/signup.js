@@ -37,7 +37,8 @@ const styles = theme => ({
   },
   errors: {
     textAlign: 'center',
-    color: 'red'
+    color: 'red',
+    margin: '0 0 16px'
   },
   showPass: {
     left: '200px'
@@ -73,6 +74,8 @@ class SignUp extends React.Component {
     const lowercaseCheckRegex = new RegExp("^(?=.*[a-z])")
     const uppercaseCheckRegex = new RegExp("^(?=.*[A-Z])")
     const specialCheckRegex = new RegExp("^(?=.*[!@#%&])")
+
+    document.getElementById('validError').innerText = ""
 
     if (name === "email") {
       if (inputs["email"] !== undefined) {
@@ -181,22 +184,17 @@ class SignUp extends React.Component {
 
     if (this.state.isValid) {
 
-      alert("Form submitted");
-
-      UserService.getUser(this.state.inputs.email)
+      UserService.getUser({email: this.state.inputs.email, password: 'password'})
         .then(res => {
           if (!res.length) {
             UserService.createUser({
               email: this.state.inputs.email,
               password: this.state.inputs.password
+            }).then(() => {
+              window.location.href = '/monuments'
             })
-              .then(r => console.log(r))
-              .catch(err => {
-                console.log(123)
-                alert('Error')
-              })
           } else {
-            alert('User with this email already exists!')
+            document.getElementById('validError').innerText = "User with this email already exists!"
           }
         })
 
@@ -205,8 +203,7 @@ class SignUp extends React.Component {
       this.handleFieldValidation('email')
       this.handleFieldValidation('password')
       this.handleFieldValidation('passwordCopy')
-      alert("Validation error")
-
+      document.getElementById('validError').innerText = "Validation error"
     }
   }
 
@@ -317,6 +314,7 @@ class SignUp extends React.Component {
               Sign Up
             </Button>
           </form>
+          <div id='validError' className={classes.errors}/>
           <Grid container>
             <Grid item xs>
               <Link to='/reset'>
