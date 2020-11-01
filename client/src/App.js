@@ -9,7 +9,6 @@ import Monuments from './pages/monuments';
 import MonumentById from './pages/monument';
 import Signup from "./pages/signup";
 import Users from "./pages/users";
-import UserService from './services/UserSevice'
 import {
   BrowserRouter,
   Switch,
