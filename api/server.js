@@ -135,7 +135,7 @@ app.get('/api/users/:email', function (req, res) {
   User
     .find({email: req.query.email})
     .then((item) => {
-      if (!item.length) {
+      if (!item[0].length) {
         res.json(item)
       } else {
         let password = crypto.createHash('sha256').update(item[0].hash + req.query.password + item[0].hash).digest('hex')
