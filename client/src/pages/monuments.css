@@ -32,7 +32,7 @@
     display:block;
 }
 
-.root {
+.monuments-list {
     display: grid;
     grid-gap: 5px;
     grid-template-columns: repeat(auto-fit, 100px);
