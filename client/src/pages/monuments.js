@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 
 class Monuments extends React.Component {
   state = {
-      monuments: []
+    monuments: []
   }
 
   componentDidMount = async() => {
@@ -16,31 +16,32 @@ class Monuments extends React.Component {
           monuments: result
         })
       })
-    console.log(this.state.monuments)
     if (this.state.monuments.length === 0) {
-      alert('No monuments !')
+      document.getElementById('monuments-page').innerHTML = `<div className='error'>There are no monuments :(</div>`
     }
   }
 
   render() {
 
-      const {monuments} = this.state
-      const result = monuments.map((entry) => {
-        return (
-          <div className='holder' key={entry._id}>
-            <img alt='monument' style={{maxWidth: '100%', maxHeight: '100%'}} src="https://ua.igotoworld.com/frontend/webcontent/websites/1/images/gallery/20636_800x600_odessa.jpg"/>
-            <Link to={`monuments/${entry._id}`}>
-              <div className='block'>
-                {entry.name}
-              </div>
-            </Link>
-          </div>
-        )
-      })
+    const {monuments} = this.state
+    const result = monuments.map((entry) => {
+      return (
+        <div className='holder' key={entry._id}>
+          <img alt='monument' style={{maxWidth: '100%', maxHeight: '100%'}} src="https://ua.igotoworld.com/frontend/webcontent/websites/1/images/gallery/20636_800x600_odessa.jpg"/>
+          <Link to={`monuments/${entry._id}`}>
+            <div className='block'>
+              {entry.name}
+            </div>
+          </Link>
+        </div>
+      )
+    })
 
     return (
-      <div className='root'>
-        {result}
+      <div id='monuments-page'>
+        <div className='monuments-list'>
+          {result}
+        </div>
       </div>
     )
   }
