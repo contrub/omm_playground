@@ -15,7 +15,8 @@ import isEmpty from "validator/es/lib/isEmpty";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import UserService from '../services/UserSevice'
+import UserService from '../services/UserSevice';
+import AuthService from "../services/AuthService";
 
 const styles = theme => ({
   paper: {
@@ -191,6 +192,12 @@ class SignUp extends React.Component {
               email: this.state.inputs.email,
               password: this.state.inputs.password
             }).then(() => {
+              AuthService.login({email: this.state.inputs.email})
+                .then((res) => {
+                  console.log(res)
+                  document.cookie = `accessToken=${res.accessToken}`
+                  document.cookie = `refreshToken=${res.refreshToken}`
+                })
               window.location.href = '/monuments'
             })
           } else {
@@ -333,6 +340,5 @@ class SignUp extends React.Component {
   }
 }
 
-//  Где будут храниться логины и пароли пользователей + в каком виде ? (https://habr.com/ru/company/acribia/blog/413157/)
 export default withStyles(styles, {withTheme: true})(SignUp)
 
