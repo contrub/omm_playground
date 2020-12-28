@@ -1,15 +1,16 @@
+require('dotenv').config()
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { createServer } = require('http');
 const crypto = require('crypto')
+const jwt = require('jsonwebtoken')
 
 const app = express();
 const port = 8000;
 const whitelist = ['http://localhost:3000']
 mongoose.Promise = global.Promise; // fixed DeprecationWarning
-// (node:35)  DeprecationWarning: Mongoose: mpromise (mongoose's default promise library) is deprecated, plug in your own promise library instead: http://mongoosejs.com/docs/promises.html
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -27,6 +28,31 @@ app.use(cors({
     return callback(null, true);
   }
 }));
+
+function authenticateToken(req, res, next) {
+  console.log(req.headers)
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token == null) return res.sendStatus(401)
+
+  jwt.verify(
+    token,
+    process.env.ACCESS_TOKEN_SECRET,
+    (err, user) => {
+      console.log(err)
+      if (err) return res.sendStatus(403)
+      req.user = user
+      next()
+    }
+  )
+
+  // jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+  //   console.log(err)
+  //   if (err) return res.sendStatus(403)
+  //   req.user = user
+  //   next()
+  // })
+}
 
 mongoose
   .connect(
@@ -55,7 +81,7 @@ function makeSault(len) {
 
 // Monument
 
-app.get('/api/monuments', function (req, res) {
+app.get('/api/monuments', authenticateToken, function (req, res) {
   Monument.find()
     .then(items => res.json(items))
     .catch(err => {
@@ -135,7 +161,8 @@ app.get('/api/users/:email', function (req, res) {
   User
     .find({email: req.query.email})
     .then((item) => {
-      if (!item[0].length) {
+      console.log(item)
+      if (!item.length) {
         res.json(item)
       } else {
         let password = crypto.createHash('sha256').update(item[0].hash + req.query.password + item[0].hash).digest('hex')
@@ -216,6 +243,5 @@ app.delete('/api/db/users/clear', function (req, res) {
 
 });
 
-const server = createServer(app)
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
 
