@@ -3,7 +3,6 @@ import {withStyles} from '@material-ui/core';
 import Drawer from '@material-ui/core/Drawer';
 import HomeIcon from '@material-ui/icons/Home';
 import ContactSupportIcon from '@material-ui/icons/ContactSupport';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -35,12 +34,12 @@ class Sidebar extends Component {
                   <ListItemText primary={'About'} />
                   </ListItem>
                 </Link>
-                <Link to='/sign' onClick={this.props.onLinkClick}>
-                  <ListItem button>
-                  <ListItemIcon>{<ExitToAppIcon/>}</ListItemIcon>
-                  <ListItemText primary={'Login'} />
-                  </ListItem>
-                </Link>
+                {/*<Link to='/login' onClick={this.props.onLinkClick}>*/}
+                {/*  <ListItem button>*/}
+                {/*  <ListItemIcon>{<ExitToAppIcon/>}</ListItemIcon>*/}
+                {/*  <ListItemText primary={'Login'} />*/}
+                {/*  </ListItem>*/}
+                {/*</Link>*/}
                 <Link to='/monuments' onClick={this.props.onLinkClick}>
                   <ListItem button>
                   <ListItemIcon>{<AccountBalanceIcon/>}</ListItemIcon>

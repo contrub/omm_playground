@@ -62,6 +62,17 @@ class App extends Component {
     })
   }
 
+  isLogged = () => {
+    let cookieArr = document.cookie.split(";");
+
+    for (let i = 0; i < cookieArr.length; i++) {
+      let cookiePair = cookieArr[i].split("=");
+      if ('accessToken' === cookiePair[0].trim()) {
+        return true
+      }
+    }
+    return false
+  }
   
   render() {
     // console.log(this.state)
@@ -73,7 +84,8 @@ class App extends Component {
             name="Open Monument Map"
             btntext="login"
             openDrawer={this.openDrawer}
-            />
+            status={this.isLogged()}
+          />
           <Sidebar
             closeDrawer={this.closeDrawer}
             isOpen={this.state.isOpen}
@@ -87,7 +99,7 @@ class App extends Component {
           <Route path="/about">
             <About />
           </Route>
-          <Route path="/sign">
+          <Route path="/login">
             <Login />
           </Route>
           <Route exact path="/monuments">
