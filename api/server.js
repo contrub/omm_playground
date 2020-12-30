@@ -29,6 +29,42 @@ app.use(cors({
   }
 }));
 
+app.use('/login', function (req, res, next) {
+  console.log(req.method)
+  const refreshToken = req.body.token
+  if (refreshToken == null) return res.sendStatus(401)
+  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+  console.log('OK!')
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403)
+    const accessToken = generateAccessToken({ name: user.name })
+    res.json({ accessToken: accessToken })
+  })
+  next()
+})
+
+app.use('/api/users', function (req, res, next) {
+  if (req.method === 'POST') {
+    const username = req.body.username
+    const user = { name: username }
+
+    const accessToken = generateAccessToken(user)
+    const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET)
+    refreshTokens.push(refreshToken)
+    res.json({ accessToken: accessToken, refreshToken: refreshToken })
+  }
+  // const refreshToken = req.body.token
+  // if (refreshToken == null) return res.sendStatus(401)
+  // if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+  // console.log('OK!')
+  // jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+  //   if (err) return res.sendStatus(403)
+  //   const accessToken = generateAccessToken({ name: user.name })
+  //   res.json({ accessToken: accessToken })
+  // })
+  next()
+})
+
 function authenticateToken(req, res, next) {
   console.log(req.headers)
   const authHeader = req.headers['authorization']
@@ -81,7 +117,9 @@ function makeSault(len) {
 
 // Monument
 
-app.get('/api/monuments', authenticateToken, function (req, res) {
+// authenticateToken
+
+app.get('/api/monuments', function (req, res) {
   Monument.find()
     .then(items => res.json(items))
     .catch(err => {
@@ -161,7 +199,6 @@ app.get('/api/users/:email', function (req, res) {
   User
     .find({email: req.query.email})
     .then((item) => {
-      console.log(item)
       if (!item.length) {
         res.json(item)
       } else {
@@ -211,7 +248,6 @@ app.post('/api/users', function (req, res) {
 
   newUser
     .save()
-    .then((item) => res.json(item))
     .catch(err => {
       res.sendStatus(500)
       console.log(err)
@@ -242,6 +278,34 @@ app.delete('/api/db/users/clear', function (req, res) {
     })
 
 });
+
+// Authentication
+
+let refreshTokens = []
+
+app.get('/', (req, res) => {
+  res.json("Auth Server")
+})
+
+app.post('/token', (req, res) => {
+  const refreshToken = req.body.token
+  if (refreshToken == null) return res.sendStatus(401)
+  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403)
+    const accessToken = generateAccessToken({ name: user.name })
+    res.json({ accessToken: accessToken })
+  })
+})
+
+app.delete('/logout', (req, res) => {
+  refreshTokens = refreshTokens.filter(token => token !== req.body.token)
+  res.sendStatus(204)
+})
+
+function generateAccessToken(user) {
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' })
+}
 
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
 
