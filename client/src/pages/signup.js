@@ -16,7 +16,6 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import UserService from '../services/UserSevice';
-import AuthService from "../services/AuthService";
 
 const styles = theme => ({
   paper: {
@@ -65,6 +64,24 @@ class SignUp extends React.Component {
       errors: {},
       isValid: false
     }
+  }
+
+  componentDidMount() {
+    let cookieArr = document.cookie.split(";");
+    let isLogged = false
+
+    for (let i = 0; i < cookieArr.length; i++) {
+      let cookiePair = cookieArr[i].split("=");
+
+      if ('accessToken' === cookiePair[0].trim()) {
+        isLogged = true
+      }
+    }
+
+    if (isLogged) {
+      alert('Already logged!')
+    }
+
   }
 
   handleFieldValidation = (name) => {
@@ -185,20 +202,17 @@ class SignUp extends React.Component {
 
     if (this.state.isValid) {
 
-      UserService.getUser({email: this.state.inputs.email, password: 'password'})
+      UserService.getUser({email: this.state.inputs.email})
         .then(res => {
           if (!res.length) {
             UserService.createUser({
               email: this.state.inputs.email,
               password: this.state.inputs.password
-            }).then(() => {
-              AuthService.login({email: this.state.inputs.email})
-                .then((res) => {
-                  console.log(res)
-                  document.cookie = `accessToken=${res.accessToken}`
-                  document.cookie = `refreshToken=${res.refreshToken}`
-                })
-              window.location.href = '/monuments'
+            }).then((res) => {
+              console.log(res)
+              document.cookie = `accessToken=${res.accessToken}`
+              document.cookie = `refreshToken=${res.refreshToken}`
+              // window.location.href = '/monuments'
             })
           } else {
             document.getElementById('validError').innerText = "User with this email already exists!"
@@ -329,7 +343,7 @@ class SignUp extends React.Component {
               </Link>
             </Grid>
             <Grid item>
-              <Link to='/sign'>
+              <Link to='/login'>
                 Have an account? Sign In
               </Link>
             </Grid>
