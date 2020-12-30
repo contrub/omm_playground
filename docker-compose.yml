@@ -16,22 +16,6 @@ services:
     command: "npm run serve"
     environment:
       - CHOKIDAR_USEPOLLING=true
-  auth:
-    build:
-      context: ./auth
-      dockerfile: Dockerfile
-    depends_on:
-      - mongo
-    volumes:
-      - ./auth:/auth:rw,cached
-      - /auth/node_modules
-    restart: always
-    ports:
-      - "7000:7000"
-      - "7001:7001"
-    command: "npm run serve"
-    environment:
-      - CHOKIDAR_USEPOLLING=true
 
   client:
     build:
