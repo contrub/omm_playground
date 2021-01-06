@@ -8,7 +8,6 @@ import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import logout from '../services/UserSevice'
 
 const styles =  {
   root: {
