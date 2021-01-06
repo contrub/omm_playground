@@ -20,8 +20,8 @@ app.use(cors({
     if(!origin) return callback(null, true);
     // For postman chrome plugin
     if (origin && origin.match(/chrome-extension/) && origin.match(/chrome-extension/).length) return callback(null, true);
-    if(whitelist.indexOf(origin) === -1){
-      var message = "The CORS policy for this origin doesn`t " +
+    if (whitelist.indexOf(origin) === -1){
+      let message = "The CORS policy for this origin doesn`t " +
         "allow access from the particular origin.";
       return callback(new Error(message), false);
     }
@@ -30,11 +30,9 @@ app.use(cors({
 }));
 
 app.use('/login', function (req, res, next) {
-  console.log(req.method)
   const refreshToken = req.body.token
   if (refreshToken == null) return res.sendStatus(401)
   if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
-  console.log('OK!')
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
     if (err) return res.sendStatus(403)
     const accessToken = generateAccessToken({ name: user.name })
@@ -53,42 +51,26 @@ app.use('/api/users', function (req, res, next) {
     refreshTokens.push(refreshToken)
     res.json({ accessToken: accessToken, refreshToken: refreshToken })
   }
-  // const refreshToken = req.body.token
-  // if (refreshToken == null) return res.sendStatus(401)
-  // if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
-  // console.log('OK!')
-  // jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-  //   if (err) return res.sendStatus(403)
-  //   const accessToken = generateAccessToken({ name: user.name })
-  //   res.json({ accessToken: accessToken })
-  // })
+
   next()
 })
 
-function authenticateToken(req, res, next) {
-  console.log(req.headers)
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1]
-  if (token == null) return res.sendStatus(401)
-
-  jwt.verify(
-    token,
-    process.env.ACCESS_TOKEN_SECRET,
-    (err, user) => {
-      console.log(err)
-      if (err) return res.sendStatus(403)
-      req.user = user
-      next()
+app.use('/api/monuments', function (req, res, next) {
+  if (req.method === "GET") {
+    const authHeader = req.headers['authorization']
+    const accessToken = authHeader && authHeader.split(' ')[1]
+    if (accessToken == null) return res.sendStatus(401)
+    try {
+      jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET)
+      req.headers['isValid'] = true
+    } catch (TokenExpiredError) {
+      req.headers['isValid'] = false
     }
-  )
+  }
 
-  // jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-  //   console.log(err)
-  //   if (err) return res.sendStatus(403)
-  //   req.user = user
-  //   next()
-  // })
-}
+  next()
+
+})
 
 mongoose
   .connect(
@@ -120,8 +102,19 @@ function makeSault(len) {
 // authenticateToken
 
 app.get('/api/monuments', function (req, res) {
+  let accessToken = ''
+  let isValid = req.headers['isValid']
+  if (!isValid) {
+    const refreshToken = req.query.refreshToken
+    if (refreshToken == null) return res.sendStatus(401)
+    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+      if (err) return res.sendStatus(403)
+      accessToken = generateAccessToken({ name: user.email })
+    })
+  }
   Monument.find()
-    .then(items => res.json(items))
+    .then(items => res.json({monuments: items, accessToken: accessToken}))
     .catch(err => {
       res.sendStatus(500)
       console.log(err)
@@ -216,7 +209,6 @@ app.put('/api/users/:email', function (req, res) {
 
   let email = req.query.email
   let salt = makeSault(15)
-  console.log(req.query.hash)
   let password = crypto.createHash('sha256').update(req.query.salt + req.query.password + req.query.salt).digest('hex')
 
   let newData = {
@@ -281,30 +273,13 @@ app.delete('/api/db/users/clear', function (req, res) {
 
 // Authentication
 
-let refreshTokens = []
-
-app.get('/', (req, res) => {
-  res.json("Auth Server")
-})
-
-app.post('/token', (req, res) => {
-  const refreshToken = req.body.token
-  if (refreshToken == null) return res.sendStatus(401)
-  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403)
-    const accessToken = generateAccessToken({ name: user.name })
-    res.json({ accessToken: accessToken })
-  })
-})
-
 app.delete('/logout', (req, res) => {
-  refreshTokens = refreshTokens.filter(token => token !== req.body.token)
+  // res.clearCookie('accessToken')
   res.sendStatus(204)
 })
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' })
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15s'})
 }
 
 app.listen(port, () => console.log(`Server listening on port: ${port}`));

@@ -16,7 +16,7 @@ export default {
   deleteUser(email) {
     return api.remove(`/users/${email}`);
   },
-  logout(params) {
-    return api.remove(`/logout`, params)
+  logout() {
+    return api.remove(`/logout`)
   }
 };
