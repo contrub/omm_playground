@@ -12,7 +12,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import withStyles from "@material-ui/core/styles/withStyles";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import UserService from '../services/UserSevice';
+import UserService from '../services/UserService';
 import isEmpty from "validator/es/lib/isEmpty";
 
 const styles = theme => ({

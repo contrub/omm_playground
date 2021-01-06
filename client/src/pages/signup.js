@@ -15,7 +15,7 @@ import isEmpty from "validator/es/lib/isEmpty";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import UserService from '../services/UserSevice';
+import UserService from '../services/UserService';
 
 const styles = theme => ({
   paper: {
@@ -212,8 +212,8 @@ class SignUp extends React.Component {
               console.log(res)
               document.cookie = `accessToken=${res.accessToken}`
               document.cookie = `refreshToken=${res.refreshToken}`
-              // window.location.href = '/monuments'
             })
+            // window.location.href = '/monuments'
           } else {
             document.getElementById('validError').innerText = "User with this email already exists!"
           }
