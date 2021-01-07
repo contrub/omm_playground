@@ -32,7 +32,6 @@ app.use(cors({
 app.use('/login', function (req, res, next) {
   const refreshToken = req.body.token
   if (refreshToken == null) return res.sendStatus(401)
-  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
     if (err) return res.sendStatus(403)
     const accessToken = generateAccessToken({ name: user.name })
@@ -106,7 +105,6 @@ app.get('/api/monuments', function (req, res) {
   if (!isValid) {
     const refreshToken = req.query.refreshToken
     if (refreshToken == null) return res.sendStatus(401)
-    if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
       if (err) return res.sendStatus(403)
       accessToken = generateAccessToken({ name: user.email })
