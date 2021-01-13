@@ -17,6 +17,7 @@ mongoose.Promise = global.Promise; // fixed DeprecationWarning
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+// Так как у нас будет директория middlewares то этот кусок тоже можно перенести в нее дабы не загрязнять server.js
 app.use(cors({
   origin: function(origin, callback) {
 
