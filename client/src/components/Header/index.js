@@ -23,20 +23,37 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = (props) => {
   const classes = useStyles();
-  return (
-    <AppBar position="static">
-      <Toolbar>
-        <IconButton edge="start" className={classes.menuButton} onClick={props.openDrawer} color="inherit" aria-label="menu">
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" className={classes.title}>
-          Open Monument Map
-        </Typography>
-        <Search submitSearch={props.submitSearch}/>
-        <Button color="inherit">Login</Button>
-      </Toolbar>
-    </AppBar>
-  )
+  if (props.status) {
+    return (
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton edge="start" className={classes.menuButton} onClick={props.openDrawer} color="inherit" aria-label="menu">
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            Open Monument Map
+          </Typography>
+          <Search submitSearch={props.submitSearch}/>
+          <Button color="inherit" href='/logout'>Logout</Button>
+        </Toolbar>
+      </AppBar>
+    )
+  } else {
+    return (
+      <AppBar position="static">
+        <Toolbar>
+          <IconButton edge="start" className={classes.menuButton} onClick={props.openDrawer} color="inherit" aria-label="menu">
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            Open Monument Map
+          </Typography>
+          <Search submitSearch={props.submitSearch}/>
+          <Button color="inherit" href='/login'>Login</Button>
+        </Toolbar>
+      </AppBar>
+    )
+  }
 };
 
 export default Header;

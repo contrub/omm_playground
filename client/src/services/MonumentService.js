@@ -1,8 +1,8 @@
 import api from "./api";
 
 export default {
-  fetchMonuments() {
-    return api.get("/monuments");
+  fetchMonuments(params) {
+    return api.get("/monuments", params);
   },
   createMonument(params) {
     return api.create("/monuments", params);

@@ -12,6 +12,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import withStyles from "@material-ui/core/styles/withStyles";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import UserService from '../services/UserService';
+import isEmpty from "validator/es/lib/isEmpty";
 
 const styles = theme => ({
   paper: {
@@ -33,12 +35,18 @@ const styles = theme => ({
   },
   errors: {
     textAlign: 'center',
-    color: 'red'
+    color: 'red',
+    margin: '0 0 16px'
   },
   showPass: {
     left: '200px'
+  },
+  myModal: {
+    position: 'relative',
+    top: '20px'
   }
 });
+
 
 class SignIn extends React.Component {
 
@@ -51,34 +59,56 @@ class SignIn extends React.Component {
         email: '',
         password: ''
       },
-      db: [
-        {login: 'admin@gmail.com', password: 'adminADMIN1234!'},
-        {login: 'user@gmail.com', password: 'userUSER1234!'}
-      ],
       isValid: false
     }
+  }
+
+  componentDidMount() {
+    let cookieArr = document.cookie.split(";");
+    let isLogged = false
+
+    for (let i = 0; i < cookieArr.length; i++) {
+      let cookiePair = cookieArr[i].split("=");
+
+      if ('accessToken' === cookiePair[0].trim()) {
+        isLogged = true
+      }
+    }
+
+    if (isLogged) {
+      alert('Already logged!')
+    }
+
   }
 
   contactSubmit = (e) => {
 
     e.preventDefault();
-    let inputs = this.state.inputs;
-    let result = this.state.db.find(user => user.password === inputs.password)
-    if (result === undefined) {
+    let email = this.state.inputs.email
+    let password = this.state.inputs.password
 
-      alert('User undefined')
-
+    if (!isEmpty(email) && !isEmpty(password)) {
+      UserService.getUser({email: email, password: password})
+        .then(res => {
+          if (res.length) {
+            if (res[0].password) {
+              document.getElementById('validError').innerText = ""
+              window.location.href = '/monuments'
+            } else {
+              document.getElementById('validError').innerText = "Wrong password"
+            }
+          } else {
+            document.getElementById('validError').innerText = "We couldn't find an account with this email address"
+          }
+        })
     } else {
-
-      console.log(result)
-      alert('Successful login')
-      window.location.href = '/monuments' // заменить на react component
-
+      document.getElementById('validError').innerText = "Form can't be empty!"
     }
   }
 
   handleChange = (input, e) => {
 
+    document.getElementById('validError').innerText = ""
     let inputs = this.state.inputs;
     inputs[input] = e.target.value;
     this.setState({input: inputs[input]});
@@ -101,81 +131,80 @@ class SignIn extends React.Component {
   render() {
 
     const { classes } = this.props;
-    console.log(this.state)
 
     return (
-        <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
-            <CssBaseline />
-            <div className={classes.paper}>
-              <Avatar className={classes.avatar}/>
-              <Typography component="h1" variant="h5">
-                Sign in
-              </Typography>
-              <form className={classes.form} noValidate>
-                <TextField
-                  onChange={this.handleChange.bind(this, "email")}
-                  value={this.state.inputs["email"]}
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                />
-                <TextField
-                  onChange={this.handleChange.bind(this, "password")}
-                  value={this.state.inputs["password"]}
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                />
-                <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
-                />
-                <Checkbox
-                  icon={<VisibilityIcon/>}
-                  checkedIcon={<VisibilityOffIcon/>}
-                  onClick={this.showPassword}
-                  className={classes.showPass}
-                />
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                >
-                  Sign In
-                </Button>
-              </form>
-              <Grid container>
-                <Grid item xs>
-                  <Link to='/reset'>
-                    Forgot password?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link to='/signup'>
-                    Don't have an account? Sign Up
-                  </Link>
-                </Grid>
+        <Container id="login-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
+          <CssBaseline />
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}/>
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+            <form className={classes.form} noValidate>
+              <TextField
+                onChange={this.handleChange.bind(this, "email")}
+                value={this.state.inputs["email"]}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <TextField
+                onChange={this.handleChange.bind(this, "password")}
+                value={this.state.inputs["password"]}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label="Remember me"
+              />
+              <Checkbox
+                icon={<VisibilityIcon/>}
+                checkedIcon={<VisibilityOffIcon/>}
+                onClick={this.showPassword}
+                className={classes.showPass}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+              >
+                Sign In
+              </Button>
+            </form>
+            <div id='validError' className={classes.errors}/>
+            <Grid container>
+              <Grid item xs>
+                <Link to='/reset'>
+                  Forgot password?
+                </Link>
               </Grid>
-            </div>
+              <Grid item>
+                <Link to='/signup'>
+                  Don't have an account? Sign Up
+                </Link>
+              </Grid>
+            </Grid>
+          </div>
         </Container>
     );
   }
 }
 
-//  Где будут храниться логины и пароли пользователей + в каком виде ? (https://habr.com/ru/company/acribia/blog/413157/)
 export default withStyles(styles, {withTheme: true})(SignIn)
 

@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import './App.css';
+import './styles/App.css';
 import Header from './components/Header/';
 import Sidebar from './components/Header/side_bar';
-import Home from './pages/home'
-import About from './pages/about'
-import Login from './pages/login'
-import Monuments from './pages/monuments'
-import MonumentById from './pages/monument'
+import Home from './pages/home';
+import About from './pages/about';
+import Login from './pages/login';
+import Monuments from './pages/monuments';
+import MonumentById from './pages/monument';
 import Signup from "./pages/signup";
 import {
   BrowserRouter,
@@ -16,9 +16,34 @@ import {
 import PasswordReset from "./pages/reset";
 
 class App extends Component {
-  state = {
-    isOpen: false
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isOpen: false,
+      isAuth: false
+    }
+  }
+
+  // UNSAFE_componentWillMount() {
+  //   const email = Cookies.get('email')
+  //   // this.props.router.push('/login')
+  //   if (!email) {
+  //     alert('Failed authentication')
+  //   } else {
+  //     UserService.getUser(email)
+  //       .then(res => {
+  //         console.log(res)
+  //         if (res.length === 0) {
+  //           alert('Failed authentication')
+  //         } else {
+  //           alert('Successful authentication')
+  //         }
+  //       })
+  //   }
+  //
+  // }
+
 
   submitSearch = (data) => {
     setTimeout(() => console.log(data), 1000);
@@ -36,6 +61,17 @@ class App extends Component {
     })
   }
 
+  isLogged = () => {
+    let cookieArr = document.cookie.split(";");
+
+    for (let i = 0; i < cookieArr.length; i++) {
+      let cookiePair = cookieArr[i].split("=");
+      if ('accessToken' === cookiePair[0].trim()) {
+        return true
+      }
+    }
+    return false
+  }
   
   render() {
     // console.log(this.state)
@@ -47,7 +83,8 @@ class App extends Component {
             name="Open Monument Map"
             btntext="login"
             openDrawer={this.openDrawer}
-            />
+            status={this.isLogged()}
+          />
           <Sidebar
             closeDrawer={this.closeDrawer}
             isOpen={this.state.isOpen}
@@ -61,7 +98,7 @@ class App extends Component {
           <Route path="/about">
             <About />
           </Route>
-          <Route path="/sign">
+          <Route path="/login">
             <Login />
           </Route>
           <Route exact path="/monuments">
@@ -82,4 +119,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default App
