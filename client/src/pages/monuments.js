@@ -2,9 +2,6 @@ import React from 'react';
 import MonumentService from '../services/MonumentService';
 import '../styles/monuments.css';
 
-import potemkins_stairs_1 from '../images/The Potemkin Stairs/potemkins_stairs_1.jpg'
-import potemkins_stairs_2 from '../images/The Potemkin Stairs/potemkins_stairs_2.jpeg'
-
 let isAuth = true
 
 class Monuments extends React.Component {
@@ -80,8 +77,8 @@ class Monuments extends React.Component {
             <div className="product-grid">
               <div className="product-image">
                 <a href="/mon1">
-                  <img className="pic-1" src={potemkins_stairs_1} alt='img1'/>
-                  <img className="pic-2" src={potemkins_stairs_2} alt='img2'/>
+                  <img className="pic-1" alt='img1'/>
+                  <img className="pic-2" alt='img2'/>
                 </a>
               </div>
               <ul className="rating">
@@ -118,8 +115,8 @@ class Monuments extends React.Component {
                 <div className="product-grid">
                   <div className="product-image">
                     <a href="/mon1">
-                      <img className="pic-1" src={potemkins_stairs_1} alt='img1'/>
-                      <img className="pic-2" src={potemkins_stairs_2} alt='img2'/>
+                      <img className="pic-1" alt='img1'/>
+                      <img className="pic-2" alt='img2'/>
                     </a>
                   </div>
                   <ul className="rating">
@@ -145,8 +142,8 @@ class Monuments extends React.Component {
                 <div className="product-grid">
                   <div className="product-image">
                     <a href="/mon1">
-                      <img className="pic-1" src={potemkins_stairs_1} alt='img1'/>
-                      <img className="pic-2" src={potemkins_stairs_2} alt='img2'/>
+                      <img className="pic-1" alt='img1'/>
+                      <img className="pic-2" alt='img2'/>
                     </a>
                   </div>
                   <ul className="rating">
