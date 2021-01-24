@@ -1,13 +1,17 @@
 const _apiHost = "http://localhost:8000/api";
 
-async function request(url, params, method = "GET") {
+async function request(url, params, tokens={}, method = "GET") {
   const options = {
     method,
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${params.accessToken}`
     }
   };
+
+  if (tokens) {
+    options.headers["access"] = `Bearer ${tokens.accessToken}`
+    options.headers["refresh"] = `Bearer ${tokens.refreshToken}`
+  }
 
   if (params) {
     if (method === "GET") {
@@ -45,20 +49,20 @@ function generateErrorResponse(message) {
   };
 }
 
-function get(url, params) {
-  return request(url, params);
+function get(url, params, token) {
+  return request(url, params, token);
 }
 
 function create(url, params) {
-  return request(url, params, "POST");
+  return request(url, params, {},"POST");
 }
 
 function update(url, params) {
-  return request(url, params, "PUT");
+  return request(url, params, {},"PUT");
 }
 
 function remove(url, params) {
-  return request(url, params, "DELETE");
+  return request(url, params, {},"DELETE");
 }
 
 export default {
