@@ -1,4 +1,5 @@
 const verifyToken = require('../utils/verifyToken')
+const jwt = require('../utils/jwt')
 
 const login = (req, res, next) => {
   const refreshToken = req.body.token;
@@ -15,8 +16,22 @@ const login = (req, res, next) => {
   next()
 };
 
+const getTokens = (req, res, next) => {
+  let tokens = jwt.generateTokens({email: req.body.email}, res)
+  if (tokens.accessToken && tokens.refreshToken) {
+    res.json({
+      accessToken: `Bearer ${tokens.accessToken}`,
+      refreshToken: `Bearer ${tokens.refreshToken}`,
+      success: true
+    })
+
+    next()
+  }
+}
+
 module.exports = {
 
-  login: login
+  login: login,
+  getTokens: getTokens
 
 }
