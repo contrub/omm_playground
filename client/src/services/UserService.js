@@ -1,22 +1,22 @@
 import api from "./api";
 
 export default {
+  login(params) {
+    return api.create(`/login`, params)
+  },
   createUser(params) {
-    return api.create("/users", params);
+    return api.create("post/users", params);
   },
   getUsers() {
-    return api.get("/users")
+    return api.get("get/users")
   },
   getUser(params) {
-    return api.get(`/users/${params.email}`, params)
+    return api.get(`get/users/${params.email}`, params)
   },
   updateUser(params) {
-    return api.update(`/users/${params.email}`, params)
+    return api.update(`put/users/${params.email}`, params)
   },
   deleteUser(email) {
-    return api.remove(`/users/${email}`);
-  },
-  logout(params) {
-    return api.remove(`/logout`, params)
+    return api.remove(`delete/users/${email}`);
   }
 };
