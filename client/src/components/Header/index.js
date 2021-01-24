@@ -21,8 +21,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// const removeCookies = () => {
+//
+//   document.cookie = 'accessToken' +'="";-1; path=/';
+//   document.cookie = 'refreshToken' +'="";-1; path=/';
+//   window.href = '/login'
+// }
+
 const Header = (props) => {
   const classes = useStyles();
+
   if (props.status) {
     return (
       <AppBar position="static">
@@ -34,7 +42,7 @@ const Header = (props) => {
             Open Monument Map
           </Typography>
           <Search submitSearch={props.submitSearch}/>
-          <Button color="inherit" href='/logout'>Logout</Button>
+          <Button color="inherit" href='/login'>Logout</Button>
         </Toolbar>
       </AppBar>
     )

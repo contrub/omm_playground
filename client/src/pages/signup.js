@@ -66,23 +66,23 @@ class SignUp extends React.Component {
     }
   }
 
-  componentDidMount() {
-    let cookieArr = document.cookie.split(";");
-    let isLogged = false
-
-    for (let i = 0; i < cookieArr.length; i++) {
-      let cookiePair = cookieArr[i].split("=");
-
-      if ('accessToken' === cookiePair[0].trim()) {
-        isLogged = true
-      }
-    }
-
-    if (isLogged) {
-      alert('Already logged!')
-    }
-
-  }
+  // componentDidMount() {
+  //   let cookieArr = document.cookie.split(";");
+  //   let isLogged = false
+  //
+  //   for (let i = 0; i < cookieArr.length; i++) {
+  //     let cookiePair = cookieArr[i].split("=");
+  //
+  //     if ('accessToken' === cookiePair[0].trim()) {
+  //       isLogged = true
+  //     }
+  //   }
+  //
+  //   if (isLogged) {
+  //     alert('Already logged!')
+  //   }
+  //
+  // }
 
   handleFieldValidation = (name) => {
     let inputs = this.state.inputs;
@@ -202,22 +202,35 @@ class SignUp extends React.Component {
 
     if (this.state.isValid) {
 
-      UserService.getUser({email: this.state.inputs.email})
-        .then(res => {
-          if (!res.length) {
-            UserService.createUser({
-              email: this.state.inputs.email,
-              password: this.state.inputs.password
-            }).then((res) => {
-              console.log(res)
-              document.cookie = `accessToken=${res.accessToken}`
-              document.cookie = `refreshToken=${res.refreshToken}`
-            })
-            // window.location.href = '/monuments'
-          } else {
-            document.getElementById('validError').innerText = "User with this email already exists!"
-          }
-        })
+      UserService.createUser({
+        email: this.state.inputs.email,
+        password: this.state.inputs.password
+      }).then((res) => {
+        console.log(res)
+        if (res.status === 200) {
+          document.getElementById('validError').innerText = "User with this email already exists!"
+        } else {
+          document.cookie = `accessToken=${res.accessToken.split('Bearer')[1]}`
+          document.cookie = `refreshToken=${res.refreshToken.split('Bearer')[1]}`
+          // window.location.href = '/monuments'
+        }
+      })
+      // UserService.getUser({email: this.state.inputs.email})
+      //   .then(res => {
+      //     if (!res.ok) {
+      //       UserService.createUser({
+      //         email: this.state.inputs.email,
+      //         password: this.state.inputs.password
+      //       }).then((res) => {
+      //         console.log(res)
+      //         document.cookie = `accessToken=${res.accessToken}`
+      //         document.cookie = `refreshToken=${res.refreshToken}`
+      //       })
+      //       // window.location.href = '/monuments'
+      //     } else {
+      //       document.getElementById('validError').innerText = "User with this email already exists!"
+      //     }
+      //   })
 
     } else {
 

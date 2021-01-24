@@ -63,23 +63,23 @@ class SignIn extends React.Component {
     }
   }
 
-  componentDidMount() {
-    let cookieArr = document.cookie.split(";");
-    let isLogged = false
-
-    for (let i = 0; i < cookieArr.length; i++) {
-      let cookiePair = cookieArr[i].split("=");
-
-      if ('accessToken' === cookiePair[0].trim()) {
-        isLogged = true
-      }
-    }
-
-    if (isLogged) {
-      alert('Already logged!')
-    }
-
-  }
+  // componentDidMount() {
+  //   let cookieArr = document.cookie.split(";");
+  //   let isLogged = false
+  //
+  //   for (let i = 0; i < cookieArr.length; i++) {
+  //     let cookiePair = cookieArr[i].split("=");
+  //
+  //     if ('accessToken' === cookiePair[0].trim()) {
+  //       isLogged = true
+  //     }
+  //   }
+  //
+  //   if (isLogged) {
+  //     alert('Already logged!')
+  //   }
+  //
+  // }
 
   contactSubmit = (e) => {
 
@@ -88,17 +88,15 @@ class SignIn extends React.Component {
     let password = this.state.inputs.password
 
     if (!isEmpty(email) && !isEmpty(password)) {
-      UserService.getUser({email: email, password: password})
+      UserService.login({
+        email: email,
+        password: password
+      })
         .then(res => {
-          if (res.length) {
-            if (res[0].password) {
-              document.getElementById('validError').innerText = ""
-              window.location.href = '/monuments'
-            } else {
-              document.getElementById('validError').innerText = "Wrong password"
-            }
-          } else {
-            document.getElementById('validError').innerText = "We couldn't find an account with this email address"
+          if (res.accessToken && res.refreshToken) {
+            document.cookie = `accessToken=${res.accessToken.split('Bearer')[1]}`
+            document.cookie = `refreshToken=${res.refreshToken.split('Bearer')[1]}`
+            window.location.href = '/monuments'
           }
         })
     } else {
