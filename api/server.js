@@ -8,7 +8,7 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT
 
-const postman = require('./middlewares/postman')
+const postman = require('./utils/postman')
 const routes = require('./routes')
 
 mongoose.Promise = global.Promise
