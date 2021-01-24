@@ -2,7 +2,7 @@ const User = require('../models/User');
 const makeSalt = require('../utils/createSault')
 const crypto = require('crypto')
 
-getUsers = (req, res) => {
+const getUsers = (req, res) => {
   User.find()
     .then(items => {
       let filteredItems = []
@@ -23,11 +23,19 @@ getUsers = (req, res) => {
     });
 }
 
-getUser = (req, res) => {
+const getUser = (req, res) => {
+  console.log(req.body)
   User
-    .find({_id: req.params.id})
+    .find({email: req.params.email})
     .then((item) => {
-      res.json(item[0])
+      let filteredItem = []
+
+      filteredItem.push({
+          _id: item[0]._id,
+          email: item[0].email,
+          userType: item[0].userType
+        })
+      res.json(filteredItem)
     })
 }
 
@@ -35,15 +43,15 @@ getUser = (req, res) => {
 
 // makeSalt.makeSalt тоже переделаю
 
-createUser = (req, res) => {
+const createUser = (req, res) => {
   let salt = makeSalt.makeSalt()
   let email = req.body.email
   let password = crypto.createHash('sha256').update(salt + req.body.password + salt).digest('hex')
 
   let newUser = new User({
-    hash: salt,
     email: email,
-    password: password
+    password: password,
+    hash: salt
   });
 
   newUser
@@ -54,7 +62,7 @@ createUser = (req, res) => {
     });
 }
 
-updateUser = (req, res) => {
+const updateUser = (req, res) => {
   let _id = req.body.id
   let email = req.body.email
   let salt = makeSalt.makeSalt()
@@ -67,7 +75,7 @@ updateUser = (req, res) => {
   }
 
   User
-    .updateOne({_id: _id}, newData)
+    .updateOne({email: email}, newData)
     .then((item) => res.json(item))
     .catch(err => {
       res.sendStatus(500)
@@ -75,11 +83,11 @@ updateUser = (req, res) => {
     })
 }
 
-deleteUser = (req, res) => {
-  let _id = req.params.id
+const deleteUser = (req, res) => {
+  let email = req.params.email
 
   User
-    .deleteOne({ _id: _id })
+    .deleteOne({ email: email })
     .then(() => res.sendStatus(200))
     .catch(err => {
       res.sendStatus(500)
@@ -88,7 +96,7 @@ deleteUser = (req, res) => {
     });
 }
 
-clearUserDB = (req, res) => {
+const clearUserDB = (req, res) => {
   User
     .deleteMany({})
     .then(() => res.sendStatus(200))

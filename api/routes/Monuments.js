@@ -1,29 +1,27 @@
 const Monument = require('../models/Monument');
 
-getMonuments = (req, res) => {
-  const accessToken = res.req.body.token
-
+const getMonuments = (req, res) => {
   Monument.find()
-    .then(items => res.json({monuments: items, accessToken: accessToken}))
+    .then(items => {
+      res.json(items)
+    })
     .catch(err => {
       res.sendStatus(500)
       console.log(err)
     });
 }
 
-getMonument = (req, res) => {
-  const accessToken = res.req.body.token
-
+const getMonument = (req, res) => {
   Monument
     .find({ _id: req.params.id})
-    .then(item => res.json({monument: item, accessToken: accessToken}))
+    .then(item => res.json(item))
     .catch(err => {
       res.sendStatus(500)
       console.log(err)
     });
 }
 
-createMonument = (req, res) => {
+const createMonument = (req, res) => {
   const newMonument = new Monument(req.body);
 
   newMonument
@@ -35,7 +33,7 @@ createMonument = (req, res) => {
     });
 }
 
-updateMonument = (req, res) => {
+const updateMonument = (req, res) => {
   Monument
     .update({_id: req.params.id}, req.body)
     .then((item) => res.json(item))
@@ -45,7 +43,7 @@ updateMonument = (req, res) => {
     })
 }
 
-deleteMonument = (req, res) => {
+const deleteMonument = (req, res) => {
   Monument
     .deleteOne({ _id: req.params.id })
     .then(() => res.sendStatus(200))
@@ -55,7 +53,7 @@ deleteMonument = (req, res) => {
     });
 }
 
-clearMonumentsDB = (req, res) => {
+const clearMonumentsDB = (req, res) => {
   Monument
     .deleteMany({})
     .then(() => res.sendStatus(200))
