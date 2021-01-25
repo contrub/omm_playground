@@ -8,7 +8,7 @@ const isUserExist = (req, res, next) => {
     .then((item) => {
       console.log(item)
       if (item.length) {
-        res.status(200).send('User already exist!')
+        res.status(406).send('User already exist!')
       }
       else {
         // res.status(404).send('User not found')
