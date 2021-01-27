@@ -119,47 +119,57 @@ class SignUp extends React.Component {
     document.getElementById('passwordRequirements').hidden = false
     if (inputs["password"] !== undefined) {
       if (minCharactersRegex.test(inputs["password"])) {
-        document.getElementById('quantityCheck').style.color = 'green'
+        // document.getElementById('quantityCheck').style.color = 'green'
+        document.getElementById('quantityCheck').hidden = true
         this.setState({isValid: true})
         errors["passwordCopy"] = "";
       } else {
-        document.getElementById('quantityCheck').style.color = 'red'
+        // document.getElementById('quantityCheck').style.color = 'red'
+        document.getElementById('quantityCheck').hidden = false
         this.setState({isValid: false})
         errors["passwordCopy"] = "Password wasn't validated"
       }
       if (numberCheckRegex.test(inputs["password"])) {
-        document.getElementById('numberCheck').style.color = 'green'
+        // document.getElementById('numberCheck').style.color = 'green'
+        document.getElementById('numberCheck').hidden = true
         this.setState({isValid: true})
         errors["passwordCopy"] = "";
       } else {
-        document.getElementById('numberCheck').style.color = 'red'
+        // document.getElementById('numberCheck').style.color = 'red'
+        document.getElementById('numberCheck').hidden = false
         this.setState({isValid: false})
         errors["passwordCopy"] = "Password wasn't validated"
       }
       if (lowercaseCheckRegex.test(inputs["password"])) {
-        document.getElementById('lowercaseCheck').style.color = 'green'
+        // document.getElementById('lowercaseCheck').style.color = 'green'
+        document.getElementById('lowercaseCheck').hidden = true
         this.setState({isValid: true})
         errors["passwordCopy"] = "";
       } else {
-        document.getElementById('lowercaseCheck').style.color = 'red'
+        // document.getElementById('lowercaseCheck').style.color = 'red'
+        document.getElementById('lowercaseCheck').hidden = false
         this.setState({isValid: false})
         errors["passwordCopy"] = "Password wasn't validated"
       }
       if (uppercaseCheckRegex.test(inputs["password"])) {
-        document.getElementById('uppercaseCheck').style.color = 'green'
+        // document.getElementById('uppercaseCheck').style.color = 'green'
+        document.getElementById('uppercaseCheck').hidden = true
         this.setState({isValid: true})
         errors["passwordCopy"] = "";
       } else {
-        document.getElementById('uppercaseCheck').style.color = 'red'
+        // document.getElementById('uppercaseCheck').style.color = 'red'
+        document.getElementById('uppercaseCheck').hidden = false
         this.setState({isValid: false})
         errors["passwordCopy"] = "Password wasn't validated"
       }
       if (specialCheckRegex.test(inputs["password"])) {
-        document.getElementById('specialCharacterCheck').style.color = 'green'
+        document.getElementById('specialCharacterCheck').hidden = true
+        // document.getElementById('specialCharacterCheck').style.color = 'green'
         this.setState({isValid: true})
         errors["passwordCopy"] = "";
       } else {
-        document.getElementById('specialCharacterCheck').style.color = 'red'
+        document.getElementById('specialCharacterCheck').hidden = false
+        // document.getElementById('specialCharacterCheck').style.color = 'red'
         this.setState({isValid: false})
         errors["passwordCopy"] = "Password wasn't validated"
       } if (minCharactersRegex.test(inputs["password"]) && numberCheckRegex.test(inputs["password"]) && numberCheckRegex.test(inputs["password"]) && lowercaseCheckRegex.test(inputs["password"]) && uppercaseCheckRegex.test(inputs["password"]) && specialCheckRegex.test(inputs["password"])) {
