@@ -46,7 +46,7 @@ const getUser = (req, res) => {
 const createUser = (req, res) => {
   let salt = makeSalt.makeSalt()
   let email = req.body.email
-  let password = crypto.createHash('sha256').update(salt + req.body.password + salt).digest('hex')
+  let password = crypto.createHash('sha256').update(salt + req.body.password + process.env.SALT).digest('hex')
 
   let newUser = new User({
     email: email,
@@ -63,10 +63,9 @@ const createUser = (req, res) => {
 }
 
 const updateUser = (req, res) => {
-  let _id = req.body.id
   let email = req.body.email
   let salt = makeSalt.makeSalt()
-  let password = crypto.createHash('sha256').update(salt + req.body.password + salt).digest('hex')
+  let password = crypto.createHash('sha256').update(salt + req.body.password + process.env.SALT).digest('hex')
 
   let newData = {
     email: email,
