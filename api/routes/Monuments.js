@@ -13,7 +13,7 @@ const getMonuments = (req, res) => {
 
 const getMonument = (req, res) => {
   Monument
-    .find({ _id: req.params.id})
+    .findById(req.params.id)
     .then(item => res.json(item))
     .catch(err => {
       res.sendStatus(500)
@@ -45,8 +45,8 @@ const updateMonument = (req, res) => {
 
 const deleteMonument = (req, res) => {
   Monument
-    .deleteOne({ _id: req.params.id })
-    .then(() => res.sendStatus(200))
+    .findByIdAndDelete(req.params.id)
+    .then(() => res.status(204).send('Successfully deleted'))
     .catch(err => {
       res.sendStatus(500)
       console.log(err)
@@ -56,7 +56,7 @@ const deleteMonument = (req, res) => {
 const clearMonumentsDB = (req, res) => {
   Monument
     .deleteMany({})
-    .then(() => res.sendStatus(200))
+    .then(() => res.status(204).send('Successfully cleared'))
     .catch(err => {
       res.sendStatus(500)
       console.log(err)
