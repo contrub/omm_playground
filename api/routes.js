@@ -8,8 +8,8 @@ const jwt = require('./utils/jwt')
 
 // Monuments
 
-// routes.get('/get/monuments', verifyToken.AccessToken, Monuments.getMonuments)
-// routes.get('/get/monuments/:id', verifyToken.AccessToken, Monuments.getMonument)
+routes.get('/get/monuments', jwt.verifyAccessToken, Monuments.getMonuments)
+routes.get('/get/monuments/:id', jwt.verifyAccessToken, Monuments.getMonument)
 
 routes.post('/post/monuments', jwt.verifyAccessToken, Monuments.createMonument)
 
@@ -24,7 +24,7 @@ routes.get('/get/users', jwt.verifyAccessToken, Users.getUsers)
 routes.get('/get/users/:email', jwt.verifyAccessToken, Users.getUser)
 
 // routes.post('/login', UserService.isUserDataExist, AuthController.getTokens)
-routes.post('/post/users', jwt.verifyAccessToken, UserService.isUserExist, AuthController.getTokens, Users.createUser)
+routes.post('/post/users', UserService.isUserExist, UserService.isEmailCompliance, UserService.isPasswordCompliance, AuthController.getTokens, Users.createUser)
 
 routes.put('/put/users/:email', jwt.verifyAccessToken, Users.updateUser)
 
