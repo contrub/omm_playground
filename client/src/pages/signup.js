@@ -40,9 +40,6 @@ const styles = theme => ({
     color: 'red',
     margin: '0 0 16px'
   },
-  showPass: {
-    left: '200px'
-  },
   passwordCheck: {
     color: 'red',
     fontFamily: 'Gill Sans',
@@ -317,6 +314,14 @@ class SignUp extends React.Component {
             <TextField
               onChange={this.handleChange.bind(this, "passwordCopy")}
               value={this.state.inputs["passwordCopy"]}
+              InputProps={{
+                endAdornment: (
+                  <Checkbox
+                    icon={<VisibilityIcon/>}
+                    checkedIcon={<VisibilityOffIcon/>}
+                    onClick={this.showPassword}
+                  />)
+              }}
               variant="outlined"
               margin="normal"
               required
@@ -328,16 +333,12 @@ class SignUp extends React.Component {
               autoComplete="current-password"
             />
             <div className={classes.errors}>{this.state.errors["passwordCopy"]}</div>
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <Checkbox
-              icon={<VisibilityIcon/>}
-              checkedIcon={<VisibilityOffIcon/>}
-              onClick={this.showPassword}
-              className={classes.showPass}
-            />
+            {/*<Checkbox*/}
+            {/*  icon={<VisibilityIcon/>}*/}
+            {/*  checkedIcon={<VisibilityOffIcon/>}*/}
+            {/*  onClick={this.showPassword}*/}
+            {/*  className={classes.showPass}*/}
+            {/*/>*/}
             <Button
               type="submit"
               fullWidth

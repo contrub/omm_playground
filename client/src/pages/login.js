@@ -93,6 +93,9 @@ class SignIn extends React.Component {
         password: password
       })
         .then(res => {
+          if (res.status === 'error') {
+            document.getElementById('validError').innerText = "Something went wrong"
+          }
           if (res.accessToken && res.refreshToken) {
             document.cookie = `accessToken=${res.accessToken.split('Bearer')[1]}`
             document.cookie = `refreshToken=${res.refreshToken.split('Bearer')[1]}`
@@ -155,6 +158,14 @@ class SignIn extends React.Component {
               <TextField
                 onChange={this.handleChange.bind(this, "password")}
                 value={this.state.inputs["password"]}
+                InputProps={{
+                  endAdornment: (
+                    <Checkbox
+                      icon={<VisibilityIcon/>}
+                      checkedIcon={<VisibilityOffIcon/>}
+                      onClick={this.showPassword}
+                    />)
+                }}
                 variant="outlined"
                 margin="normal"
                 required
@@ -165,16 +176,12 @@ class SignIn extends React.Component {
                 id="password"
                 autoComplete="current-password"
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
-              <Checkbox
-                icon={<VisibilityIcon/>}
-                checkedIcon={<VisibilityOffIcon/>}
-                onClick={this.showPassword}
-                className={classes.showPass}
-              />
+              {/*<Checkbox*/}
+              {/*  icon={<VisibilityIcon/>}*/}
+              {/*  checkedIcon={<VisibilityOffIcon/>}*/}
+              {/*  onClick={this.showPassword}*/}
+              {/*  className={classes.showPass}*/}
+              {/*/>*/}
               <Button
                 type="submit"
                 fullWidth
