@@ -1,19 +1,23 @@
 ﻿import React from "react";
 import {Link} from "react-router-dom";
+
+import withStyles from "@material-ui/core/styles/withStyles";
+
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
 import Avatar from "@material-ui/core/Avatar";
 import Checkbox from "@material-ui/core/Checkbox";
-import withStyles from "@material-ui/core/styles/withStyles";
+
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+
+import isEmpty from 'validator/lib/isEmpty';
+
 import UserService from '../services/UserService';
-import isEmpty from "validator/es/lib/isEmpty";
 
 const styles = theme => ({
   paper: {
