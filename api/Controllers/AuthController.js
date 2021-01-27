@@ -1,31 +1,42 @@
-const verifyToken = require('../utils/verifyToken')
 const jwt = require('../utils/jwt')
 
 const login = (req, res, next) => {
   const refreshToken = req.body.token;
-
-  console.log(refreshToken === null)
 
   if (refreshToken === null) {
     // В дальнейшем напишем кастомный обработчик ошибок в который можно передавать статус ошибки и читаемое сообщение
     return res.status(401).send('Unauthorised');
   }
 
-  verifyToken.AccessToken(req, res)
+  // verifyToken.AccessToken(req, res)
 
   next()
 };
 
-const getTokens = (req, res, next) => {
-  let tokens = jwt.generateTokens({email: req.body.email}, res)
-  if (tokens.accessToken && tokens.refreshToken) {
-    res.json({
-      accessToken: `Bearer ${tokens.accessToken}`,
-      refreshToken: `Bearer ${tokens.refreshToken}`,
-      success: true
-    })
+const getTokens = async (req, res, next) => {
+  try {
+    const accessTokenInfo = await jwt.generateAccessToken({email: req.body.email}, res)
+    const accessToken = accessTokenInfo['token']
+    const accessTokenLifetime = accessTokenInfo['lifetime']
 
-    next()
+
+    const refreshTokenInfo = await jwt.generateRefreshToken({email: req.body.email}, res)
+    const refreshToken = refreshTokenInfo['token']
+    const refreshTokenLifetime = refreshTokenInfo['lifetime']
+
+    if (accessToken && refreshToken) {
+      // стрим запроса, между обработчиками можно сохранять и пробрасывать данные
+      req.accessToken = `Bearer ${accessToken}`;
+      req.refreshToken = `Bearer ${refreshToken}`;
+      req.lifetime = accessTokenLifetime;
+      req.success = true
+
+      next()
+    }
+  } catch (err) {
+
+    next(err)
+
   }
 }
 
