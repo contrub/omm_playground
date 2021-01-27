@@ -37,6 +37,10 @@ const getUser = (req, res) => {
         })
       res.json(filteredItem)
     })
+    .catch(err => {
+      res.sendStatus(500)
+      console.log(err)
+    });
 }
 
 // В дальнейшем планирую вынести функцию createHash в отдельный файл
@@ -56,6 +60,18 @@ const createUser = (req, res) => {
 
   newUser
     .save()
+    .then((item) =>
+      res.send({
+      data: {
+        email: item.email,
+        userType: item.userType,
+        id: item._id
+      },
+      accessToken: req.accessToken,
+      refreshToken: req.refreshToken,
+      lifetime: req.lifetime,
+      success: req.success,
+    }))
     .catch(err => {
       res.sendStatus(500)
       console.log(err)
