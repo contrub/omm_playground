@@ -9,8 +9,7 @@ async function request(url, params, tokens={}, method = "GET") {
   };
 
   if (tokens) {
-    options.headers["access"] = `Bearer ${tokens.accessToken}`
-    options.headers["refresh"] = `Bearer ${tokens.refreshToken}`
+    options.headers["authorization"] = `Bearer ${tokens.accessToken}`
   }
 
   if (params) {
