@@ -218,13 +218,13 @@ class SignUp extends React.Component {
         password: this.state.inputs.password
       }).then((res) => {
         console.log(res)
-        if (res.status === 200) {
-          document.getElementById('validError').innerText = "User with this email already exists!"
-        } else {
-          document.cookie = `accessToken=${res.accessToken.split('Bearer')[1]}`
-          document.cookie = `refreshToken=${res.refreshToken.split('Bearer')[1]}`
-          // window.location.href = '/monuments'
-        }
+        // if (res.status === 200) {
+        //   document.getElementById('validError').innerText = "User with this email already exists!"
+        // } else {
+        //   document.cookie = `accessToken=${res.accessToken.split('Bearer')[1]}`
+        //   document.cookie = `refreshToken=${res.refreshToken.split('Bearer')[1]}`
+        //   window.location.href = '/monuments'
+        // }
       })
       // UserService.getUser({email: this.state.inputs.email})
       //   .then(res => {
