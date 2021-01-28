@@ -28,16 +28,18 @@ const isUserExist = (req, res, next) => {
 
 const isUserDataExist = (req, res, next) => {
   const email = req.body.email
-  if (email === undefined) {
+  const password = req.body.password
+
+  if (email === undefined || password === undefined) {
     res.status(404).send('Email undefined')
   }
 
   User
-    .find({email: req.body.email})
+    .find({email: email})
     .then((item) => {
       if (item.length) {
         let salt = item[0].hash
-        let inputPassword = crypto.createHash('sha256').update(salt + req.body.password + salt).digest('hex')
+        let inputPassword = crypto.createHash('sha256').update(salt + password + salt).digest('hex')
         let savedPassword = item[0].password
         if (inputPassword === savedPassword) {
           // res.status(200).send('User exist')
