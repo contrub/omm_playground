@@ -66,11 +66,7 @@ const isEmailCompliance = (req, res, next) => {
 
     const email = req.body.email
 
-    if (isEmpty(email)) {
-
-      res.status(422).send('Email cannot be empty')
-
-    } else if (isEmail(email)) {
+    if (isEmail(email)) {
 
       next()
 
