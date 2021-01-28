@@ -79,6 +79,60 @@ class SignIn extends React.Component {
 
   }
 
+  removeSessionData = async () => {
+    sessionStorage.removeItem('refreshToken')
+    let cookies = document.cookie;
+    let cookiesArray = cookies.split(';')
+    for (let i = 0; i < cookiesArray.length; i++) {
+      let name = cookiesArray[i].split('=')[0];
+      let value = cookiesArray[i].split('=')[1];
+      if (name.includes('accessToken')) {
+        document.cookie = `accessToken=${value}; expires = Thu, 01 Jan 1970 00:00:00 GMT`
+        break
+      }
+    }
+    document.cookie = "accessToken= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
+  }
+
+  relogin = () => {
+    this.removeSessionData()
+      .then(() => {
+        window.location.href = '/login'
+      })
+  }
+
+  isLogged = () => {
+    let cookieArr = document.cookie.split(";");
+    let isLogged = false
+
+    for (let i = 0; i < cookieArr.length; i++) {
+      let cookiePair = cookieArr[i].split("=");
+      if ('accessToken' === cookiePair[0].trim()) {
+        isLogged = true
+      }
+    }
+    console.log(isLogged)
+    return isLogged
+  }
+
+  componentDidMount () {
+    const link = document.createElement("link");
+    link.href = "//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css";
+    link.rel = "stylesheet";
+    link.id = "bootstrap-css";
+    document.body.appendChild(link);
+
+    const script1 = document.createElement("script");
+    script1.src = "//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js\"";
+    script1.async = true;
+    document.body.appendChild(script1);
+
+    const script2 = document.createElement("script");
+    script2.src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js";
+    script2.async = true;
+    document.body.appendChild(script2);
+  }
+
   // componentDidMount() {
   //   let cookieArr = document.cookie.split(";");
   //   let isLogged = false
@@ -152,7 +206,23 @@ class SignIn extends React.Component {
 
     const { classes } = this.props;
 
-    return (
+    if (this.isLogged()) {
+      return (
+
+        <div className="page-wrap d-flex flex-row align-items-center">
+          <div className="container">
+            <div className="row justify-content-center">
+              <div className="col-md-12 text-center">
+                <span className="display-1 d-block">409</span>
+                <div className="mb-4 lead">You are already logged in</div>
+                <a onClick={this.relogin} className="btn btn-link">Logout</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    } else {
+      return (
         <Container id="login-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
           <CssBaseline />
           <div className={classes.paper}>
@@ -226,7 +296,8 @@ class SignIn extends React.Component {
             </Grid>
           </div>
         </Container>
-    );
+      );
+    }
   }
 }
 
