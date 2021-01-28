@@ -8,7 +8,7 @@ const isUserExist = (req, res, next) => {
     .find({email: req.body.email})
     .then((item) => {
       if (item.length) {
-        res.status(406).send('User already exist!')
+        res.status(409).send('User already exist!')
       }
       else {
         // res.status(404).send('User not found')
