@@ -4,6 +4,11 @@ const isEmail = require('validator/lib/isEmail')
 const isEmpty = require('validator/lib/isEmpty')
 
 const isUserExist = (req, res, next) => {
+  const email = req.body.email
+  if (email === undefined) {
+    res.status(404).send('Email undefined')
+  }
+
   User
     .find({email: req.body.email})
     .then((item) => {
@@ -22,6 +27,11 @@ const isUserExist = (req, res, next) => {
 }
 
 const isUserDataExist = (req, res, next) => {
+  const email = req.body.email
+  if (email === undefined) {
+    res.status(404).send('Email undefined')
+  }
+
   User
     .find({email: req.body.email})
     .then((item) => {
