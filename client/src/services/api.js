@@ -1,6 +1,6 @@
 const _apiHost = "http://localhost:8000/api";
 
-async function request(url, params, tokens={}, method = "GET") {
+async function request(url, params, token, method = "GET") {
   const options = {
     method,
     headers: {
@@ -8,8 +8,8 @@ async function request(url, params, tokens={}, method = "GET") {
     }
   };
 
-  if (tokens) {
-    options.headers["authorization"] = `Bearer ${tokens.accessToken}`
+  if (token !== undefined) {
+    options.headers["authorization"] = `Bearer ${token}`
   }
 
   if (params) {
