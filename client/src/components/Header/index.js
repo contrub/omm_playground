@@ -21,12 +21,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const removeCookies = () => {
-//
-//   document.cookie = 'accessToken' +'="";-1; path=/';
-//   document.cookie = 'refreshToken' +'="";-1; path=/';
-//   window.href = '/login'
-// }
+const removeSessionData = async () => {
+  sessionStorage.removeItem('refreshToken')
+  let cookies = document.cookie;
+  let cookiesArray = cookies.split(';')
+  for (let i = 0; i < cookiesArray.length; i++) {
+    let name = cookiesArray[i].split('=')[0];
+    let value = cookiesArray[i].split('=')[1];
+    if (name.includes('accessToken')) {
+      document.cookie = `accessToken=${value}; expires = Thu, 01 Jan 1970 00:00:00 GMT`
+      break
+    }
+  }
+  document.cookie = "accessToken= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
+}
+
+const logout = () => {
+  removeSessionData()
+    .then(() => {
+      window.location.href = '/login'
+    })
+}
 
 const Header = (props) => {
   const classes = useStyles();
@@ -42,7 +57,7 @@ const Header = (props) => {
             Open Monument Map
           </Typography>
           <Search submitSearch={props.submitSearch}/>
-          <Button color="inherit" href='/login'>Logout</Button>
+          <Button color="inherit" onClick={logout}>Logout</Button>
         </Toolbar>
       </AppBar>
     )
