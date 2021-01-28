@@ -6,29 +6,58 @@ const UserService = require('./helpers/UserService')
 const AuthController = require('./Controllers/AuthController')
 const jwt = require('./utils/jwt')
 
-// Monuments
+// remove get, post, delete, put from paths
 
-routes.get('/get/monuments', jwt.verifyAccessToken, Monuments.getMonuments)
-routes.get('/get/monuments/:id', jwt.verifyAccessToken, Monuments.getMonument)
+if (process.env.NODE_ENV !== 'development') {
+  routes.get('/monuments', jwt.verifyAccessToken, Monuments.getMonuments)
+  routes.get('/monuments/:id', jwt.verifyAccessToken, Monuments.getMonument)
 
-routes.post('/post/monuments', jwt.verifyAccessToken, Monuments.createMonument)
+  routes.post('/monuments', jwt.verifyAccessToken, Monuments.createMonument)
 
-routes.put('/put/monuments/:id', jwt.verifyAccessToken, Monuments.updateMonument)
+  routes.put('/monuments/:id', jwt.verifyAccessToken, Monuments.updateMonument)
 
-routes.delete('/delete/monuments/:id', jwt.verifyAccessToken, Monuments.deleteMonument)
-routes.delete('/delete/monuments/db/all', jwt.verifyAccessToken, Monuments.clearMonumentsDB)
+  routes.delete('/monuments/:id', jwt.verifyAccessToken, Monuments.deleteMonument)
+  routes.delete('/monuments/db/all', jwt.verifyAccessToken, Monuments.clearMonumentsDB)
 
 // Users
 
-routes.get('/get/users', jwt.verifyAccessToken, Users.getUsers)
-routes.get('/get/users/:email', jwt.verifyAccessToken, Users.getUser)
+// create paths /refreshtoken, /signup, /login
+
+  routes.get('/users', jwt.verifyAccessToken, Users.getUsers)
+  routes.get('/users/:email', jwt.verifyAccessToken, Users.getUser)
 
 // routes.post('/login', UserService.isUserDataExist, AuthController.getTokens)
-routes.post('/post/users', UserService.isUserExist, UserService.isEmailCompliance, UserService.isPasswordCompliance, AuthController.getTokens, Users.createUser)
+  routes.post('/users', UserService.isUserExist, UserService.isEmailCompliance, UserService.isPasswordCompliance, AuthController.getTokens, Users.createUser)
 
-routes.put('/put/users/:email', jwt.verifyAccessToken, Users.updateUser)
+  routes.put('/users/:email', jwt.verifyAccessToken, Users.updateUser)
 
-routes.delete('/delete/users/:email', jwt.verifyAccessToken, Users.deleteUser)
-routes.delete('/delete/users/db/all', jwt.verifyAccessToken, Users.clearUserDB)
+  routes.delete('/users/:email', jwt.verifyAccessToken, Users.deleteUser)
+  routes.delete('/users/db/all', jwt.verifyAccessToken, Users.clearUserDB)
+} else {
+  routes.get('/monuments', Monuments.getMonuments)
+  routes.get('/monuments/:id', Monuments.getMonument)
+
+  routes.post('/monuments', Monuments.createMonument)
+
+  routes.put('/monuments/:id', Monuments.updateMonument)
+
+  routes.delete('/monuments/:id', Monuments.deleteMonument)
+  routes.delete('/monuments/db/all', Monuments.clearMonumentsDB)
+
+// Users
+
+// create paths /refreshtoken, /signup, /login
+
+  routes.get('/users', Users.getUsers)
+  routes.get('/users/:email', Users.getUser)
+
+// routes.post('/login', UserService.isUserDataExist, AuthController.getTokens)
+  routes.post('/users', AuthController.getTokens, Users.createUser)
+
+  routes.put('/users/:email', jwt.verifyAccessToken, Users.updateUser)
+
+  routes.delete('/users/:email', jwt.verifyAccessToken, Users.deleteUser)
+  routes.delete('/users/db/all', jwt.verifyAccessToken, Users.clearUserDB)
+}
 
 module.exports = routes
