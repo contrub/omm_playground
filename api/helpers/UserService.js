@@ -31,7 +31,7 @@ const isUserDataExist = (req, res, next) => {
   const password = req.body.password
 
   if (email === undefined || password === undefined) {
-    res.status(404).send('Email undefined')
+    res.status(404).send('Login info undefined')
   }
 
   User
@@ -45,7 +45,7 @@ const isUserDataExist = (req, res, next) => {
           // res.status(200).send('User exist')
           next()
         } else {
-          res.status(423).send({errors: 'Password error'})
+          res.status(423).send('Password error')
         }
       }
       else {
