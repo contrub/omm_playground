@@ -26,7 +26,7 @@ if (process.env.NODE_ENV !== 'development') {
   routes.get('/users', jwt.verifyAccessToken, Users.getUsers)
   routes.get('/users/:email', jwt.verifyAccessToken, Users.getUser)
 
-  routes.post('/login', UserService.isUserDataExist, AuthController.getTokens)
+  routes.post('/login', UserService.isUserDataExist, AuthController.login)
   routes.post('/users', UserService.isUserExist, UserService.isEmailCompliance, UserService.isPasswordCompliance, AuthController.getTokens, Users.createUser)
 
   routes.put('/users/:email', jwt.verifyAccessToken, Users.updateUser)
