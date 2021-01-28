@@ -85,6 +85,18 @@ class SignUp extends React.Component {
   //
   // }
 
+  setCookie = async (itemName, item) => {
+
+    document.cookie = `${itemName}=${item}`
+
+  }
+
+  setSessionStorageItem = async (itemName, item) => {
+
+    sessionStorage.setItem(itemName, item)
+
+  }
+
   handleFieldValidation = (name) => {
     let inputs = this.state.inputs;
     let errors = this.state.errors;
@@ -217,31 +229,18 @@ class SignUp extends React.Component {
         email: this.state.inputs.email,
         password: this.state.inputs.password
       }).then((res) => {
-        console.log(res)
-        // if (res.status === 200) {
-        //   document.getElementById('validError').innerText = "User with this email already exists!"
-        // } else {
-        //   document.cookie = `accessToken=${res.accessToken.split('Bearer')[1]}`
-        //   document.cookie = `refreshToken=${res.refreshToken.split('Bearer')[1]}`
-        //   window.location.href = '/monuments'
-        // }
+        if (res.status) {
+          document.getElementById('validError').innerText = res.message
+        } else {
+          this.setCookie('accessToken', res.accessToken.split('Bearer')[1])
+            .then(() => {
+              this.setSessionStorageItem('refreshToken', res.refreshToken.split('Bearer')[1])
+                .then(() => {
+                  window.location.href = '/monuments'
+                })
+            })
+        }
       })
-      // UserService.getUser({email: this.state.inputs.email})
-      //   .then(res => {
-      //     if (!res.ok) {
-      //       UserService.createUser({
-      //         email: this.state.inputs.email,
-      //         password: this.state.inputs.password
-      //       }).then((res) => {
-      //         console.log(res)
-      //         document.cookie = `accessToken=${res.accessToken}`
-      //         document.cookie = `refreshToken=${res.refreshToken}`
-      //       })
-      //       // window.location.href = '/monuments'
-      //     } else {
-      //       document.getElementById('validError').innerText = "User with this email already exists!"
-      //     }
-      //   })
 
     } else {
 

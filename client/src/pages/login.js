@@ -67,6 +67,18 @@ class SignIn extends React.Component {
     }
   }
 
+  setCookie = async (itemName, item) => {
+
+    document.cookie = `${itemName}=${item}`
+
+  }
+
+  setSessionStorageItem = async (itemName, item) => {
+
+    sessionStorage.setItem(itemName, item)
+
+  }
+
   // componentDidMount() {
   //   let cookieArr = document.cookie.split(";");
   //   let isLogged = false
@@ -97,13 +109,16 @@ class SignIn extends React.Component {
         password: password
       })
         .then(res => {
-          if (res.status === 'error') {
-            document.getElementById('validError').innerText = "Something went wrong"
-          }
-          if (res.accessToken && res.refreshToken) {
-            document.cookie = `accessToken=${res.accessToken.split('Bearer')[1]}`
-            document.cookie = `refreshToken=${res.refreshToken.split('Bearer')[1]}`
-            window.location.href = '/monuments'
+          if (res.status) {
+            document.getElementById('validError').innerText = res.message
+          } else {
+            this.setCookie('accessToken', res.accessToken.split('Bearer')[1])
+              .then(() => {
+                this.setSessionStorageItem('refreshToken', res.refreshToken.split('Bearer')[1])
+                  .then(() => {
+                    window.location.href = '/monuments'
+                  })
+              })
           }
         })
     } else {
