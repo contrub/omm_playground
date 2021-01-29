@@ -19,6 +19,8 @@ import isEmpty from 'validator/lib/isEmpty';
 
 import UserService from '../services/UserService';
 
+import Cookies from 'js-cookie'
+
 const styles = theme => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -69,7 +71,7 @@ class SignIn extends React.Component {
 
   setCookie = async (itemName, item) => {
 
-    document.cookie = `${itemName}=${item}`
+    Cookies.set(itemName, item)
 
   }
 
@@ -80,18 +82,8 @@ class SignIn extends React.Component {
   }
 
   removeSessionData = async () => {
-    sessionStorage.removeItem('refreshToken')
-    let cookies = document.cookie;
-    let cookiesArray = cookies.split(';')
-    for (let i = 0; i < cookiesArray.length; i++) {
-      let name = cookiesArray[i].split('=')[0];
-      let value = cookiesArray[i].split('=')[1];
-      if (name.includes('accessToken')) {
-        document.cookie = `accessToken=${value}; expires = Thu, 01 Jan 1970 00:00:00 GMT`
-        break
-      }
-    }
-    document.cookie = "accessToken= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
+    sessionStorage.removeItem('accessToken')
+    Cookies.remove('refreshToken')
   }
 
   login = () => {
