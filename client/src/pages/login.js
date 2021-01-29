@@ -94,7 +94,7 @@ class SignIn extends React.Component {
     document.cookie = "accessToken= ; expires = Thu, 01 Jan 1970 00:00:00 GMT"
   }
 
-  relogin = () => {
+  login = () => {
     this.removeSessionData()
       .then(() => {
         window.location.href = '/login'
@@ -215,7 +215,7 @@ class SignIn extends React.Component {
               <div className="col-md-12 text-center">
                 <span className="display-1 d-block">409</span>
                 <div className="mb-4 lead">You are already logged in</div>
-                <a onClick={this.relogin} className="btn btn-link">Logout</a>
+                <button onClick={this.login} className="btn btn-link">Logout</button>
               </div>
             </div>
           </div>
