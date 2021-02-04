@@ -2,6 +2,8 @@ import React from 'react';
 import MonumentService from '../services/MonumentService';
 import '../styles/monuments.css';
 
+import Link from '@material-ui/core/Link';
+
 class Monuments extends React.Component {
   state = {
     monuments: []
@@ -64,7 +66,11 @@ class Monuments extends React.Component {
     // const {monuments} = this.state
 
     return (
-      <div>Monuments page (console.log)</div>
+      <div>Monuments page (console.log)
+        <Link href="client\src\pages\regestration.js" >
+        Link</Link>
+      </div>
+      
     )
   }
 }
