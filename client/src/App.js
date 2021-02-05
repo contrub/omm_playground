@@ -8,6 +8,7 @@ import Login from './pages/login';
 import Monuments from './pages/monuments';
 import MonumentById from './pages/monument';
 import Signup from "./pages/signup";
+import UploadImage from "./pages/upload";
 import {
   BrowserRouter,
   Switch,
@@ -112,6 +113,9 @@ class App extends Component {
           </Route>
           <Route path="/reset">
             <PasswordReset />
+          </Route>
+          <Route path="/upload">
+            <UploadImage />
           </Route>
         </Switch>
       </BrowserRouter>
