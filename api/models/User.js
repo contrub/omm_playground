@@ -14,10 +14,6 @@ const UserSchema = new Schema({
     type: String,
     enum : ['user','admin'],
     default: 'user'
-  },
-  hash: {
-    type: String,
-    required: true
   }
 }, {
   versionKey: false
