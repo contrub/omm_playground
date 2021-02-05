@@ -54,10 +54,10 @@ if (process.env.NODE_ENV !== 'development') {
   routes.post('/login', AuthController.login)
   routes.post('/users', AuthController.getTokens, Users.createUser)
 
-  routes.put('/users/:email', jwt.verifyAccessToken, Users.updateUser)
+  routes.put('/users/:email', Users.updateUser)
 
-  routes.delete('/users/:email', jwt.verifyAccessToken, Users.deleteUser)
-  routes.delete('/users/db/all', jwt.verifyAccessToken, Users.clearUserDB)
+  routes.delete('/users/:email', Users.deleteUser)
+  routes.delete('/users/db/all', Users.clearUserDB)
 }
 
 module.exports = routes
