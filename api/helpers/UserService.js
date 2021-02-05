@@ -1,7 +1,6 @@
 const User = require('../models/User')
 const crypto = require('crypto')
 const isEmail = require('validator/lib/isEmail')
-const isEmpty = require('validator/lib/isEmpty')
 
 const isUserExist = (req, res, next) => {
   const email = req.body.email
