@@ -111,17 +111,7 @@ class SignIn extends React.Component {
     link.href = "//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css";
     link.rel = "stylesheet";
     link.id = "bootstrap-css";
-    document.body.appendChild(link);
-
-    const script1 = document.createElement("script");
-    script1.src = "//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js\"";
-    script1.async = true;
-    document.body.appendChild(script1);
-
-    const script2 = document.createElement("script");
-    script2.src = "//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js";
-    script2.async = true;
-    document.body.appendChild(script2);
+    document.body.appendChild(link)
   }
 
   // componentDidMount() {
