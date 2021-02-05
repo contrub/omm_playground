@@ -1,6 +1,5 @@
 const User = require('../models/User');
-const makeSalt = require('../utils/createSault')
-const crypto = require('crypto')
+const bcrypt = require('bcrypt')
 
 const getUsers = (req, res) => {
   User.find()
@@ -43,19 +42,18 @@ const getUser = (req, res) => {
     });
 }
 
-// В дальнейшем планирую вынести функцию createHash в отдельный файл
-
-// makeSalt.makeSalt тоже переделаю
-
 const createUser = (req, res) => {
-  let salt = makeSalt.makeSalt()
   let email = req.body.email
-  let password = crypto.createHash('sha256').update(salt + req.body.password + process.env.SALT).digest('hex')
+  let password = req.body.password
+
+  bcrypt.hash(password, 24, function(err, hash) {
+    if (err) res.status(500).send('Password hashing error')
+    password = hash
+  });
 
   let newUser = new User({
     email: email,
-    password: password,
-    hash: salt
+    password: password
   });
 
   newUser
@@ -80,13 +78,16 @@ const createUser = (req, res) => {
 
 const updateUser = (req, res) => {
   let email = req.body.email
-  let salt = makeSalt.makeSalt()
-  let password = crypto.createHash('sha256').update(salt + req.body.password + process.env.SALT).digest('hex')
+  let password = req.body.password
+
+  bcrypt.hash(password, 24, function(err, hash) {
+    if (err) res.status(500).send('Password hashing error')
+    password = hash
+  });
 
   let newData = {
     email: email,
-    password: password,
-    hash: salt
+    password: password
   }
 
   User
