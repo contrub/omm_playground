@@ -103,7 +103,6 @@ class SignIn extends React.Component {
         isLogged = true
       }
     }
-    console.log(isLogged)
     return isLogged
   }
 
