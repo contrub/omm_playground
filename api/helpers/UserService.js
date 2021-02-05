@@ -1,5 +1,5 @@
 const User = require('../models/User')
-const crypto = require('crypto')
+const bcrypt = require('bcrypt')
 const isEmail = require('validator/lib/isEmail')
 
 const isUserExist = (req, res, next) => {
@@ -37,15 +37,15 @@ const isUserDataExist = (req, res, next) => {
     .find({email: email})
     .then((item) => {
       if (item.length) {
-        let salt = item[0].hash
-        let inputPassword = crypto.createHash('sha256').update(salt + password + salt).digest('hex')
         let savedPassword = item[0].password
-        if (inputPassword === savedPassword) {
-          // res.status(200).send('User exist')
-          next()
-        } else {
-          res.status(423).send('Password error')
-        }
+        bcrypt.compare(password, savedPassword, function (err, matches) {
+          if (err) res.status(500).send('Comparing passwords error')
+          if (matches) {
+            next()
+          } else {
+            res.status(423).send('Password error')
+          }
+        })
       }
       else {
         res.status(404).send('User not found')
