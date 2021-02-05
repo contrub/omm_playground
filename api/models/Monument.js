@@ -16,12 +16,25 @@ const MonumentSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  monumentView: {
+  builder: {
     type: String
   },
-  registryNumber: {
+  sculptor: {
     type: String
+  },
+  architect: {
+    type: String
+  },
+  imageURL: {
+    type: String,
+    default: 'https://res.cloudinary.com/gre354gfg/image/upload/v1612550951/monuments/default_monument_lgovnw.png'
   }
+  // monumentView: {
+  //   type: String
+  // },
+  // registryNumber: {
+  //   type: String
+  // }
 }, {
   versionKey: false
 });
