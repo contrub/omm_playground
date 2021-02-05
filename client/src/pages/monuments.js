@@ -4,7 +4,8 @@ import '../styles/monuments.css';
 
 class Monuments extends React.Component {
   state = {
-    monuments: []
+    monuments: [],
+    isLoaded: false
   }
 
   getAccessToken = () => {
@@ -33,39 +34,79 @@ class Monuments extends React.Component {
     return undefined
   }
 
-  componentWillMount = async() => {
-    await MonumentService.fetchMonuments({}, {
+  getMonuments = () => {
+    MonumentService.fetchMonuments({}, {
       accessToken: this.getAccessToken(),
       refreshToken: this.getRefreshToken()
     })
       .then((res) => {
-        console.log(res)
         this.setState({
-          monuments: res.monuments
+          monuments: res,
+          isLoaded: true
         })
       })
-    }
+  }
+
+  componentDidMount = () => {
+    this.getMonuments()
+  }
+
+  renderMonuments = (monuments) => {
+    return monuments.map((entry, index) => (
+        <div key={index}>
+          <p>{entry.name}</p>
+          <img src={entry.imageURL} alt={index}/>
+        </div>
+    ))
+  }
+
 
   render() {
+    let {monuments, isLoaded} = this.state
 
-    // const result = monuments.map((entry) => {
-    //   return (
-    //     <div className='holder' key={entry._id}>
-    //       <img alt='monument' style={{maxWidth: '100%', maxHeight: '100%'}} src="https://ua.igotoworld.com/frontend/webcontent/websites/1/images/gallery/20636_800x600_odessa.jpg"/>
-    //       <Link to={`monuments/${entry._id}`}>
-    //         <div className='block'>
-    //           {entry.name}
-    //         </div>
-    //       </Link>
-    //     </div>
-    //   )
-    // })
+    if (!isLoaded) {
+      return (
+        <div className="loading-page">
+          <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+                  integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+                  crossOrigin="anonymous"></script>
+          <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+                  integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+                  crossOrigin="anonymous"></script>
+          <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+                  integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+                  crossOrigin="anonymous"></script>
+          <div className="container">
+            <div className="row">
+              <div className="col-md-12">
+                <div className="loader">
+                  <div className="loader-inner">
+                    <div className="loading one"></div>
+                  </div>
+                  <div className="loader-inner">
+                    <div className="loading two"></div>
+                  </div>
+                  <div className="loader-inner">
+                    <div className="loading three"></div>
+                  </div>
+                  <div className="loader-inner">
+                    <div className="loading four"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-    // const {monuments} = this.state
+        </div>
+      )
+    } else {
+      return (
+        <div className="container">
 
-    return (
-      <div>Monuments page (console.log)</div>
-    )
+          {this.renderMonuments(monuments)}
+        </div>
+      )
+    }
   }
 }
 
