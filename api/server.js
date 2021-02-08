@@ -25,7 +25,7 @@ mongoose
   .catch(err => console.log(err));
 
 app.use(bodyParser.urlencoded({limit: '50mb', extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb', extended: true}));
 
 app.use(cors({postman}))
 app.use('/api', routes)
