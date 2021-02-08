@@ -67,24 +67,6 @@ class SignUp extends React.Component {
     }
   }
 
-  // componentDidMount() {
-  //   let cookieArr = document.cookie.split(";");
-  //   let isLogged = false
-  //
-  //   for (let i = 0; i < cookieArr.length; i++) {
-  //     let cookiePair = cookieArr[i].split("=");
-  //
-  //     if ('accessToken' === cookiePair[0].trim()) {
-  //       isLogged = true
-  //     }
-  //   }
-  //
-  //   if (isLogged) {
-  //     alert('Already logged!')
-  //   }
-  //
-  // }
-
   setCookie = async (itemName, item) => {
 
     document.cookie = `${itemName}=${item}`
