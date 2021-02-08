@@ -5,14 +5,16 @@ const Users = require('./routes/Users')
 const UserService = require('./helpers/UserService')
 const AuthController = require('./Controllers/AuthController')
 const jwt = require('./utils/jwt')
+const cloudinary = require('./utils/cloudinary')
+const MonumentService = require('./helpers/MonumentService')
 
 // remove get, post, delete, put from paths
 
 if (process.env.NODE_ENV !== 'development') {
-  routes.get('/monuments', jwt.verifyAccessToken, Monuments.getMonuments)
-  routes.get('/monuments/:id', jwt.verifyAccessToken, Monuments.getMonument)
+  routes.get('/monuments', Monuments.getMonuments)
+  routes.get('/monuments/:id', Monuments.getMonument)
 
-  routes.post('/monuments', jwt.verifyAccessToken, Monuments.createMonument)
+  routes.post('/monuments', jwt.verifyAccessToken, MonumentService.isMonumentExist, cloudinary.uploadImage, Monuments.createMonument)
 
   routes.put('/monuments/:id', jwt.verifyAccessToken, Monuments.updateMonument)
 
@@ -33,11 +35,12 @@ if (process.env.NODE_ENV !== 'development') {
 
   routes.delete('/users/:email', jwt.verifyAccessToken, Users.deleteUser)
   routes.delete('/users/db/all', jwt.verifyAccessToken, Users.clearUserDB)
+
 } else {
   routes.get('/monuments', Monuments.getMonuments)
   routes.get('/monuments/:id', Monuments.getMonument)
 
-  routes.post('/monuments', Monuments.createMonument)
+  routes.post('/monuments', cloudinary.uploadImage, Monuments.createMonument)
 
   routes.put('/monuments/:id', Monuments.updateMonument)
 
