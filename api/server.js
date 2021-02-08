@@ -24,7 +24,7 @@ mongoose
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: false }));
 app.use(bodyParser.json());
 
 app.use(cors({postman}))
