@@ -67,8 +67,8 @@ class Monuments extends React.Component {
 
     return (
       <div>Monuments page (console.log)
-        <Link href="client\src\pages\regestration.js" >
-        Link</Link>
+        
+        
       </div>
       
     )
