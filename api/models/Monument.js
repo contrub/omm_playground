@@ -7,23 +7,28 @@ const MonumentSchema = new Schema({
     required: true
   },
   description: {
-    type: String
+    type: String,
+    default: 'Нет информации'
   },
   address: {
-    type: String
+    type: String,
+    default: 'Неизвестно'
   },
   date: {
     type: Date,
     default: Date.now
   },
   builder: {
-    type: String
+    type: String,
+    default: 'Неизвестно'
   },
   sculptor: {
-    type: String
+    type: String,
+    default: 'Неизвестно'
   },
   architect: {
-    type: String
+    type: String,
+    default: 'Неизвестно'
   },
   imageURL: {
     type: String,
