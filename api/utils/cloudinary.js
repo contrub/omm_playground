@@ -10,21 +10,27 @@ cloudinary.config({
 uploadImage = async(req, res, next) => {
   try {
     const fileStr = req.body.base64;
-    if (fileStr === undefined) {
+    if (fileStr === undefined || fileStr.length === 0) {
+      delete req.body.base64
       next()
-    }
-    await cloudinary.uploader.upload(fileStr, {
-      folder: 'monuments'
-    })
-      .then((uploadResponse) => {
-        const url = uploadResponse.secure_url
-        req.body.imageURL = url
-        delete req.body.base64
-        next()
+    } else {
+      await cloudinary.uploader.upload(fileStr, {
+        folder: 'monuments'
       })
+        .then((uploadResponse) => {
+          const url = uploadResponse.secure_url
+          req.body.imageURL = url
+          delete req.body.base64
+          next()
+        })
+        .catch((err) => {
+          console.error(err);
+          res.status(500).json({message: 'Cloudinary service error' });
+        })
+    }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ err: 'Something went wrong' });
+    res.status(500).json({message: 'Something went wrong' });
   }
 }
 
