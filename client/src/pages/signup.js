@@ -207,16 +207,16 @@ class SignUp extends React.Component {
 
     if (this.state.isValid) {
 
-      UserService.createUser({
+      UserService.signup({
         email: this.state.inputs.email,
         password: this.state.inputs.password
       }).then((res) => {
         if (res.status) {
           document.getElementById('validError').innerText = res.message
         } else {
-          this.setCookie('accessToken', res.accessToken.split('Bearer')[1])
+          this.setCookie('accessToken', res.accessToken.split(' ')[1])
             .then(() => {
-              this.setSessionStorageItem('refreshToken', res.refreshToken.split('Bearer')[1])
+              this.setSessionStorageItem('refreshToken', res.refreshToken.split(' ')[1])
                 .then(() => {
                   window.location.href = '/monuments'
                 })

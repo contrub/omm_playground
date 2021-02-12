@@ -82,14 +82,14 @@ class SignIn extends React.Component {
   }
 
   removeSessionData = async () => {
-    sessionStorage.removeItem('accessToken')
-    Cookies.remove('refreshToken')
+    sessionStorage.removeItem('refreshToken')
+    Cookies.remove('accessToken')
   }
 
   login = () => {
     this.removeSessionData()
       .then(() => {
-        window.location.href = '/login'
+        window.location.reload()
       })
   }
 
@@ -114,24 +114,6 @@ class SignIn extends React.Component {
     document.body.appendChild(link)
   }
 
-  // componentDidMount() {
-  //   let cookieArr = document.cookie.split(";");
-  //   let isLogged = false
-  //
-  //   for (let i = 0; i < cookieArr.length; i++) {
-  //     let cookiePair = cookieArr[i].split("=");
-  //
-  //     if ('accessToken' === cookiePair[0].trim()) {
-  //       isLogged = true
-  //     }
-  //   }
-  //
-  //   if (isLogged) {
-  //     alert('Already logged!')
-  //   }
-  //
-  // }
-
   contactSubmit = (e) => {
 
     e.preventDefault();
@@ -147,9 +129,9 @@ class SignIn extends React.Component {
           if (res.status) {
             document.getElementById('validError').innerText = res.message
           } else {
-            this.setCookie('accessToken', res.accessToken.split('Bearer')[1])
+            this.setCookie('accessToken', res.accessToken.split(' ')[1])
               .then(() => {
-                this.setSessionStorageItem('refreshToken', res.refreshToken.split('Bearer')[1])
+                this.setSessionStorageItem('refreshToken', res.refreshToken.split(' ')[1])
                   .then(() => {
                     window.location.href = '/monuments'
                   })
@@ -246,12 +228,6 @@ class SignIn extends React.Component {
                 id="password"
                 autoComplete="current-password"
               />
-              {/*<Checkbox*/}
-              {/*  icon={<VisibilityIcon/>}*/}
-              {/*  checkedIcon={<VisibilityOffIcon/>}*/}
-              {/*  onClick={this.showPassword}*/}
-              {/*  className={classes.showPass}*/}
-              {/*/>*/}
               <Button
                 type="submit"
                 fullWidth
