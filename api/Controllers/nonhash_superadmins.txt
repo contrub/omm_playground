@@ -1,0 +1,9 @@
+[
+ 	{
+   		"email": "egor@omm.com", "password":  "eg@fffe-22ff3"
+	},
+	{
+		"email": "daniil@omm.com", "password": "f-elg43g4f!fF"
+	}
+
+]
