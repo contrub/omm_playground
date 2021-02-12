@@ -53,9 +53,22 @@ class Monuments extends React.Component {
 
   renderMonuments = (monuments) => {
     return monuments.map((entry, index) => (
-        <div key={index}>
-          <p>{entry.name}</p>
-          <img src={entry.imageURL} alt={index}/>
+        <div className="monument" key={index}>
+          <h1>{entry.name}</h1>
+          {entry.description}
+          <div id="information">
+            <p>
+              <b>Sculptor:</b> {entry.sculptor}
+              <br/>
+              <b>Architect:</b> {entry.architect}
+            </p>
+          </div>
+          <div id="image">
+            <img
+              alt=""
+              src={entry.imageURL}
+            />
+          </div>
         </div>
     ))
   }
