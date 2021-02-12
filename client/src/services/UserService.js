@@ -2,7 +2,10 @@ import api from "./api";
 
 export default {
   login(params) {
-    return api.create(`/login`, params)
+    return api.create("/login", params)
+  },
+  signup(params) {
+    return api.create("/signup", params)
   },
   createUser(params) {
     return api.create("/users", params);
