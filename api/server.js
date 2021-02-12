@@ -10,12 +10,13 @@ const port = process.env.PORT
 
 const postman = require('./utils/postman')
 const routes = require('./routes')
+const errorHandler = require('./helpers/error-handler')
 
 mongoose.Promise = global.Promise
 
 mongoose
   .connect(
-    'mongodb+srv://ommAdmin:L5icohuVNLKYDHkW@cluster0.qs1ej.mongodb.net/OMM?retryWrites=true&w=majority',
+    process.env.MONGODB_URL,
     {
       useUnifiedTopology: true,
       useNewUrlParser: true
@@ -29,6 +30,7 @@ app.use(bodyParser.json({limit: '50mb', extended: true}));
 
 app.use(cors({postman}))
 app.use('/api', routes)
+// app.use(errorHandler)
 
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
 
