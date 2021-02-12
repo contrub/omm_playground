@@ -23,19 +23,9 @@ const getUsers = (req, res) => {
 }
 
 const getUser = (req, res) => {
-  console.log(req.body)
   User
     .find({email: req.params.email})
-    .then((item) => {
-      let filteredItem = []
-
-      filteredItem.push({
-          _id: item[0]._id,
-          email: item[0].email,
-          userType: item[0].userType
-        })
-      res.json(filteredItem)
-    })
+    .then((item) => res.json(item))
     .catch(err => {
       res.sendStatus(500)
       console.log(err)
@@ -43,52 +33,43 @@ const getUser = (req, res) => {
 }
 
 const createUser = (req, res) => {
-  let email = req.body.email
+  const email = req.body.email
   let password = req.body.password
 
-  bcrypt.hash(password, 24, function(err, hash) {
-    if (err) res.status(500).send('Password hashing error')
-    password = hash
-  });
+  const hash = bcrypt.hashSync(password, 12)
 
-  let newUser = new User({
+  const newUser = new User({
     email: email,
-    password: password
-  });
+    password: hash
+  })
 
   newUser
     .save()
     .then((item) =>
       res.send({
-      data: {
-        email: item.email,
-        userType: item.userType,
-        id: item._id
-      },
-      accessToken: req.accessToken,
-      refreshToken: req.refreshToken,
-      lifetime: req.lifetime,
-      success: req.success,
-    }))
+        data: {
+          email: item.email,
+          userType: item.userType,
+          id: item._id
+        },
+        accessToken: req.accessToken,
+        refreshToken: req.refreshToken
+      }))
     .catch(err => {
       res.sendStatus(500)
       console.log(err)
-    });
+    })
 }
 
 const updateUser = (req, res) => {
-  let email = req.body.email
+  let email = req.params.email
   let password = req.body.password
 
-  bcrypt.hash(password, 24, function(err, hash) {
-    if (err) res.status(500).send('Password hashing error')
-    password = hash
-  });
-
-  let newData = {
-    email: email,
-    password: password
+  if (password !== undefined) {
+    req.body.password = bcrypt.hashSync(password, 12)
   }
+
+  let newData = req.body
 
   User
     .updateOne({email: email}, newData)
