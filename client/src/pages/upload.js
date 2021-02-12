@@ -39,12 +39,9 @@ const styles = theme => ({
     fontSize: '17px'
   },
   image_preview: {
-    height: '300px',
-    weight: '100px',
-    borderRadius: '10px'
-  },
-  uploadBtn: {
-    justifyContent: 'center'
+    height: '10%',
+    borderRadius: '10px',
+    marginTop: '30px'
   }
 });
 
@@ -68,29 +65,13 @@ class UploadImage extends React.Component {
   handleFormValidation = (name) => {
     const errors = this.state.errors
     const inputs = this.state.inputs
-    if (name === "base64") {
-      if (isEmpty(inputs.image)) {
-        errors["base64"] = 'Cannot be empty!'
-        this.setState({isValid: false})
-      } else {
-        errors["base64"] = ''
-        this.setState({isValid: true})
-      }
-
-      if (isEmpty(inputs.name)) {
-        this.setState({isValid: false})
-      }
-    } else if (name === "name") {
+    if (name === "name") {
       if (isEmpty(inputs.name)) {
         errors["name"] = 'Cannot be empty!'
         this.setState({isValid: false})
       } else {
         errors["name"] = ''
         this.setState({isValid: true})
-      }
-
-      if (isEmpty(inputs.base64)) {
-        this.setState({isValid: false})
       }
     }
 
@@ -122,11 +103,9 @@ class UploadImage extends React.Component {
        if (fileType !== 'image') {
          errors["image"] = 'Please insert image!'
          inputs["base64"] = ''
-         this.setState({isValid: false})
        } else {
          errors["image"] = ''
          inputs["base64"] = result
-         this.setState({isValid: true})
        }
      }
 
@@ -140,11 +119,9 @@ class UploadImage extends React.Component {
 
   contactSubmit = (e) => {
     e.preventDefault()
+    this.handleFormValidation('name')
     if (this.state.isValid) {
-      MonumentService.createMonument({
-        name: this.state.inputs.name,
-        base64: this.state.inputs.base64
-      })
+      MonumentService.createMonument(this.state.inputs)
         .then((res) => {
           if (res.status) {
             alert('Something going wrong ;(')
