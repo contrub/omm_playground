@@ -1,57 +1,27 @@
 const jwt = require('../utils/jwt')
+const User = require('../routes/Users')
 
-const login = (req, res, next) => {
-  getTokens(req, res, next)
+const SignIn = (req, res) => {
+  jwt.generatePairTokens(req, res)
     .then(() => {
-      res.send({
+      res.json({
         accessToken: req.accessToken,
-        refreshToken: req.refreshToken,
-        lifetime: req.lifetime,
-        success: req.success,
+        refreshToken: req.refreshToken
       })
     })
-  // const refreshToken = req.body.token;
-  //
-  // if (refreshToken === null) {
-  //   // В дальнейшем напишем кастомный обработчик ошибок в который можно передавать статус ошибки и читаемое сообщение
-  //   return res.status(401).send('Unauthorised');
-  // }
-  //
-  // // verifyToken.AccessToken(req, res)
-  //
-  // next()
 };
 
-const getTokens = async (req, res, next) => {
-  try {
-    const accessTokenInfo = await jwt.generateAccessToken({email: req.body.email}, res)
-    const accessToken = accessTokenInfo['token']
-    const accessTokenLifetime = accessTokenInfo['lifetime']
+const SignUp = async (req, res) => {
 
+  await jwt.generatePairTokens(req, res)
 
-    const refreshTokenInfo = await jwt.generateRefreshToken({email: req.body.email}, res)
-    const refreshToken = refreshTokenInfo['token']
-    const refreshTokenLifetime = refreshTokenInfo['lifetime']
-
-    if (accessToken && refreshToken) {
-      // стрим запроса, между обработчиками можно сохранять и пробрасывать данные
-      req.accessToken = `Bearer ${accessToken}`;
-      req.refreshToken = `Bearer ${refreshToken}`;
-      req.lifetime = accessTokenLifetime;
-      req.success = true
-
-      next()
-    }
-  } catch (err) {
-
-    next(err)
-
-  }
+  User.createUser(req, res)
 }
+
 
 module.exports = {
 
-  login: login,
-  getTokens: getTokens
+  SignIn: SignIn,
+  SignUp: SignUp
 
 }
