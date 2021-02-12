@@ -1,18 +1,16 @@
 const jwt = require('jsonwebtoken')
 
-generateAccessToken = (payload, res) => {
+generateAccessToken = async (payload, res) => {
   try {
     const token = jwt.sign(
       payload,
       process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: process.env.TOKEN_LIFE || 3600
+        // expiresIn: process.env.TOKEN_LIFE || 3600
       })
 
-    return {
-      token: token,
-      lifetime: process.env.TOKEN_LIFE || 3600
-    }
+    return token
+      // lifetime: process.env.TOKEN_LIFE || 3600
 
   } catch (e) {
 
@@ -21,25 +19,31 @@ generateAccessToken = (payload, res) => {
   }
 }
 
-generateRefreshToken = (payload, res) => {
+generateRefreshToken = async (payload, res) => {
   try {
     const token = jwt.sign(
       payload,
       process.env.REFRESH_TOKEN_SECRET,
       {
-        expiresIn: process.env.TOKEN_LIFE || 3600
+        // expiresIn: process.env.TOKEN_LIFE || 3600
       })
 
-    return {
-      token: token,
-      lifetime: process.env.TOKEN_LIFE || 3600
-    }
+    return token
+      // lifetime: process.env.TOKEN_LIFE || 3600
 
   } catch (e) {
 
     return res.status(401).send('Unauthorised')
 
   }
+}
+
+generatePairTokens = async (req, res) => {
+  const accessToken = await generateAccessToken({email: req.body.email}, res)
+  const refreshToken = await generateRefreshToken({email: req.body.email}, res)
+
+  req.accessToken = `Bearer ${accessToken}`
+  req.refreshToken = `Bearer ${refreshToken}`
 }
 
 verifyAccessToken = (req, res, next) => {
@@ -76,13 +80,13 @@ verifyRefreshToken = (req, res, next) => {
     }
   });
 
-  // релизовать тоже самое с refreshToken
 }
 
 module.exports = {
 
   generateAccessToken: generateAccessToken,
   generateRefreshToken: generateRefreshToken,
+  generatePairTokens: generatePairTokens,
   verifyAccessToken: verifyAccessToken,
   verifyRefreshToken: verifyRefreshToken
 
