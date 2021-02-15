@@ -10,10 +10,10 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  userType: {
+  userRole: {
     type: String,
-    enum : ['user','admin'],
-    default: 'user'
+    enum : ['viewer', 'admin', 'superadmin'],
+    default: 'viewer'
   }
 }, {
   versionKey: false
