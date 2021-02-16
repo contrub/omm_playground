@@ -3,14 +3,14 @@ const bcrypt = require('bcrypt')
 
 const getUsers = (req, res) => {
   User.find()
-    .then(items => {
+    .then(users => {
       let filteredItems = []
-
-      for (let i = 0; i < items.length; i++) {
+      // по возможности, переделать через users.forEach(user => delete user.password)
+      for (let i = 0; i < users.length; i++) {
         filteredItems.push({
-          _id: items[i]._id,
-          email: items[i].email,
-          userType: items[i].userType
+          _id: users[i]._id,
+          email: users[i].email,
+          userRole: users[i].userRole
         })
       }
 
