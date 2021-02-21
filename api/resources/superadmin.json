@@ -1,8 +1,27 @@
 [
   {
-    "email": "egor@omm.com", "password":  "$2a$09$Z8mna/Mb9Wz1V2VcmYe9yOtlXXIzy02vPilIs5QaDvC6N2cOPW/N."
+    "email": "egor@omm.com",
+    "password": "QaKo3D0l!yEuv",
+    "userRole": "superadmin"
   },
   {
-    "email": "daniil@omm.com", "password": "$2b$12$uspQQe455bhvcjLumAaYmut7w5jrN3ahkfZjXCjKGrhtg5Y9vOrvm"
+    "email": "daniil@omm.com",
+    "password": "FXSIy0l95_69k",
+    "userRole": "superadmin"
+  },
+  {
+    "email": "viewer@omm.com",
+    "password": "VD!U8R6oTig1c",
+    "userRole": "viewer"
+  },
+  {
+    "email": "admin@omm.com",
+    "password": "3bdtGa0Lh8n_X",
+    "userRole": "admin"
+  },
+  {
+    "email": "superadmin@omm.com",
+    "password": "b!csrtf3w3XPJ",
+    "userRole": "superadmin"
   }
 ]
