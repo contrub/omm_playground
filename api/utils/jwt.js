@@ -6,15 +6,14 @@ generateAccessToken = async (payload, res) => {
       payload,
       process.env.ACCESS_TOKEN_SECRET,
       {
-        // expiresIn: process.env.TOKEN_LIFE || 3600
+        // expiresIn: '300s'
       })
 
     return token
-      // lifetime: process.env.TOKEN_LIFE || 3600
 
-  } catch (e) {
+  } catch (err) {
 
-    return res.status(401).send('Unauthorised')
+    return res.status(401).json({message: 'Unauthorised'})
 
   }
 }
@@ -29,11 +28,10 @@ generateRefreshToken = async (payload, res) => {
       })
 
     return token
-      // lifetime: process.env.TOKEN_LIFE || 3600
 
-  } catch (e) {
+  } catch (err) {
 
-    return res.status(401).send('Unauthorised')
+    return res.status(401).json({message: 'Unauthorised'})
 
   }
 }
@@ -46,8 +44,7 @@ generatePairTokens = async (req, res) => {
   req.refreshToken = `Bearer ${refreshToken}`
 }
 
-verifyAccessToken = (req, res, next) => {
-
+decodeAccessToken = (req, res) => {
   if (req.headers['authorization'] === undefined) {
 
     res.status(401).send('Unauthorised')
@@ -57,12 +54,26 @@ verifyAccessToken = (req, res, next) => {
     const accessToken = req.headers.authorization.split(' ')[1];
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-      if (err) return res.status(403).send('Unauthorised');
-      if (decoded) {
+      if (err) return res.status(403).json({message: 'Unauthorised'});
+      if (decoded) return req.decoded = decoded
+    })
 
-        next()
+  }
+}
 
-      }
+verifyAccessToken = (req, res, next) => {
+
+  if (req.headers['authorization'] === undefined) {
+
+    res.status(401).json({message: 'Unauthorised'})
+
+  } else {
+
+    const accessToken = req.headers.authorization.split(' ')[1];
+
+    jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+      if (err) return res.status(403).json({message: 'Unauthorised'});
+      if (decoded) next()
     })
 
   }
@@ -72,7 +83,8 @@ verifyRefreshToken = (req, res, next) => {
   const refreshToken = req.body.token;
 
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
-    if (err) return res.status(403).send('Unauthorised');
+    // if (err) return res.status(403).send('Unauthorised');
+    if (err) return res.status(403).json({message: err.name});
     if (decoded) {
 
       next()
@@ -88,6 +100,7 @@ module.exports = {
   generateRefreshToken: generateRefreshToken,
   generatePairTokens: generatePairTokens,
   verifyAccessToken: verifyAccessToken,
-  verifyRefreshToken: verifyRefreshToken
+  verifyRefreshToken: verifyRefreshToken,
+  decodeAccessToken: decodeAccessToken
 
 }
