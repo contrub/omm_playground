@@ -6,38 +6,39 @@ const Users = require('./routes/Users')
 const UserService = require('./helpers/UserService')
 const MonumentService = require('./helpers/MonumentService')
 
-const AuthController = require('./Controllers/AuthController')
+const AuthorizationController = require('./Controllers/AuthorizationController')
 const AccessController = require('./Controllers/AccessController')
+const UserController = require('./Controllers/UserController')
 
-const jwt = require('./utils/jwt')
 const cloudinary = require('./utils/cloudinary')
 
 if (process.env.NODE_ENV !== 'development') {
 
-  // Monuments
+  //==============================Monuments==============================//
 
-  routes.get('/monuments', Monuments.getMonuments) // ✅
-  routes.get('/monuments/:id', Monuments.getMonument) // ✅
+  routes.get('/monuments', Monuments.getMonuments)
+  routes.get('/monuments/:id', Monuments.getMonument)
 
-  routes.post('/monuments', jwt.verifyAccessToken, MonumentService.isMonumentExist, cloudinary.uploadImage, Monuments.createMonument)
+  routes.post('/monuments', AccessController.verifyUser, AuthorizationController.UserDB, MonumentService.isMonumentExist, MonumentService.validateData, cloudinary.uploadImage, Monuments.createMonument)
 
-  routes.put('/monuments/:id', jwt.verifyAccessToken, Monuments.updateMonument)
+  routes.put('/monuments/:id', AccessController.verifyUser, AuthorizationController.MonumentsDB, Monuments.updateMonument)
 
-  routes.delete('/monuments/:id', jwt.verifyAccessToken, Monuments.deleteMonument)
-  routes.delete('/monuments/db/all', jwt.verifyAccessToken, Monuments.clearMonumentsDB)
+  routes.delete('/monuments/:id', AccessController.verifyUser, AuthorizationController.MonumentsDB, Monuments.deleteMonument)
+  routes.delete('/monuments/db/all', AccessController.verifyUser, AuthorizationController.MonumentsDB, Monuments.clearMonumentsDB)
 
-  // Users
+  //================================Users================================//
 
-  routes.get('/users', jwt.verifyAccessToken, Users.getUsers)
-  routes.get('/users/:email', jwt.verifyAccessToken, Users.getUser)
+  routes.get('/users', AccessController.verifyUser, AuthorizationController.UserDB, Users.getUsers)
+  routes.get('/users/:email', AccessController.verifyUser, AuthorizationController.UserDB, Users.getUser)
 
-  routes.post('/login', AuthController.login)
-  routes.post('/users', UserService.isUserExist, UserService.isEmailCompliance, UserService.isPasswordCompliance, AuthController.getTokens, Users.createUser)
+  routes.post('/login', UserService.isUserDataExist, UserController.SignIn)
+  routes.post('/signup', UserService.isUserExist, UserService.isEmailCompliance, UserService.isPasswordCompliance, UserController.SignUp)
 
-  routes.put('/users/:email', jwt.verifyAccessToken, Users.updateUser)
+  routes.put('/users/:email', AccessController.verifyUser, AuthorizationController.UserDB, Users.updateUser)
 
-  routes.delete('/users/:email', jwt.verifyAccessToken, Users.deleteUser)
-  routes.delete('/users/db/all', jwt.verifyAccessToken, Users.clearUserDB)
+  routes.delete('/users/:email', AccessController.verifyUser, AuthorizationController.UserDB, Users.deleteUser)
+
+  routes.delete('/users/db/all', AccessController.verifyUser, AuthorizationController.UserDB, Users.clearUserDB)
 
 } else {
 
@@ -46,32 +47,26 @@ if (process.env.NODE_ENV !== 'development') {
   routes.get('/monuments', Monuments.getMonuments)
   routes.get('/monuments/:id', Monuments.getMonument)
 
-  routes.post('/monuments', AccessController.MonumentsDB, MonumentService.validateData, cloudinary.uploadImage, Monuments.createMonument)
+  routes.post('/monuments', MonumentService.isMonumentExist, MonumentService.validateData, cloudinary.uploadImage, Monuments.createMonument)
 
-  routes.put('/monuments/:id', AccessController.MonumentsDB, Monuments.updateMonument)
+  routes.put('/monuments/:id', Monuments.updateMonument)
 
-  routes.delete('/monuments/:id', AccessController.MonumentsDB, Monuments.deleteMonument)
-
-
-  // В дальнейшем, думаю, данная возможность не потребуется, но для удобства тестирования, пока что, оставлю
-  routes.delete('/monuments/db/all', AccessController.MonumentsDB, Monuments.clearMonumentsDB)
+  routes.delete('/monuments/:id', Monuments.deleteMonument)
+  routes.delete('/monuments/db/all', Monuments.clearMonumentsDB)
 
   //================================Users================================//
 
-  routes.get('/users', AccessController.UsersDB, Users.getUsers)
-  routes.get('/users/:email', AccessController.UsersDB, Users.getUser)
+  routes.get('/users', Users.getUsers)
+  routes.get('/users/:email', Users.getUser)
 
-  routes.post('/login', UserService.isUserDataExist, AuthController.SignIn)
-  routes.post('/signup', UserService.isUserExist, UserService.isEmailCompliance, UserService.isPasswordCompliance, AuthController.SignUp)
+  routes.post('/login', UserService.isUserDataExist, UserController.SignIn)
+  routes.post('/signup', UserService.isUserExist, UserService.isEmailCompliance, UserService.isPasswordCompliance, UserController.SignUp)
 
-  // routes.post('/users', AccessController.UsersDB, UserService.isUserExist, UserService.isEmailCompliance, UserService.isPasswordCompliance, Users.createUser)
+  routes.put('/users/:email', Users.updateUser)
 
-  routes.put('/users/:email', AccessController.UsersDB, Users.updateUser)
+  routes.delete('/users/:email', Users.deleteUser)
+  routes.delete('/users/db/all', Users.clearUserDB)
 
-  routes.delete('/users/:email', AccessController.UsersDB, Users.deleteUser)
-
-  // В дальнейшем, думаю, данная возможность не потребуется, но для удобства тестирования, пока что, оставлю
-  routes.delete('/users/db/all', AccessController.UsersDB, Users.clearUserDB)
 }
 
 module.exports = routes
