@@ -4,9 +4,11 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "console.log('test')",
     "serve": "nodemon ./server.js",
-    "seed-users": "node seedSuperAdmins.js"
+    "seed-users": "npm run db:clean && npm run db:seed",
+    "db:clean": "node -e require('./console.js').clean()",
+    "db:seed": "node -e require('./console.js').seed()"
   },
   "author": "",
   "license": "ISC",
