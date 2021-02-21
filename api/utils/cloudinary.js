@@ -1,5 +1,6 @@
 require('dotenv').config();
 const cloudinary = require('cloudinary').v2
+const isEmpty = require('validator/lib/isEmpty')
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -10,8 +11,8 @@ cloudinary.config({
 uploadImage = async(req, res, next) => {
   try {
     const fileStr = req.body.base64;
-    if (fileStr === undefined || fileStr.length === 0) {
-      delete req.body.base64
+    if (fileStr === undefined || isEmpty(fileStr)) {
+      // delete req.body.base64
       next()
     } else {
       await cloudinary.uploader.upload(fileStr, {
@@ -20,7 +21,7 @@ uploadImage = async(req, res, next) => {
         .then((uploadResponse) => {
           const url = uploadResponse.secure_url
           req.body.imageURL = url
-          delete req.body.base64
+          // delete req.body.base64
           next()
         })
         .catch((err) => {
@@ -30,7 +31,7 @@ uploadImage = async(req, res, next) => {
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({message: 'Something went wrong' });
+    res.sendStatus(500);
   }
 }
 
