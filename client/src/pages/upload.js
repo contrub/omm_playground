@@ -185,20 +185,12 @@ class UploadImage extends React.Component {
               type="Date"
             />
             <TextField
-              onChange={this.handleChange.bind(this, "sculptor")}
+              onChange={this.handleChange.bind(this, "creator")}
               variant="outlined"
               margin="normal"
               fullWidth
-              id="sculptor"
-              label="Sculptor"
-            />
-            <TextField
-              onChange={this.handleChange.bind(this, "architect")}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              id="architect"
-              label="Architect"
+              id="creator"
+              label="Creator"
             />
             <div>
               <Button
