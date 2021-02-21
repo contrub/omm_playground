@@ -12,7 +12,6 @@ const SignIn = (req, res) => {
 };
 
 const SignUp = async (req, res) => {
-
   await jwt.generatePairTokens(req, res)
 
   User.createUser(req, res)
