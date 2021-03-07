@@ -10,6 +10,9 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import isEmpty from "validator/es/lib/isEmpty";
 import MonumentService from "../services/MonumentService";
 
+/* Страничка создания памятников (должна быть предоставлена superadmin и admin)
+* */
+
 const styles = theme => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -47,7 +50,7 @@ const styles = theme => ({
 });
 
 
-class UploadImage extends React.Component {
+class CreateMonument extends React.Component {
 
   constructor(props) {
     super(props);
@@ -231,4 +234,4 @@ class UploadImage extends React.Component {
   }
 }
 
-export default withStyles(styles, {withTheme: true})(UploadImage)
+export default withStyles(styles, {withTheme: true})(CreateMonument)
