@@ -56,15 +56,15 @@ const createUser = (req, res) => {
 
   newUser
     .save()
-    .then((item) =>
+    .then((item) => {
       res.send({
         data: {
           email: item.email,
-          userType: item.userType,
+          userType: item.userRole,
           id: item._id
         },
         accessToken: req.accessToken
-      }))
+      })})
     .catch(err => {
       res.sendStatus(500)
       console.log(err)
