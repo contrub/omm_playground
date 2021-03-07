@@ -1,16 +1,27 @@
 import api from "./api";
 
-export default {
-  fetchMonuments(params, tokens) {
-    return api.get("/monuments", params, tokens);
-  },
-  createMonument(params) {
-    return api.create("/monuments", params);
-  },
-  deleteMonument(id) {
-    return api.remove(`/monuments/${id}`);
-  },
-  updateMonument(params) {
-    return api.update(`/monuments/${params._id}`, params)
-  }
-};
+const fetchMonuments = (params, tokens) => {
+    return api.get("/api/monuments", params, tokens)
+}
+
+const createMonument = (params) => {
+    return api.create("/api/monuments", params)
+}
+
+const deleteMonument = (id) => {
+    return api.remove(`/api/monuments/${id}`)
+}
+
+const updateMonument = (params) => {
+    return api.update(`/api/monuments/${params._id}`, params)
+}
+
+
+const MonumentService = {
+  fetchMonuments: fetchMonuments,
+  createMonument: createMonument,
+  deleteMonument: deleteMonument,
+  updateMonument: updateMonument
+}
+
+export default MonumentService
