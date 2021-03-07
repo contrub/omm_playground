@@ -1,5 +1,4 @@
 import React from 'react';
-// import App from '../../App';
 import Button from '@material-ui/core/Button';
 
 class Monument extends React.Component {

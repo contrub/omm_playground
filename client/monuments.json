@@ -1,0 +1,61 @@
+[{
+  "_id": {
+    "$oid": "5f33d93fd4d5b5f845cc009e"
+  },
+  "name": "Monument to Catherine II",
+  "description": "Monument #1",
+  "address": "Address #1",
+  "date": {
+    "$date": "2019-12-31T00:00:00Z"
+  },
+  "monumentView": "Mon #1",
+  "registryNumber": 1
+},{
+  "_id": {
+    "$oid": "5f33d93fd4d5b5f845cc009f"
+  },
+  "name": "Monument to the Orange",
+  "description": "Monument #2",
+  "address": "Address #2",
+  "date": {
+    "$date": "2020-02-01T00:00:00Z"
+  },
+  "monumentView": "Mon #2",
+  "registryNumber": 2
+},{
+  "_id": {
+    "$oid": "5f33d93fd4d5b5f845cc00a0"
+  },
+  "name": "Monument to Duke de Richelieu",
+  "description": "Monument #3",
+  "address": "Address #3",
+  "date": {
+    "$date": "2020-03-02T00:00:00Z"
+  },
+  "monumentView": "Mon #3",
+  "registryNumber": 3
+},{
+  "_id": {
+    "$oid": "5f3d0e678d79eb3330c7c23f"
+  },
+  "name": "Alexander Column",
+  "description": "Monument #4",
+  "address": "Address #4",
+  "monumentView": "Mon #4",
+  "registryNumber": 4,
+  "date": {
+    "$date": "2020-08-19T00:00:00Z"
+  }
+},{
+  "_id": {
+    "$oid": "5f3d100f8d79eb3330c7c240"
+  },
+  "name": " Monument \"Silver Age\"",
+  "description": "Monument #5",
+  "address": "Address #5",
+  "monumentView": "Mon #5",
+  "registryNumber": "5",
+  "date": {
+    "$date": "2020-08-05T00:00:00Z"
+  }
+}]

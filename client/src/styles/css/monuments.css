@@ -1,0 +1,29 @@
+﻿.container {
+    margin: 20px 20px 10px 20px;
+}
+
+#monument {
+    margin-left: 100px;
+}
+
+#information {
+    display: block;
+    margin-top: 50px;
+    margin-right: 20px;
+    float: left;
+}
+
+#image {
+    margin-top: 20px;
+    display: block;
+}
+
+h1 {
+    text-align: center;
+}
+
+img {
+    border-radius: 10px;
+    width: 200px;
+    height: 200px;
+}

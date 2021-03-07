@@ -1,12 +1,17 @@
-const _apiHost = "http://localhost:8000/api";
+const _apiHost = "http://localhost:8000";
 
 async function request(url, params, method = "GET") {
   const options = {
     method,
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     }
   };
+
+  if (params !== undefined && params.token !== undefined) {
+    options.headers["authorization"] = `Bearer ${params.token}`
+    delete params.token
+  }
 
   if (params) {
     if (method === "GET") {
@@ -49,20 +54,22 @@ function get(url, params) {
 }
 
 function create(url, params) {
-  return request(url, params, "POST");
+  return request(url, params,"POST");
 }
 
 function update(url, params) {
-  return request(url, params, "PUT");
+  return request(url, params,"PUT");
 }
 
 function remove(url, params) {
-  return request(url, params, "DELETE");
+  return request(url, params,"DELETE");
 }
 
-export default {
-  get,
-  create,
-  update,
-  remove
-};
+const api = {
+  get: get,
+  create: create,
+  update: update,
+  remove: remove
+}
+
+export default api
