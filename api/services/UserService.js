@@ -1,6 +1,6 @@
 const User = require('../models/User')
 const isEmpty = require('validator/lib/isEmpty')
-const jwt = require('./jwt')
+const jwt = require('../helpers/jwt')
 const bcrypt = require('bcrypt')
 
 const isUserExist = (req, res, next) => {
