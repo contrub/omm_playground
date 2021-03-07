@@ -1,6 +1,6 @@
 const isEmpty = require('validator/lib/isEmpty')
 
-const jwt = require('../utils/jwt')
+const jwt = require('../helpers/jwt')
 const User = require('../models/User')
 
 const UserDB = async (req, res, next) => {
