@@ -31,7 +31,8 @@ const createUser = async (data) => {
   const newUser = new User({
     email: data.email,
     password: password,
-    userRole: data.userRole
+    userRole: data.userRole,
+    status: data.status
   })
 
   await newUser
