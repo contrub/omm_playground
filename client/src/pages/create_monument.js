@@ -39,7 +39,8 @@ const styles = theme => ({
     fontSize: '17px'
   },
   image_preview: {
-    height: '10%',
+    height: '100%',
+    width: 'auto',
     borderRadius: '10px',
     marginTop: '30px'
   }

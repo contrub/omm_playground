@@ -21,35 +21,9 @@ import isEmpty from 'validator/lib/isEmpty';
 
 import UserService from '../services/UserService';
 
-const styles = theme => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  errors: {
-    textAlign: 'center',
-    color: 'red',
-    margin: '0 0 16px'
-  },
-  passwordCheck: {
-    color: 'red',
-    fontFamily: 'Gill Sans',
-    fontSize: '17px'
-  }
-});
+import Cookies from 'js-cookie'
+
+import styles from "../styles/js/signup";
 
 class SignUp extends React.Component {
 
@@ -67,17 +41,9 @@ class SignUp extends React.Component {
     }
   }
 
-  setCookie = async (itemName, item) => {
-
-    document.cookie = `${itemName}=${item}`
-
-  }
-
-  setSessionStorageItem = async (itemName, item) => {
-
-    sessionStorage.setItem(itemName, item)
-
-  }
+  // setSessionStorageItem = async (itemName, item) => {
+  //   sessionStorage.setItem(itemName, item)
+  // }
 
   handleFieldValidation = (name) => {
     let inputs = this.state.inputs;
@@ -113,57 +79,47 @@ class SignUp extends React.Component {
     document.getElementById('passwordRequirements').hidden = false
     if (inputs["password"] !== undefined) {
       if (minCharactersRegex.test(inputs["password"])) {
-        // document.getElementById('quantityCheck').style.color = 'green'
         document.getElementById('quantityCheck').hidden = true
         this.setState({isValid: true})
         errors["passwordCopy"] = "";
       } else {
-        // document.getElementById('quantityCheck').style.color = 'red'
         document.getElementById('quantityCheck').hidden = false
         this.setState({isValid: false})
         errors["passwordCopy"] = "Password wasn't validated"
       }
       if (numberCheckRegex.test(inputs["password"])) {
-        // document.getElementById('numberCheck').style.color = 'green'
         document.getElementById('numberCheck').hidden = true
         this.setState({isValid: true})
         errors["passwordCopy"] = "";
       } else {
-        // document.getElementById('numberCheck').style.color = 'red'
         document.getElementById('numberCheck').hidden = false
         this.setState({isValid: false})
         errors["passwordCopy"] = "Password wasn't validated"
       }
       if (lowercaseCheckRegex.test(inputs["password"])) {
-        // document.getElementById('lowercaseCheck').style.color = 'green'
         document.getElementById('lowercaseCheck').hidden = true
         this.setState({isValid: true})
         errors["passwordCopy"] = "";
       } else {
-        // document.getElementById('lowercaseCheck').style.color = 'red'
         document.getElementById('lowercaseCheck').hidden = false
         this.setState({isValid: false})
         errors["passwordCopy"] = "Password wasn't validated"
       }
       if (uppercaseCheckRegex.test(inputs["password"])) {
-        // document.getElementById('uppercaseCheck').style.color = 'green'
         document.getElementById('uppercaseCheck').hidden = true
         this.setState({isValid: true})
         errors["passwordCopy"] = "";
       } else {
-        // document.getElementById('uppercaseCheck').style.color = 'red'
         document.getElementById('uppercaseCheck').hidden = false
         this.setState({isValid: false})
         errors["passwordCopy"] = "Password wasn't validated"
       }
       if (specialCheckRegex.test(inputs["password"])) {
         document.getElementById('specialCharacterCheck').hidden = true
-        // document.getElementById('specialCharacterCheck').style.color = 'green'
         this.setState({isValid: true})
         errors["passwordCopy"] = "";
       } else {
         document.getElementById('specialCharacterCheck').hidden = false
-        // document.getElementById('specialCharacterCheck').style.color = 'red'
         this.setState({isValid: false})
         errors["passwordCopy"] = "Password wasn't validated"
       } if (minCharactersRegex.test(inputs["password"]) && numberCheckRegex.test(inputs["password"]) && numberCheckRegex.test(inputs["password"]) && lowercaseCheckRegex.test(inputs["password"]) && uppercaseCheckRegex.test(inputs["password"]) && specialCheckRegex.test(inputs["password"])) {
@@ -191,41 +147,30 @@ class SignUp extends React.Component {
         errors["passwordCopy"] = "Cannot be empty";
         this.setState({isValid: false})
       }
-
     if (inputs["email"] === '' || inputs["password"] === '' || inputs["passwordCopy"] === '') {
-
       this.setState({isValid: false})
-
     }
-
     this.setState({errors: errors});
   }}
 
   contactSubmit = (e) => {
-
     e.preventDefault();
 
     if (this.state.isValid) {
-
       UserService.signup({
         email: this.state.inputs.email,
         password: this.state.inputs.password
       }).then((res) => {
         if (res.status) {
+          document.getElementById('validError').innerText = res.status
+        } if (res.message) {
           document.getElementById('validError').innerText = res.message
         } else {
-          this.setCookie('accessToken', res.accessToken.split(' ')[1])
-            .then(() => {
-              this.setSessionStorageItem('refreshToken', res.refreshToken.split(' ')[1])
-                .then(() => {
-                  window.location.href = '/monuments'
-                })
-            })
+          Cookies.set('accessToken', res.accessToken.split(' ')[1])
+          window.location.href = '/'
         }
       })
-
     } else {
-
       this.handleFieldValidation('email')
       this.handleFieldValidation('password')
       this.handleFieldValidation('passwordCopy')
@@ -234,26 +179,19 @@ class SignUp extends React.Component {
   }
 
   handleChange = (input, e) => {
-
     let inputs = this.state.inputs;
     inputs[input] = e.target.value;
     this.setState({input: inputs[input]});
     this.handleFieldValidation(input)
-
   }
 
   showPassword = () => {
-
     if (document.getElementById('password').type === 'password') {
-
       document.getElementById('password').type = 'text'
       document.getElementById('passwordCopy').type = 'text'
-
     } else {
-
       document.getElementById('password').type = 'password'
       document.getElementById('passwordCopy').type = 'password'
-
     }
   }
 
@@ -328,12 +266,6 @@ class SignUp extends React.Component {
               autoComplete="current-password"
             />
             <div className={classes.errors}>{this.state.errors["passwordCopy"]}</div>
-            {/*<Checkbox*/}
-            {/*  icon={<VisibilityIcon/>}*/}
-            {/*  checkedIcon={<VisibilityOffIcon/>}*/}
-            {/*  onClick={this.showPassword}*/}
-            {/*  className={classes.showPass}*/}
-            {/*/>*/}
             <Button
               type="submit"
               fullWidth

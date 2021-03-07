@@ -3,17 +3,17 @@ import {Link} from "react-router-dom";
 
 import withStyles from "@material-ui/core/styles/withStyles";
 
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-import Avatar from "@material-ui/core/Avatar";
+import TextField from "@material-ui/core/TextField";
 import Checkbox from "@material-ui/core/Checkbox";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import isEmpty from 'validator/lib/isEmpty';
 
@@ -21,38 +21,8 @@ import UserService from '../services/UserService';
 
 import Cookies from 'js-cookie'
 
-const styles = theme => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%',
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  errors: {
-    textAlign: 'center',
-    color: 'red',
-    margin: '0 0 16px'
-  },
-  showPass: {
-    left: '200px'
-  },
-  myModal: {
-    position: 'relative',
-    top: '20px'
-  }
-});
-
+import styles from '../styles/js/login'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 class SignIn extends React.Component {
 
@@ -70,19 +40,15 @@ class SignIn extends React.Component {
   }
 
   setCookie = async (itemName, item) => {
-
     Cookies.set(itemName, item)
-
   }
 
-  setSessionStorageItem = async (itemName, item) => {
-
-    sessionStorage.setItem(itemName, item)
-
-  }
+  // setSessionStorageItem = async (itemName, item) => {
+  //   sessionStorage.setItem(itemName, item)
+  // }
 
   removeSessionData = async () => {
-    sessionStorage.removeItem('refreshToken')
+    // sessionStorage.removeItem('refreshToken')
     Cookies.remove('accessToken')
   }
 
@@ -94,24 +60,11 @@ class SignIn extends React.Component {
   }
 
   isLogged = () => {
-    let cookieArr = document.cookie.split(";");
-    let isLogged = false
-
-    for (let i = 0; i < cookieArr.length; i++) {
-      let cookiePair = cookieArr[i].split("=");
-      if ('accessToken' === cookiePair[0].trim()) {
-        isLogged = true
-      }
+    if (Cookies.get('accessToken') !== undefined && isEmpty(Cookies.get('accessToken'))) {
+      return true
+    } else {
+      return false
     }
-    return isLogged
-  }
-
-  componentDidMount () {
-    const link = document.createElement("link");
-    link.href = "//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css";
-    link.rel = "stylesheet";
-    link.id = "bootstrap-css";
-    document.body.appendChild(link)
   }
 
   contactSubmit = (e) => {
@@ -127,15 +80,12 @@ class SignIn extends React.Component {
       })
         .then(res => {
           if (res.status) {
+            document.getElementById('validError').innerText = res.status
+          } else if (res.message) {
             document.getElementById('validError').innerText = res.message
           } else {
-            this.setCookie('accessToken', res.accessToken.split(' ')[1])
-              .then(() => {
-                this.setSessionStorageItem('refreshToken', res.refreshToken.split(' ')[1])
-                  .then(() => {
-                    window.location.href = '/monuments'
-                  })
-              })
+            Cookies.set('accessToken', res.accessToken.split(' ')[1])
+            window.location.href = '/'
           }
         })
     } else {
@@ -144,24 +94,17 @@ class SignIn extends React.Component {
   }
 
   handleChange = (input, e) => {
-
     document.getElementById('validError').innerText = ""
     let inputs = this.state.inputs;
     inputs[input] = e.target.value;
     this.setState({input: inputs[input]});
-
   }
 
   showPassword = () => {
-
     if (document.getElementById('password').type === 'password') {
-
       document.getElementById('password').type = 'text'
-
     } else {
-
       document.getElementById('password').type = 'password'
-
     }
   }
 
@@ -170,20 +113,7 @@ class SignIn extends React.Component {
     const { classes } = this.props;
 
     if (this.isLogged()) {
-      return (
-
-        <div className="page-wrap d-flex flex-row align-items-center">
-          <div className="container">
-            <div className="row justify-content-center">
-              <div className="col-md-12 text-center">
-                <span className="display-1 d-block">409</span>
-                <div className="mb-4 lead">You are already logged in</div>
-                <button onClick={this.login} className="btn btn-link">Logout</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )
+      window.location.href = '/monuments'
     } else {
       return (
         <Container id="login-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>

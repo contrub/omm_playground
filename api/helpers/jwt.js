@@ -54,8 +54,10 @@ decodeAccessToken = (req, res) => {
     const accessToken = req.headers.authorization.split(' ')[1];
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-      if (err) return res.status(403).json({message: 'Unauthorised'});
-      if (decoded) return req.decoded = decoded
+      // if (err) return res.status(403).json({message: 'Unauthorised'});
+      // if (decoded) return req.decoded = decoded
+      req.decoded = decoded
+      // Продумать, как совместить с side_bar
     })
 
   }
