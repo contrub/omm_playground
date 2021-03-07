@@ -12,8 +12,13 @@ const UserSchema = new Schema({
   },
   userRole: {
     type: String,
-    enum : ['viewer', 'admin', 'superadmin'],
+    enum: ['viewer', 'admin', 'superadmin'],
     default: 'viewer'
+  },
+  status: {
+    type: String,
+    enum: ['active', 'disable'],
+    default: 'active'
   }
 }, {
   versionKey: false
