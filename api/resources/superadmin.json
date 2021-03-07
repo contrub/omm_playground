@@ -2,26 +2,31 @@
   {
     "email": "egor@omm.com",
     "password": "QaKo3D0l!yEuv",
-    "userRole": "superadmin"
+    "userRole": "superadmin",
+    "status": "active"
   },
   {
     "email": "daniil@omm.com",
     "password": "FXSIy0l95_69k",
-    "userRole": "superadmin"
+    "userRole": "superadmin",
+    "status": "active"
   },
   {
     "email": "viewer@omm.com",
     "password": "VD!U8R6oTig1c",
-    "userRole": "viewer"
+    "userRole": "viewer",
+    "status": "active"
   },
   {
     "email": "admin@omm.com",
     "password": "3bdtGa0Lh8n_X",
-    "userRole": "admin"
+    "userRole": "admin",
+    "status": "active"
   },
   {
     "email": "superadmin@omm.com",
     "password": "b!csrtf3w3XPJ",
-    "userRole": "superadmin"
+    "userRole": "superadmin",
+    "status": "active"
   }
 ]
