@@ -5,12 +5,12 @@ const bcrypt = require('bcrypt')
 
 const isUserExist = (req, res, next) => {
   const email = req.body.email
-  console.log(email)
   if (email === undefined || isEmpty(email)) res.status(200).json({message: 'Email undefined'})
 
-  User
-    .find({email: email})
-    .then((user) => {
+  else {
+    User
+      .find({email: email})
+      .then((user) => {
         if (user[0]) {
           res.status(200).json({message: 'User already exist!'})
         } else {
@@ -18,10 +18,11 @@ const isUserExist = (req, res, next) => {
         }
       })
 
-    .catch(err => {
-      res.sendStatus(500)
-      console.log(err)
-    })
+      .catch(err => {
+        res.sendStatus(500)
+        console.log(err)
+      })
+  }
 }
 
 const isUserDataExist = (req, res, next) => {
