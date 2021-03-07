@@ -4,45 +4,39 @@ generateAccessToken = async (payload, res) => {
   try {
     const token = jwt.sign(
       payload,
-      process.env.ACCESS_TOKEN_SECRET,
-      {
-        // expiresIn: '300s'
-      })
-
+      process.env.ACCESS_TOKEN_SECRET
+    )
     return token
-
   } catch (err) {
-
     return res.status(401).json({message: 'Unauthorised'})
-
   }
 }
 
-generateRefreshToken = async (payload, res) => {
-  try {
-    const token = jwt.sign(
-      payload,
-      process.env.REFRESH_TOKEN_SECRET,
-      {
-        // expiresIn: process.env.TOKEN_LIFE || 3600
-      })
+// generateRefreshToken = async (payload, res) => {
+//   try {
+//     const token = jwt.sign(
+//       payload,
+//       process.env.REFRESH_TOKEN_SECRET,
+//       {
+//         // expiresIn: process.env.TOKEN_LIFE || 3600
+//       })
+//
+//     return token
+//
+//   } catch (err) {
+//
+//     return res.status(401).json({message: 'Unauthorised'})
+//
+//   }
+// }
 
-    return token
-
-  } catch (err) {
-
-    return res.status(401).json({message: 'Unauthorised'})
-
-  }
-}
-
-generatePairTokens = async (req, res) => {
-  const accessToken = await generateAccessToken({email: req.body.email}, res)
-  const refreshToken = await generateRefreshToken({email: req.body.email}, res)
-
-  req.accessToken = `Bearer ${accessToken}`
-  req.refreshToken = `Bearer ${refreshToken}`
-}
+// generatePairTokens = async (req, res) => {
+//   const accessToken = await generateAccessToken({email: req.body.email}, res)
+//   const refreshToken = await generateRefreshToken({email: req.body.email}, res)
+//
+//   req.accessToken = `Bearer ${accessToken}`
+//   req.refreshToken = `Bearer ${refreshToken}`
+// }
 
 decodeAccessToken = (req, res) => {
   if (req.headers['authorization'] === undefined) {
@@ -54,12 +48,9 @@ decodeAccessToken = (req, res) => {
     const accessToken = req.headers.authorization.split(' ')[1];
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-      // if (err) return res.status(403).json({message: 'Unauthorised'});
-      // if (decoded) return req.decoded = decoded
-      req.decoded = decoded
-      // Продумать, как совместить с side_bar
+      if (err) return res.status(403).json({message: 'Unauthorised'});
+      if (decoded) req.decoded = decoded
     })
-
   }
 }
 
@@ -81,28 +72,28 @@ verifyAccessToken = (req, res, next) => {
   }
 }
 
-verifyRefreshToken = (req, res, next) => {
-  const refreshToken = req.body.token;
-
-  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
-    // if (err) return res.status(403).send('Unauthorised');
-    if (err) return res.status(403).json({message: err.name});
-    if (decoded) {
-
-      next()
-
-    }
-  });
-
-}
+// verifyRefreshToken = (req, res, next) => {
+//   const refreshToken = req.body.token;
+//
+//   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+//     // if (err) return res.status(403).send('Unauthorised');
+//     if (err) return res.status(403).json({message: err.name});
+//     if (decoded) {
+//
+//       next()
+//
+//     }
+//   });
+//
+// }
 
 module.exports = {
 
   generateAccessToken: generateAccessToken,
-  generateRefreshToken: generateRefreshToken,
-  generatePairTokens: generatePairTokens,
+  // generateRefreshToken: generateRefreshToken,
+  // generatePairTokens: generatePairTokens,
   verifyAccessToken: verifyAccessToken,
-  verifyRefreshToken: verifyRefreshToken,
+  // verifyRefreshToken: verifyRefreshToken,
   decodeAccessToken: decodeAccessToken
 
 }
