@@ -1,79 +1,73 @@
 import React, {Component} from 'react';
-import './styles/App.css';
+import './styles/css/App.css';
 import Header from './components/Header/';
 import Sidebar from './components/Header/side_bar';
-import Home from './pages/home';
 import About from './pages/about';
-import Login from './pages/login';
+import Login from './pages/auth/login';
 import Monuments from './pages/monuments';
 import MonumentById from './pages/monument';
-import Signup from "./pages/signup";
-import UploadImage from "./pages/upload";
+import Signup from "./pages/auth/signup";
+import CreateMonument from "./pages/create_monument";
+import Users from "./pages/users/users"
+import EditUser from "./pages/users/edit_user";
+import CreateUser from "./pages/users/create_user"
 import {
   BrowserRouter,
   Switch,
   Route
 } from "react-router-dom";
-import PasswordReset from "./pages/reset";
+import PasswordReset from "./pages/auth/reset";
+import UserService from "./services/UserService";
+import isEmpty from "validator/es/lib/isEmpty";
+import Cookies from 'js-cookie'
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      isOpen: false,
-      isAuth: false
+      isDrawerOpen: false,
+      isListOpen: false,
+      user: {role: 'guest'}
     }
   }
 
-  // UNSAFE_componentWillMount() {
-  //   const email = Cookies.get('email')
-  //   // this.props.router.push('/login')
-  //   if (!email) {
-  //     alert('Failed authentication')
-  //   } else {
-  //     UserService.getUser(email)
-  //       .then(res => {
-  //         console.log(res)
-  //         if (res.length === 0) {
-  //           alert('Failed authentication')
-  //         } else {
-  //           alert('Successful authentication')
-  //         }
-  //       })
-  //   }
-  //
-  // }
-
+  componentDidMount() {
+    UserService.getRole({token: Cookies.get('accessToken')})
+      .then((res) => this.setState({user: {role: res.userRole}}))
+  }
 
   submitSearch = (data) => {
     setTimeout(() => console.log(data), 1000);
   };
 
-  openDrawer = (data) => {
+  openDrawer = () => {
     this.setState({
-      isOpen: true
+      isDrawerOpen: true
     })
   };
 
-  closeDrawer = (data) => {
+  closeDrawer = () => {
     this.setState({
-      isOpen: false
+      isDrawerOpen: false,
+      isListOpen: false
+    })
+  }
+
+  handleListClick = () => {
+    this.setState({
+      isListOpen: !this.state.isListOpen
     })
   }
 
   isLogged = () => {
-    let cookieArr = document.cookie.split(";");
-
-    for (let i = 0; i < cookieArr.length; i++) {
-      let cookiePair = cookieArr[i].split("=");
-      if ('accessToken' === cookiePair[0].trim()) {
-        return true
-      }
+    if (Cookies.get('accessToken') !== undefined && !isEmpty(Cookies.get('accessToken'))) {
+      return true
+    } else {
+      return false
     }
-    return false
   }
-  
+
   render() {
     // console.log(this.state)
     return (
@@ -87,23 +81,23 @@ class App extends Component {
             status={this.isLogged()}
           />
           <Sidebar
+            userRole={this.state.user.role}
             closeDrawer={this.closeDrawer}
-            isOpen={this.state.isOpen}
+            isDrawerOpen={this.state.isDrawerOpen}
+            isListOpen={this.state.isListOpen}
+            handleListClick={this.handleListClick}
             onLinkClick={this.closeDrawer}
           />
         </div>
         <Switch>
-          <Route path="/home" >
-            <Home />
+          <Route exact path="/" >
+            <Monuments />
           </Route>
           <Route path="/about">
             <About />
           </Route>
           <Route path="/login">
             <Login />
-          </Route>
-          <Route exact path="/monuments">
-            <Monuments />
           </Route>
           <Route path="/monuments/:id">
             <MonumentById />
@@ -114,8 +108,23 @@ class App extends Component {
           <Route path="/reset">
             <PasswordReset />
           </Route>
-          <Route path="/upload">
-            <UploadImage />
+          {/*<Route path="/create_monument">*/}
+          {/*  <CreateMonument />*/}
+          {/*</Route>*/}
+          <Route exact path="/users">
+            <Users
+              userRole={this.state.user.role}
+            />
+          </Route>
+          <Route path="/users/:email">
+            <EditUser
+              userRole={this.state.user.role}
+            />
+          </Route>
+          <Route path="/create_user">
+            <CreateUser
+              userRole={this.state.user.role}
+            />
           </Route>
         </Switch>
       </BrowserRouter>
