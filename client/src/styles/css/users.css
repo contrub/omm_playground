@@ -1,0 +1,11 @@
+th, td {
+    text-align: center;
+}
+
+button {
+    padding: 100px;
+}
+
+.btn-success {
+    width: 80px;
+}
