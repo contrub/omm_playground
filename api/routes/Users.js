@@ -5,12 +5,13 @@ const getUsers = (req, res) => {
   User.find()
     .then(users => {
       let filteredItems = []
-      // по возможности, переделать через users.forEach(user => delete user.password)
+
       for (let i = 0; i < users.length; i++) {
         filteredItems.push({
           _id: users[i]._id,
           email: users[i].email,
-          userRole: users[i].userRole
+          userRole: users[i].userRole,
+          status: users[i].status
         })
       }
 
@@ -25,7 +26,17 @@ const getUsers = (req, res) => {
 const getUser = (req, res) => {
   User
     .find({email: req.params.email})
-    .then((item) => res.json(item))
+    .then((user) => {
+      let filteredItem = []
+
+      filteredItem.push({
+        _id: user[0]._id,
+        email: user[0].email,
+        userRole: user[0].userRole,
+        status: user[0].status
+      })
+      res.json(filteredItem)
+    })
     .catch(err => {
       res.sendStatus(500)
       console.log(err)
@@ -52,8 +63,7 @@ const createUser = (req, res) => {
           userType: item.userType,
           id: item._id
         },
-        accessToken: req.accessToken,
-        refreshToken: req.refreshToken
+        accessToken: req.accessToken
       }))
     .catch(err => {
       res.sendStatus(500)
