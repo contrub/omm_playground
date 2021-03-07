@@ -16,14 +16,15 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
-import isEmail from 'validator/lib/isEmail';
-import isEmpty from 'validator/lib/isEmpty';
+import UserService from '../../services/UserService';
 
-import UserService from '../services/UserService';
+import {emailValidation} from "../../helpers/emailValidation";
+import {passwordValidation} from "../../helpers/passwordValidation";
+import {passwordCopyValidation} from "../../helpers/passwordCopyValidation";
 
 import Cookies from 'js-cookie'
 
-import styles from "../styles/js/signup";
+import styles from "../../styles/js/signup";
 
 class SignUp extends React.Component {
 
@@ -41,117 +42,16 @@ class SignUp extends React.Component {
     }
   }
 
-  // setSessionStorageItem = async (itemName, item) => {
-  //   sessionStorage.setItem(itemName, item)
-  // }
-
-  handleFieldValidation = (name) => {
+  handleFieldValidation = () => {
     let inputs = this.state.inputs;
     let errors = this.state.errors;
-    const minCharactersRegex = new RegExp("^(?=.{8,})")
-    const numberCheckRegex = new RegExp("^(?=.*[0-9])")
-    const lowercaseCheckRegex = new RegExp("^(?=.*[a-z])")
-    const uppercaseCheckRegex = new RegExp("^(?=.*[A-Z])")
-    const specialCheckRegex = new RegExp("^(?=.*[!@#%&])")
 
     document.getElementById('validError').innerText = ""
-
-    if (name === "email") {
-      if (inputs["email"] !== undefined) {
-        if (isEmpty(inputs["email"])){
-          errors["email"] = "Cannot be empty";
-          this.setState({isValid: false})
-        } else {
-          if (!isEmail(inputs["email"])) {
-            errors["email"] = "Email is not valid";
-            this.setState({isValid: false})
-          } else {
-            errors["email"] = ""
-            this.setState({isValid: true})
-          }
-        }
-      } else {
-        errors["email"] = "Cannot be empty";
-        this.setState({isValid: false})
-      }
-    }
-
+    this.setState({isValid: emailValidation(inputs, errors)})
+    this.setState({isValid: passwordValidation(inputs)})
+    this.setState({isValid: passwordCopyValidation(inputs, errors)})
     document.getElementById('passwordRequirements').hidden = false
-    if (inputs["password"] !== undefined) {
-      if (minCharactersRegex.test(inputs["password"])) {
-        document.getElementById('quantityCheck').hidden = true
-        this.setState({isValid: true})
-        errors["passwordCopy"] = "";
-      } else {
-        document.getElementById('quantityCheck').hidden = false
-        this.setState({isValid: false})
-        errors["passwordCopy"] = "Password wasn't validated"
-      }
-      if (numberCheckRegex.test(inputs["password"])) {
-        document.getElementById('numberCheck').hidden = true
-        this.setState({isValid: true})
-        errors["passwordCopy"] = "";
-      } else {
-        document.getElementById('numberCheck').hidden = false
-        this.setState({isValid: false})
-        errors["passwordCopy"] = "Password wasn't validated"
-      }
-      if (lowercaseCheckRegex.test(inputs["password"])) {
-        document.getElementById('lowercaseCheck').hidden = true
-        this.setState({isValid: true})
-        errors["passwordCopy"] = "";
-      } else {
-        document.getElementById('lowercaseCheck').hidden = false
-        this.setState({isValid: false})
-        errors["passwordCopy"] = "Password wasn't validated"
-      }
-      if (uppercaseCheckRegex.test(inputs["password"])) {
-        document.getElementById('uppercaseCheck').hidden = true
-        this.setState({isValid: true})
-        errors["passwordCopy"] = "";
-      } else {
-        document.getElementById('uppercaseCheck').hidden = false
-        this.setState({isValid: false})
-        errors["passwordCopy"] = "Password wasn't validated"
-      }
-      if (specialCheckRegex.test(inputs["password"])) {
-        document.getElementById('specialCharacterCheck').hidden = true
-        this.setState({isValid: true})
-        errors["passwordCopy"] = "";
-      } else {
-        document.getElementById('specialCharacterCheck').hidden = false
-        this.setState({isValid: false})
-        errors["passwordCopy"] = "Password wasn't validated"
-      } if (minCharactersRegex.test(inputs["password"]) && numberCheckRegex.test(inputs["password"]) && numberCheckRegex.test(inputs["password"]) && lowercaseCheckRegex.test(inputs["password"]) && uppercaseCheckRegex.test(inputs["password"]) && specialCheckRegex.test(inputs["password"])) {
-        document.getElementById('passwordRequirements').hidden = true
-      }
-
-      if (inputs["passwordCopy"] !== undefined) {
-        if (isEmpty(inputs["passwordCopy"])) {
-          errors["passwordCopy"] = "Cannot be empty";
-          this.setState({isValid: false})
-        } else {
-          if (errors.password !== "") {
-            errors["passwordCopy"] = "Password wasn't validated"
-            this.setState({isValid: false})
-          }
-          if (inputs.password !== inputs.passwordCopy) {
-            errors["passwordCopy"] = "Repeat password!";
-            this.setState({isValid: false})
-          } else {
-            errors["passwordCopy"] = ""
-            this.setState({isValid: true})
-          }
-        }
-      } else {
-        errors["passwordCopy"] = "Cannot be empty";
-        this.setState({isValid: false})
-      }
-    if (inputs["email"] === '' || inputs["password"] === '' || inputs["passwordCopy"] === '') {
-      this.setState({isValid: false})
-    }
-    this.setState({errors: errors});
-  }}
+  }
 
   contactSubmit = (e) => {
     e.preventDefault();
@@ -171,9 +71,7 @@ class SignUp extends React.Component {
         }
       })
     } else {
-      this.handleFieldValidation('email')
-      this.handleFieldValidation('password')
-      this.handleFieldValidation('passwordCopy')
+      this.handleFieldValidation()
       document.getElementById('validError').innerText = "Validation error"
     }
   }
@@ -182,7 +80,7 @@ class SignUp extends React.Component {
     let inputs = this.state.inputs;
     inputs[input] = e.target.value;
     this.setState({input: inputs[input]});
-    this.handleFieldValidation(input)
+    this.handleFieldValidation()
   }
 
   showPassword = () => {

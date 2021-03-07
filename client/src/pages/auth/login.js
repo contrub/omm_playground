@@ -17,11 +17,11 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 
 import isEmpty from 'validator/lib/isEmpty';
 
-import UserService from '../services/UserService';
+import UserService from '../../services/UserService';
 
 import Cookies from 'js-cookie'
 
-import styles from '../styles/js/login'
+import styles from '../../styles/js/login'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 class SignIn extends React.Component {
@@ -189,4 +189,5 @@ class SignIn extends React.Component {
 }
 
 export default withStyles(styles, {withTheme: true})(SignIn)
+
 
