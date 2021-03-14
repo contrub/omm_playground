@@ -39,33 +39,34 @@ generateAccessToken = async (payload, res) => {
 // }
 
 decodeAccessToken = (req, res) => {
+
   if (req.headers['authorization'] === undefined) {
 
     res.status(401).send('Unauthorised')
 
   } else {
 
-    const accessToken = req.headers.authorization.split(' ')[1];
+    const accessToken = req.headers.authorization.split(' ')[1]
 
+    // появление ошибки тут полностью ломает функцию для получения роли пользователя
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-      if (err) return res.status(403).json({message: 'Unauthorised'});
-      if (decoded) req.decoded = decoded
+      if (err) {
+        res.status(403).json({message: 'Unauthorised'})
+      } else if (decoded) {
+        req.decoded = decoded
+      }
     })
   }
 }
 
 verifyAccessToken = (req, res, next) => {
-
   if (req.headers['authorization'] === undefined) {
-
     res.status(401).json({message: 'Unauthorised'})
-
   } else {
-
     const accessToken = req.headers.authorization.split(' ')[1];
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-      if (err) return res.status(403).json({message: 'Unauthorised'});
+      if (err) return res.status(401).json({message: 'Unauthorised'});
       if (decoded) next()
     })
 

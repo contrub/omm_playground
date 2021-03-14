@@ -1,7 +1,7 @@
 ﻿import React from 'react';
-import MonumentService from '../services/MonumentService'
+import MonumentService from '../../services/MonumentService'
 import {withRouter} from "react-router";
-import "../styles/css/monument.css"
+import "../../styles/css/monument.css"
 
 class MonumentById extends React.Component {
 

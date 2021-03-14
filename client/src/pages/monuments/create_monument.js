@@ -8,7 +8,7 @@ import Button from "@material-ui/core/Button";
 import Container from "@material-ui/core/Container";
 import withStyles from "@material-ui/core/styles/withStyles";
 import isEmpty from "validator/es/lib/isEmpty";
-import MonumentService from "../services/MonumentService";
+import MonumentService from "../../services/MonumentService";
 
 /* Страничка создания памятников (должна быть предоставлена superadmin и admin)
 * */

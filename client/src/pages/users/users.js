@@ -64,28 +64,27 @@ class Users extends React.Component {
 
     return (
       <div>
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
         {this.props.userRole === 'superadmin' &&
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">
-                Email
-              </th>
-              <th scope="col">UserRole</th>
-              <th scope="col">ID</th>
-              <th scope="col">Status</th>
-              <th scope="col">
-                <Link to="/create_user">
-                  <AddBoxIcon/>
-                </Link>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {users}
-          </tbody>
-        </table>
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">
+                  Email
+                </th>
+                <th scope="col">UserRole</th>
+                <th scope="col">ID</th>
+                <th scope="col">Status</th>
+                <th scope="col">
+                  <Link to="/create_user">
+                    <AddBoxIcon/>
+                  </Link>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {users}
+            </tbody>
+          </table>
         }
         {this.props.userRole !== 'superadmin' &&
           <section id="wrapper" className="container-fluid">

@@ -1,5 +1,5 @@
 import React from 'react';
-import MonumentService from '../services/MonumentService';
+import MonumentService from '../../services/MonumentService';
 
 /* Тестовая страничка для демонстрации памятников
 * Должна быть доработана Даниилом

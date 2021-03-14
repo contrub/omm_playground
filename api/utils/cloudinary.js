@@ -12,7 +12,6 @@ uploadImage = async(req, res, next) => {
   try {
     const fileStr = req.body.base64;
     if (fileStr === undefined || isEmpty(fileStr)) {
-      // delete req.body.base64
       next()
     } else {
       await cloudinary.uploader.upload(fileStr, {
@@ -21,7 +20,6 @@ uploadImage = async(req, res, next) => {
         .then((uploadResponse) => {
           const url = uploadResponse.secure_url
           req.body.imageURL = url
-          // delete req.body.base64
           next()
         })
         .catch((err) => {
@@ -36,7 +34,5 @@ uploadImage = async(req, res, next) => {
 }
 
 module.exports = {
-
   uploadImage: uploadImage
-
 }
