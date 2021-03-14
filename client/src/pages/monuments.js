@@ -1,76 +1,45 @@
 import React from 'react';
-import MonumentService from '../services/MonumentService';
+import MonumentService from '../services/MonumentService'
+import {withRouter} from "react-router";
 
-<<<<<<< HEAD
-/* Тестовая страничка для демонстрации памятников
+/* Тестовая страничка для демонстрации памятника по id
 * Должна быть доработана Даниилом
 * */
 
+class MonumentById extends React.Component {
 
-=======
->>>>>>> f596d9f070e4248b62ab61d0a615ed37c51dfb55
-class Monuments extends React.Component {
-  state = {
-    monuments: []
-  }
+    state = {
+      monumentInfo: []
+    }
 
-<<<<<<< HEAD
-  componentDidMount = () => {
-    MonumentService.fetchMonuments({}, {})
-      .then((res) => {
-        this.setState({monuments: res})
-=======
-  getMonuments = () => {
-    MonumentService.fetchMonuments({}, {})
-      .then((res) => {
-        this.setState({
-          monuments: res
+    componentDidMount = () => {
+      let id = this.props.match.params.id
+      MonumentService.fetchMonuments()
+        .then(result => {
+          this.setState({
+            monumentInfo: result.find(monument => monument._id === id)
+           })
         })
->>>>>>> f596d9f070e4248b62ab61d0a615ed37c51dfb55
-      })
-  }
+    }
 
-  renderMonuments = (monuments) => {
-    return monuments.map((entry, index) => (
-      <div className="monument" key={index}>
-        <h1>{entry.name}</h1>
-        {entry.description}
-        <div id="information">
-          <p>
-            <b>Creator:</b> {entry.creator}
-          </p>
-        </div>
-        <div id="image">
-          <img
-            alt=""
-            width="300px"
-            src={entry.imageURL}
-          />
-        </div>
-      </div>
-    ))
-  }
-
-
-  render() {
-<<<<<<< HEAD
-    let {monuments} = this.state
-
-    return (
-      <div className="container">
-        {this.renderMonuments(monuments)}
-      </div>
-    )
-=======
-    let {monuments, isLoaded} = this.state
-    
-    return (
-        <div className="container">
-          {this.renderMonuments(monuments)}
-        </div>
-      )
->>>>>>> f596d9f070e4248b62ab61d0a615ed37c51dfb55
-  }
+    render() {
+        return (
+            <div>
+              {this.state.monumentInfo === undefined &&
+                <p>Monument undefined</p>
+              }
+              {this.state.monumentInfo !== undefined &&
+                <div>
+                  <h1> {this.state.monumentInfo.name} </h1>
+                  <p> {this.state.monumentInfo.description} </p>
+                  <p> <b>Creator:</b> {this.state.monumentInfo.creator} </p>
+                  <p> <b>Date:</b> {this.state.monumentInfo.date} </p>
+                  <img src={this.state.monumentInfo.imageURL} alt="monument_image" width="300px"/>
+                </div>
+              }
+            </div>
+        )
+    }
 }
 
-export default Monuments
+export default withRouter(MonumentById)
