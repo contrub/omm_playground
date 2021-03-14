@@ -1,54 +1,34 @@
 import React from 'react';
-import MonumentService from '../../services/MonumentService';
+import MonumentService from '../../services/MonumentService'
+import {withRouter} from "react-router";
 
-/* Тестовая страничка для демонстрации памятников
+/* Тестовая страничка для демонстрации памятника по id
 * Должна быть доработана Даниилом
 * */
 
-class Monuments extends React.Component {
+class MonumentById extends React.Component {
 
+    state = {
+      monuments: []
+    }
 
-  state = {
-    monuments: []
-  }
+    componentDidMount = () => {
+      MonumentService.fetchMonuments()
+        .then((res) => {
+          console.log(res)
+          this.setState({monuments: res})
+        })
+    }
 
-  componentDidMount = () => {
-    MonumentService.fetchMonuments({}, {})
-      .then((res) => {
-        this.setState({monuments: res})
-      })}
+    render() {
+      console.log(this.state.monuments)
 
-  renderMonuments = (monuments) => {
-    return monuments.map((entry, index) => (
-      <div className="monument" key={index}>
-        <h1>{entry.name}</h1>
-        {entry.description}
-        <div id="information">
-          <p>
-            <b>Creator:</b> {entry.creator}
-          </p>
+      return (
+        <div>
+          <h1>Monuments Page</h1>
         </div>
-        <div id="image">
-          <img
-            alt=""
-            width="300px"
-            src={entry.imageURL}
-          />
-        </div>
-      </div>
-    ))
-  }
-
-
-  render() {
-    let {monuments} = this.state
-
-    return (
-    <div className="container">
-      {this.renderMonuments(monuments)}
-    </div>
-    )
-  }
+      )
+    }
 }
 
-export default Monuments
+export default withRouter(MonumentById)
