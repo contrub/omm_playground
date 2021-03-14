@@ -32,6 +32,7 @@
     "passport-http-bearer": "^1.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "secure-random-password": "^0.2.2",
     "validator": "^13.5.2"
   }
 }

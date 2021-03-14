@@ -32,6 +32,10 @@ const getRole = (params) => {
   return api.get('/role', params)
 }
 
+const resetPassword = (params) => {
+  return api.update(`/reset/${params.email}`, params)
+}
+
 const UserService = {
   login: login,
   signup: signup,
@@ -40,7 +44,8 @@ const UserService = {
   getUser: getUser,
   updateUser: updateUser,
   deleteUser: deleteUser,
-  getRole: getRole
+  getRole: getRole,
+  resetPassword: resetPassword
 }
 
 export default UserService

@@ -4,10 +4,9 @@ import Header from './components/Header/';
 import Sidebar from './components/Header/side_bar';
 import About from './pages/about';
 import Login from './pages/auth/login';
-import Monuments from './pages/monuments';
-import MonumentById from './pages/monument';
+import Monuments from './pages/monuments/monuments';
+import MonumentById from './pages/monuments/monument';
 import Signup from "./pages/auth/signup";
-import CreateMonument from "./pages/create_monument";
 import Users from "./pages/users/users"
 import EditUser from "./pages/users/edit_user";
 import CreateUser from "./pages/users/create_user"
@@ -78,7 +77,7 @@ class App extends Component {
             name="Open Monument Map"
             btntext="login"
             openDrawer={this.openDrawer}
-            status={this.isLogged()}
+            isLogged={this.isLogged()}
           />
           <Sidebar
             userRole={this.state.user.role}

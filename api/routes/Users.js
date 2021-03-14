@@ -81,6 +81,8 @@ const updateUser = (req, res) => {
 
   let newData = req.body
 
+ // res.sendStatus(500)
+
   User
     .updateOne({email: email}, newData)
     .then((item) => res.json(item))

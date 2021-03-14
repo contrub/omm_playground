@@ -2,10 +2,8 @@ const Monument = require('../models/Monument');
 
 const getMonuments = (req, res) => {
   Monument.find()
-    .then(items => {
-      res.json(items)
-    })
-    .catch(err => {
+    .then((items) => res.json(items))
+    .catch((err) => {
       res.sendStatus(500)
       console.log(err)
     });
@@ -14,8 +12,8 @@ const getMonuments = (req, res) => {
 const getMonument = (req, res) => {
   Monument
     .findById(req.params.id)
-    .then(item => res.json(item))
-    .catch(err => {
+    .then((item) => res.json(item))
+    .catch((err) => {
       res.sendStatus(500)
       console.log(err)
     });

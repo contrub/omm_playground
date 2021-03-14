@@ -39,28 +39,8 @@ class SignIn extends React.Component {
     }
   }
 
-  setCookie = async (itemName, item) => {
-    Cookies.set(itemName, item)
-  }
-
-  // setSessionStorageItem = async (itemName, item) => {
-  //   sessionStorage.setItem(itemName, item)
-  // }
-
-  removeSessionData = async () => {
-    // sessionStorage.removeItem('refreshToken')
-    Cookies.remove('accessToken')
-  }
-
-  login = () => {
-    this.removeSessionData()
-      .then(() => {
-        window.location.reload()
-      })
-  }
-
   isLogged = () => {
-    if (Cookies.get('accessToken') !== undefined && isEmpty(Cookies.get('accessToken'))) {
+    if (Cookies.get('accessToken') !== undefined && !isEmpty(Cookies.get('accessToken'))) {
       return true
     } else {
       return false
@@ -113,7 +93,7 @@ class SignIn extends React.Component {
     const { classes } = this.props;
 
     if (this.isLogged()) {
-      window.location.href = '/monuments'
+      window.location.href = '/'
     } else {
       return (
         <Container id="login-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
