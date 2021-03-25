@@ -14,16 +14,20 @@ const UserDB = (req, res, next) => {
   User
     .find({email: email})
     .then((user) => {
-      const userRole = user[0].userRole
-      const userAccessGroup = process.env.USERS_DB_ACCESS_GROUP.split(',')
+      if (!user.length) {
+        res.status(401).json({message: "Unauthorised"})
+      } else {
+        const userRole = user[0].userRole
+        const userAccessGroup = process.env.USERS_DB_ACCESS_GROUP.split(',')
         userAccessGroup.forEach((entry, index) => {
           userAccessGroup[index] = entry.replace(/\W/g, '')
         })
 
-      if (userAccessGroup.includes(userRole)) {
-        next()
-      } else {
-        res.status(403).json({message: "UsersDB access denied"})
+        if (userAccessGroup.includes(userRole)) {
+          next()
+        } else {
+          res.status(403).json({message: "UsersDB access denied"})
+        }
       }
     })
 }
@@ -40,17 +44,21 @@ const MonumentsDB = async (req, res, next) => {
     User
       .find({email: email})
       .then(user => {
-        const userRole = user[0].userRole
-        const userAccessGroup = process.env.MONUMENTS_DB_ACCESS_GROUP.split(',')
-
-        userAccessGroup.forEach((entry, index) => {
-          userAccessGroup[index] = entry.replace(/\W/g, '')
-        })
-
-        if (userAccessGroup.includes(userRole)) {
-          next()
+        if (!user.length) {
+          res.status(401).json({message: "Unauthorised"})
         } else {
-          res.status(403).json({message: "MonumentsDB access denied"})
+          const userRole = user[0].userRole
+          const userAccessGroup = process.env.MONUMENTS_DB_ACCESS_GROUP.split(',')
+
+          userAccessGroup.forEach((entry, index) => {
+            userAccessGroup[index] = entry.replace(/\W/g, '')
+          })
+
+          if (userAccessGroup.includes(userRole)) {
+            next()
+          } else {
+            res.status(403).json({message: "MonumentsDB access denied"})
+          }
         }
       })
   }
