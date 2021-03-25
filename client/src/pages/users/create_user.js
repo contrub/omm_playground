@@ -89,84 +89,72 @@ class CreateUser extends React.Component {
 
     return (
       <div>
-        {this.props.userRole === 'superadmin' &&
-          <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
-            <div className={classes.paper}>
-              <Avatar className={classes.avatar}>
-                <CreateIcon />
-              </Avatar>
-              <Typography component="h1" variant="h5">
-                Create User
-              </Typography>
-              <form className={classes.form} noValidate>
-                <TextField
-                  onChange={this.handleChange.bind(this, "email")}
-                  className={classes.field}
-                  value={this.state.inputs["email"]}
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                />
-                <div className={classes.errors}>{this.state.errors["email"]}</div>
-                <TextField
-                  onChange={this.handleChange.bind(this, "password")}
-                  className={classes.field}
-                  value={this.state.inputs["password"]}
-                  InputProps={{
-                    endAdornment: (
-                      <Checkbox
-                        icon={<VisibilityIcon/>}
-                        checkedIcon={<VisibilityOffIcon/>}
-                        onClick={this.showPassword}
-                      />)
-                  }}
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                />
-                <ul id='passwordRequirements' hidden>
-                  <li className={classes.passwordRequirement} id='quantityCheck'>At least 8 characters</li>
-                  <li className={classes.passwordRequirement} id='numberCheck'>Contains at least 1 number</li>
-                  <li className={classes.passwordRequirement} id='lowercaseCheck'>Contains at least lowercase letter</li>
-                  <li className={classes.passwordRequirement} id='uppercaseCheck'>Contains at least uppercase letter</li>
-                  <li className={classes.passwordRequirement} id='specialCharacterCheck'>Contains a special character (!@#%&)</li>
-                </ul>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                >
-                  Create
-                </Button>
-              </form>
-              <div id='validError' className={classes.errors}/>
-            </div>
-          </Container>
-        }
-        {this.props.userRole !== 'superadmin' &&
-          <section id="wrapper" className="container-fluid">
-            <div className="error-box">
-              <div className="error-body text-center">
-                <h1 className="text-danger">403</h1>
-                <h3>Forbidden</h3>
-              </div>
-            </div>
-          </section>
-        }
+        <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
+          <div className={classes.paper}>
+            <Avatar className={classes.avatar}>
+              <CreateIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Create User
+            </Typography>
+            <form className={classes.form} noValidate>
+              <TextField
+                onChange={this.handleChange.bind(this, "email")}
+                className={classes.field}
+                value={this.state.inputs["email"]}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+              />
+              <div className={classes.errors}>{this.state.errors["email"]}</div>
+              <TextField
+                onChange={this.handleChange.bind(this, "password")}
+                className={classes.field}
+                value={this.state.inputs["password"]}
+                InputProps={{
+                  endAdornment: (
+                    <Checkbox
+                      icon={<VisibilityIcon/>}
+                      checkedIcon={<VisibilityOffIcon/>}
+                      onClick={this.showPassword}
+                    />)
+                }}
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+              />
+              <ul id='passwordRequirements' hidden>
+                <li className={classes.passwordRequirement} id='quantityCheck'>At least 8 characters</li>
+                <li className={classes.passwordRequirement} id='numberCheck'>Contains at least 1 number</li>
+                <li className={classes.passwordRequirement} id='lowercaseCheck'>Contains at least lowercase letter</li>
+                <li className={classes.passwordRequirement} id='uppercaseCheck'>Contains at least uppercase letter</li>
+                <li className={classes.passwordRequirement} id='specialCharacterCheck'>Contains a special character (!@#%&)</li>
+              </ul>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                className={classes.submit}
+              >
+                Create
+              </Button>
+            </form>
+            <div id='validError' className={classes.errors}/>
+          </div>
+        </Container>
       </div>
     )
   }

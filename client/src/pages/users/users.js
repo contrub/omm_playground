@@ -19,6 +19,7 @@ class Users extends React.Component {
   }
 
   componentDidMount = () => {
+    // скорее всего, всё же есть смысл фильтровать по алфавиту
     UserService.getUsers({token: Cookies.get('accessToken')})
       .then((res) => {
         if (res.message === undefined) {
@@ -31,6 +32,7 @@ class Users extends React.Component {
 
   render() {
     const users = this.state.users.map((user, index) => {
+      // думаю, стоит переделать : возвращать таблицу, а не элементы таблицы
       return (
         <tr key={index}>
           <td>{user.email}</td>
@@ -64,8 +66,7 @@ class Users extends React.Component {
 
     return (
       <div>
-        {this.props.userRole === 'superadmin' &&
-          <table className="table">
+        <table className="table">
             <thead>
               <tr>
                 <th scope="col">
@@ -84,18 +85,7 @@ class Users extends React.Component {
             <tbody>
               {users}
             </tbody>
-          </table>
-        }
-        {this.props.userRole !== 'superadmin' &&
-          <section id="wrapper" className="container-fluid">
-            <div className="error-box">
-              <div className="error-body text-center">
-                <h1 className="text-danger">403</h1>
-                <h3>Forbidden</h3>
-              </div>
-            </div>
-          </section>
-        }
+        </table>
       </div>
     )
   }

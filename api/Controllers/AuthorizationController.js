@@ -1,51 +1,45 @@
-const isEmpty = require('validator/lib/isEmpty')
-
-const jwt = require('../helpers/jwt')
 const User = require('../models/User')
+const createError = require('http-errors')
 
 const UserDB = (req, res, next) => {
-  jwt.decodeAccessToken(req, res)
-  // Подобные функции могут вызвать ошибку связаную с тем, что на клиент уже был отправлен response об ошибке
+  if (req.decoded === undefined) {
+    res.sendStatus(403)
+  } else {
+    const email = req.decoded.email
 
-  const email = req.decoded.email
-
-  if (email === undefined || isEmpty(email)) res.status(404).json({message: "Email undefined in JWT"})
-
-  User
-    .find({email: email})
-    .then((user) => {
-      if (!user.length) {
-        res.status(401).json({message: "Unauthorised"})
-      } else {
-        const userRole = user[0].userRole
-        const userAccessGroup = process.env.USERS_DB_ACCESS_GROUP.split(',')
-        userAccessGroup.forEach((entry, index) => {
-          userAccessGroup[index] = entry.replace(/\W/g, '')
-        })
-
-        if (userAccessGroup.includes(userRole)) {
-          next()
+    User
+      .find({email: email})
+      .then((user) => {
+        if (!user.length) {
+          res.sendStatus(401)
         } else {
-          res.status(403).json({message: "UsersDB access denied"})
+          const userRole = user[0].userRole
+          const userAccessGroup = process.env.USERS_DB_ACCESS_GROUP.split(',')
+          userAccessGroup.forEach((entry, index) => {
+            userAccessGroup[index] = entry.replace(/\W/g, '')
+          })
+
+          if (userAccessGroup.includes(userRole)) {
+            next()
+          } else {
+            next(new createError(403, "UsersDB access denied"))
+          }
         }
-      }
-    })
+      })
+  }
 }
 
 const MonumentsDB = async (req, res, next) => {
-  await jwt.decodeAccessToken(req, res)
-  // Подобные функции могут вызвать ошибку связаную с тем, что на клиент уже был отправлен response об ошибке
-
-  const email = req.decoded.email
-
-  if (email === undefined || isEmpty(email)) {
-    res.status(404).json({message: "Email undefined in JWT"})
+  if (req.decoded === undefined) {
+    res.sendStatus(403)
   } else {
+    const email = req.decoded.email
+
     User
       .find({email: email})
       .then(user => {
         if (!user.length) {
-          res.status(401).json({message: "Unauthorised"})
+          res.sendStatus(401)
         } else {
           const userRole = user[0].userRole
           const userAccessGroup = process.env.MONUMENTS_DB_ACCESS_GROUP.split(',')
@@ -57,7 +51,7 @@ const MonumentsDB = async (req, res, next) => {
           if (userAccessGroup.includes(userRole)) {
             next()
           } else {
-            res.status(403).json({message: "MonumentsDB access denied"})
+            res.sendStatus(403)
           }
         }
       })
@@ -65,8 +59,6 @@ const MonumentsDB = async (req, res, next) => {
 }
 
 module.exports = {
-
   UserDB: UserDB,
   MonumentsDB: MonumentsDB
-
 }

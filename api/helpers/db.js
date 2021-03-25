@@ -3,10 +3,10 @@ const isEmpty = require('validator/lib/isEmpty')
 const isEmail = require('validator/lib/isEmail')
 
 const isUserExist = (req, res, next) => {
-  const email = req.body.email
+  const email = req.decoded.email
 
-  if (email === undefined || isEmpty(email) || !isEmail(email))  {
-    res.status(200).json({message: 'Email undefined'})
+  if (email === undefined || isEmpty(email)) {
+    res.sendStatus(404)
   } else {
     User
       .find({email: email})
@@ -20,7 +20,7 @@ const isUserExist = (req, res, next) => {
         }
       })
       .catch((err) => {
-        res.status(500).json({message: 'MongoDB error'})
+        res.sendStatus(500)
         console.log(err)
       })
   }
@@ -58,8 +58,8 @@ const isUserDataExist = (req, res, next) => {
         }
       })
       .catch((err) => {
-        res.status(500).json({message: 'MongoDB error'})
         console.log(err)
+        res.sendStatus(500)
       })
   }
 }

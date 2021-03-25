@@ -11,15 +11,15 @@ const styles = theme => ({
   },
   form: {
     width: '100%',
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(1)
   },
   removeBtn: {
-    margin: theme.spacing(0, 0, 2),
+    margin: theme.spacing(0, 0, 2)
   },
   editBtn: {
     margin: theme.spacing(1, 0, 2)
   },
-  select: {
+  selValue: {
     textAlign: 'center'
   },
   errors: {
@@ -27,18 +27,15 @@ const styles = theme => ({
     color: 'red',
     margin: '0 0 16px'
   },
-  passwordRequirement: {
+  passRequirement: {
     color: 'red',
     fontFamily: 'Gill Sans',
     fontSize: '18px'
   },
-  showPass: {
-    left: '200px'
-  },
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
+    minWidth: 180
   }
-});
+})
 
 export default styles

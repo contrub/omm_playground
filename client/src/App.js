@@ -10,6 +10,8 @@ import Signup from "./pages/auth/signup";
 import Users from "./pages/users/users"
 import EditUser from "./pages/users/edit_user";
 import CreateUser from "./pages/users/create_user"
+import ProtectedRoute from "./components/protectedRoute";
+import ForbiddenPage from "./pages/forbidden";
 import {
   BrowserRouter,
   Switch,
@@ -27,13 +29,15 @@ class App extends Component {
     this.state = {
       isDrawerOpen: false,
       isListOpen: false,
-      user: {role: 'guest'}
+      userRole: "guest"
     }
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     UserService.getRole({token: Cookies.get('accessToken')})
-      .then((res) => this.setState({user: {role: res.userRole}}))
+      .then((res) => {
+        this.setState({userRole: res.userRole})
+      })
   }
 
   submitSearch = (data) => {
@@ -80,7 +84,7 @@ class App extends Component {
             isLogged={this.isLogged()}
           />
           <Sidebar
-            userRole={this.state.user.role}
+            userRole={this.state.userRole}
             closeDrawer={this.closeDrawer}
             isDrawerOpen={this.state.isDrawerOpen}
             isListOpen={this.state.isListOpen}
@@ -89,42 +93,19 @@ class App extends Component {
           />
         </div>
         <Switch>
-          <Route exact path="/" >
-            <Monuments />
-          </Route>
-          <Route path="/about">
-            <About />
-          </Route>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/monuments/:id">
-            <MonumentById />
-          </Route>
-          <Route path="/signup">
-            <Signup/>
-          </Route>
-          <Route path="/reset">
-            <PasswordReset />
-          </Route>
+          <Route exact path="/" component={Monuments}/>
+          <Route path="/forbidden" component={ForbiddenPage}/>
+          <Route path="/about" component={About}/>
+          <Route path="/login" component={Login}/>
+          <Route path="/monuments/:id" component={MonumentById}/>
+          <Route path="/signup" component={Signup}/>
+          <Route path="/reset" component={PasswordReset}/>
           {/*<Route path="/create_monument">*/}
           {/*  <CreateMonument />*/}
           {/*</Route>*/}
-          <Route exact path="/users">
-            <Users
-              userRole={this.state.user.role}
-            />
-          </Route>
-          <Route path="/users/:email">
-            <EditUser
-              userRole={this.state.user.role}
-            />
-          </Route>
-          <Route path="/create_user">
-            <CreateUser
-              userRole={this.state.user.role}
-            />
-          </Route>
+          <ProtectedRoute exact path="/users" requiredRole={"superadmin"} userRole={this.state.userRole} component={Users}/>
+          <ProtectedRoute path="/users/:email" requiredRole={"superadmin"} userRole={this.state.userRole} component={EditUser}/>
+          <ProtectedRoute path="/create_user" requiredRole={"superadmin"} userRole={this.state.userRole} component={CreateUser}/>
         </Switch>
       </BrowserRouter>
     )

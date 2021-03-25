@@ -37,9 +37,14 @@ class EditUser extends React.Component {
       user: [],
       inputs: {
         password: '',
-        userRole: ''
+        userRole: '',
+        status: ''
       },
-      roles: {10: 'viewer', 20: 'admin', 30: 'superadmin', 0: ''},
+      selects: {
+        userRole: 0,
+        status: 0
+      },
+      role: {10: 'viewer', 20: 'admin', 30: 'superadmin', 0: ''},
       status: {10: 'active', 20: 'disable', 0: ''},
       isValid: true
     }
@@ -50,18 +55,30 @@ class EditUser extends React.Component {
 
     document.getElementById('validError').innerText = ""
     this.setState({isValid: passwordValidation(inputs)})
-    document.getElementById('passwordRequirements').hidden = false
+    if (inputs.password) {
+      document.getElementById('passwordRequirements').hidden = false
+    } else {
+      document.getElementById('passwordRequirements').hidden = true
+    }
   }
 
   componentDidMount () {
     const email = this.props.match.params.email
-
-    console.log(email)
+    const rolesObjectKeys = Object.keys(this.state.role)
+    const rolesObjectValues = Object.values(this.state.role)
+    const statusObjectKeys = Object.keys(this.state.status)
+    const statusObjectValues = Object.values(this.state.status)
 
     UserService.getUser({email: email, token: Cookies.get('accessToken')})
       .then((res) => {
-        if (res.message === undefined) {
-          this.setState({user: res[0], inputs: {email: res[0].email, userRole: "", password: "", status: ""}})
+        if (res.message) {
+          // понятное дело, нужно переделать для различных ошибок
+          alert(res.message)
+        } else {
+          const roleValue =  rolesObjectKeys[rolesObjectValues.indexOf(res[0].userRole)]
+          const statusValue = statusObjectKeys[statusObjectValues.indexOf(res[0].status)]
+
+          this.setState({user: res[0], inputs: {email: res[0].email}, selects: {userRole: roleValue, status: statusValue}})
         }
       })
   }
@@ -78,7 +95,7 @@ class EditUser extends React.Component {
       Object.keys(this.state.inputs).forEach((key) => (this.state.inputs[key] === "") && delete this.state.inputs[key]);
 
       UserService.updateUser(this.state.inputs)
-          .then(() => window.location.href = '/users')
+        .then(() => window.location.href = '/users')
 
     } else {
       document.getElementById('validError').innerText = 'ValidationError'
@@ -93,19 +110,21 @@ class EditUser extends React.Component {
   }
 
   handleChange = (input, e) => {
+    let selects = this.state.selects
+    let inputs = this.state.inputs
+
     if (input === "password") {
-      let inputs = this.state.inputs;
       inputs[input] = e.target.value;
       this.setState({input: inputs[input]});
       this.handleFieldValidation()
     } else if (input === "userRole") {
-      let inputs = this.state.inputs;
-      inputs[input] = this.state.roles[`${e.target.value}`]
-      this.setState({input: inputs[input]})
-    } else {
-      let inputs = this.state.inputs;
+      selects[input] = e.target.value
+      inputs[input] = this.state.role[`${e.target.value}`]
+      this.setState({input: inputs[input], selects: selects})
+    } else if (input === "status") {
+      selects[input] = e.target.value
       inputs[input] = this.state.status[`${e.target.value}`]
-      this.setState({input: inputs[input]})
+      this.setState({input: inputs[input], selects: selects})
     }
   }
 
@@ -121,55 +140,55 @@ class EditUser extends React.Component {
     const { classes } = this.props
 
     return (
-      <Container id="login-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
+      <Container id="edit-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
         <CssBaseline/>
-        {this.props.userRole === 'superadmin' &&
-          <div className={classes.paper}>
+        <div className={classes.paper}>
           <Avatar className={classes.avatar}/>
           <Typography component="h1" variant="h5">
-          Edit user
+            {this.state.user.email || "Loading ..."}
           </Typography>
           <form className={classes.form} noValidate>
-            <input className="form-control" type="text" placeholder={this.state.user.email + ' [' + this.state.user.userRole + ']' + ' {' + this.state.user.status + '}'} readOnly/>
+            {/*<input className="form-control" type="text" placeholder={this.state.user.email} readOnly/>*/}
             <TextField
-            onChange={this.handleChange.bind(this, "password")}
-            value={this.state.inputs["password"] || ""}
-            InputProps={{
-            endAdornment: (
-            <Checkbox
-            icon={<VisibilityIcon/>}
-            checkedIcon={<VisibilityOffIcon/>}
-            onClick={this.showPassword}
-            />)
-          }}
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
+              onChange={this.handleChange.bind(this, "password")}
+              value={this.state.inputs["password"] || ""}
+              InputProps={{
+                endAdornment: (
+                  <Checkbox
+                    icon={<VisibilityIcon/>}
+                    checkedIcon={<VisibilityOffIcon/>}
+                    onClick={this.showPassword}
+                  />
+                )
+              }}
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
             />
             <ul id='passwordRequirements' hidden>
-              <li className={classes.passwordRequirement} id='quantityCheck'>At least 8 characters</li>
-              <li className={classes.passwordRequirement} id='numberCheck'>Contains at least 1 number</li>
-              <li className={classes.passwordRequirement} id='lowercaseCheck'>Contains at least lowercase letter</li>
-              <li className={classes.passwordRequirement} id='uppercaseCheck'>Contains at least uppercase letter</li>
-              <li className={classes.passwordRequirement} id='specialCharacterCheck'>Contains a special character (!@#%&)</li>
+              <li className={classes.passRequirement} id='quantityCheck'>At least 8 characters</li>
+              <li className={classes.passRequirement} id='numberCheck'>Contains at least 1 number</li>
+              <li className={classes.passRequirement} id='lowercaseCheck'>Contains at least lowercase letter</li>
+              <li className={classes.passRequirement} id='uppercaseCheck'>Contains at least uppercase letter</li>
+              <li className={classes.passRequirement} id='specialCharacterCheck'>Contains a special character (!@#%&)</li>
             </ul>
-            <div id='validError' className={classes.errors}/>
-            <div className={classes.select}>
+            <div>
               <FormControl variant="outlined" className={classes.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">UserRole</InputLabel>
                 <Select
+                  className={classes.selValue}
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="UserRole"
-                  defaultValue={0}
+                  value={this.state.selects.userRole ?? "0"}
                   onChange={this.handleChange.bind(this, "userRole")}
                 >
-                  <MenuItem value={0}>
+                  <MenuItem value={0} className={classes.optValue}>
                     <em>Without changes</em>
                   </MenuItem>
                   <MenuItem value={10}>viewer</MenuItem>
@@ -180,10 +199,11 @@ class EditUser extends React.Component {
               <FormControl variant="outlined" className={classes.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">Status</InputLabel>
                 <Select
+                  className={classes.selValue}
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="Status"
-                  defaultValue={0}
+                  value={this.state.selects.status ?? "0"}
                   onChange={this.handleChange.bind(this, "status")}
                 >
                   <MenuItem value={0}>
@@ -212,19 +232,9 @@ class EditUser extends React.Component {
             >
               Remove User
             </Button>
+            <div id='validError' className={classes.errors}/>
           </form>
-          </div>
-        }
-        {this.props.userRole !== 'superadmin' &&
-          <section id="wrapper" className="container-fluid">
-            <div className="error-box">
-              <div className="error-body text-center">
-                <h1 className="text-danger">403</h1>
-                <h3>Forbidden</h3>
-              </div>
-            </div>
-          </section>
-        }
+        </div>
       </Container>
     )
   }

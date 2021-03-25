@@ -7,10 +7,10 @@ const UserService = require('./services/UserService')
 const MonumentService = require('./services/MonumentService')
 
 const AuthorizationController = require('./Controllers/AuthorizationController')
-const AccessController = require('./Controllers/AccessController')
 const UserController = require('./Controllers/UserController')
 
 const cloudinary = require('./utils/cloudinary')
+const jwt = require('./helpers/jwt')
 
 const validator = require('./helpers/validator')
 const db = require('./helpers/db')
@@ -50,28 +50,28 @@ if (process.env.NODE_ENV !== 'development') {
   routes.get('/api/monuments', Monuments.getMonuments) // ✅
   routes.get('/api/monuments/:id', Monuments.getMonument) // ✅
 
-  routes.post('/api/monuments', AccessController.verifyUser, AuthorizationController.MonumentsDB, MonumentService.isMonumentExist, MonumentService.validateData, cloudinary.uploadImage, Monuments.createMonument)
+  routes.post('/api/monuments', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.MonumentsDB, MonumentService.isMonumentExist, cloudinary.uploadImage, Monuments.createMonument)
 
-  routes.put('/api/monuments/:id', AccessController.verifyUser, AuthorizationController.MonumentsDB, Monuments.updateMonument)
+  routes.put('/api/monuments/:id', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.MonumentsDB, Monuments.updateMonument)
 
-  routes.delete('/api/monuments/:id', AccessController.verifyUser, AuthorizationController.MonumentsDB, Monuments.deleteMonument)
+  routes.delete('/api/monuments/:id', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.MonumentsDB, Monuments.deleteMonument)
   // routes.delete('/api/monuments/db/all', Monuments.clearMonumentsDB)
 
   //================================Users================================//
 
-  routes.get('/api/users', AccessController.verifyUser, AuthorizationController.UserDB, Users.getUsers)
-  routes.get('/api/users/:email', AccessController.verifyUser, AuthorizationController.UserDB, Users.getUser)
+  routes.get('/api/users', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.UserDB, Users.getUsers)
+  routes.get('/api/users/:email', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.UserDB, db.isUserExist, Users.getUser)
 
-  routes.get('/role', UserService.getRole)
+  routes.get('/role', jwt.decodeAccessToken, UserService.getRole)
 
   routes.post('/login', db.isUserDataExist, UserController.SignIn)
   routes.post('/signup', db.isUserExist, validator.isEmailCompliance, validator.isPasswordCompliance, UserController.SignUp)
-  routes.post('/api/users', AccessController.verifyUser, AuthorizationController.UserDB, db.isUserExist, Users.createUser)
+  routes.post('/api/users', jwt.verifyAccessToken, AuthorizationController.UserDB, db.isUserExist, Users.createUser)
 
-  routes.put('/api/users/:email', AccessController.verifyUser, AuthorizationController.UserDB, Users.updateUser)
+  routes.put('/api/users/:email', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.UserDB, db.isUserExist, Users.updateUser)
   routes.put('/reset/:email', db.isUserExist, UserService.resetPassword)
 
-  routes.delete('/api/users/:email', AccessController.verifyUser, AuthorizationController.UserDB, Users.deleteUser)
+  routes.delete('/api/users/:email', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.UserDB, Users.deleteUser)
   // routes.delete('/api/users/db/all', Users.clearUserDB)
 }
 

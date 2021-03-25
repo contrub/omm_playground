@@ -24,7 +24,7 @@ uploadImage = async(req, res, next) => {
         })
         .catch((err) => {
           console.error(err);
-          res.status(500).json({message: 'Cloudinary service error' });
+          res.sendStatus(500)
         })
     }
   } catch (err) {
