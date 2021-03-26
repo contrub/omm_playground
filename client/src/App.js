@@ -28,15 +28,14 @@ class App extends Component {
 
     this.state = {
       isDrawerOpen: false,
-      isListOpen: false,
-      userRole: "guest"
+      isListOpen: false
     }
   }
 
   componentDidMount = () => {
     UserService.getRole({token: Cookies.get('accessToken')})
       .then((res) => {
-        this.setState({userRole: res.userRole})
+        localStorage.setItem("userRole", res.userRole)
       })
   }
 
@@ -84,7 +83,7 @@ class App extends Component {
             isLogged={this.isLogged()}
           />
           <Sidebar
-            userRole={this.state.userRole}
+            userRole={localStorage.getItem('userRole')}
             closeDrawer={this.closeDrawer}
             isDrawerOpen={this.state.isDrawerOpen}
             isListOpen={this.state.isListOpen}
@@ -103,9 +102,9 @@ class App extends Component {
           {/*<Route path="/create_monument">*/}
           {/*  <CreateMonument />*/}
           {/*</Route>*/}
-          <ProtectedRoute exact path="/users" requiredRole={"superadmin"} userRole={this.state.userRole} component={Users}/>
-          <ProtectedRoute path="/users/:email" requiredRole={"superadmin"} userRole={this.state.userRole} component={EditUser}/>
-          <ProtectedRoute path="/create_user" requiredRole={"superadmin"} userRole={this.state.userRole} component={CreateUser}/>
+          <ProtectedRoute exact path="/users" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={Users}/>
+          <ProtectedRoute path="/users/:email" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={EditUser}/>
+          <ProtectedRoute path="/create_user" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={CreateUser}/>
         </Switch>
       </BrowserRouter>
     )
