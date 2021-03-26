@@ -9,3 +9,8 @@ button {
 .btn-success {
     width: 80px;
 }
+
+.btn-warning {
+    margin: 5px;
+    width: 50px
+}
