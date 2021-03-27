@@ -55,7 +55,7 @@ const cleanCopiesDB = async () => {
             // рассмотреть случай нескольких копий
             if (items.length) await deleteUser(items[0].email)
           })
-          .catch(e => console.log(e))
+          .catch((err) => console.log(err))
     }))
       .catch(e => console.log(`Promise error: ${e}`))
 

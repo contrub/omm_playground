@@ -47,8 +47,8 @@ if (process.env.NODE_ENV !== 'development') {
 
   //==============================Monuments==============================//
 
-  routes.get('/api/monuments', Monuments.getMonuments) // ✅
-  routes.get('/api/monuments/:id', Monuments.getMonument) // ✅
+  routes.get('/api/monuments', Monuments.getMonuments)
+  routes.get('/api/monuments/:id', Monuments.getMonument)
 
   routes.post('/api/monuments', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.MonumentsDB, MonumentService.isMonumentExist, cloudinary.uploadImage, Monuments.createMonument)
 
@@ -59,17 +59,18 @@ if (process.env.NODE_ENV !== 'development') {
 
   //================================Users================================//
 
-  routes.get('/api/users', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.UserDB, Users.getUsers)
+  routes.get('/api/users', Users.getUsers)
   routes.get('/api/users/:email', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.UserDB, db.isUserExist, Users.getUser)
 
-  routes.get('/role', jwt.decodeAccessToken, UserService.getRole)
+  routes.get('/role', UserService.getRole)
 
   routes.post('/login', db.isUserDataExist, UserController.SignIn)
   routes.post('/signup', db.isUserExist, validator.isEmailCompliance, validator.isPasswordCompliance, UserController.SignUp)
   routes.post('/api/users', jwt.verifyAccessToken, AuthorizationController.UserDB, db.isUserExist, Users.createUser)
 
   routes.put('/api/users/:email', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.UserDB, db.isUserExist, Users.updateUser)
-  routes.put('/reset/:email', db.isUserExist, UserService.resetPassword)
+  routes.put('/reset_password_request/:email', db.isUserExist, UserService.resetPassword)
+  routes.put('/reset_password/:token', jwt.verifyAccessToken, jwt.decodeAccessToken, UserService.updatePassword, Users.updateUser)
 
   routes.delete('/api/users/:email', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.UserDB, Users.deleteUser)
   // routes.delete('/api/users/db/all', Users.clearUserDB)

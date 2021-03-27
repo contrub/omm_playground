@@ -1,49 +1,51 @@
 const User = require('../models/User')
-const nodemailer = require('nodemailer');
-const password = require('secure-random-password')
-const Users = require('../routes/Users')
+const nodemailer = require('nodemailer')
+const jwt = require('jsonwebtoken')
 
 const getRole = (req, res) => {
-  if (req.decoded.email === undefined) {
+  const authHeader = req.headers['authorization']
+
+  if (authHeader === undefined) {
     res.status(200).json({userRole: 'viewer'})
   } else {
-    User
-      .find({email: req.decoded.email})
-      .then((user) => {
-        res.status(200).json({userRole: user[0].userRole})
-      })
-      .catch((e) => {
-        // Точно ли стоит при ошибке отправлять 200 запрос с ролью 'viewer' ?
-        // Если всё же 500 статус лучше, как в response передать роль 'viewer' ?
-        console.log(e)
+    const accessToken = req.headers.authorization.split(' ')[1]
+
+    jwt.decode(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+      if (err) {
         res.status(200).json({userRole: 'viewer'})
-      })
+        console.log(err)
+      } else if (decoded) {
+        User
+          .find({email: decoded.email})
+          .then((user) => {
+            res.status(200).json({userRole: user[0].userRole})
+          })
+          .catch((err) => {
+            res.status(200).json({userRole: 'viewer'})
+            console.log(err)
+          })
+      }
+    })
   }
 }
 
 const resetPassword = async (req, res) => {
   const email = req.body.email
 
-  if (req.isUserExist) {
-    const newPassword = password.randomPassword({
-      characters: ['1234567890', 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', '!@#%&']
-    })
-
-    req.params.email = email
-    req.body = {password: newPassword}
-
-    await Users.updateUser(req, res)
-
-    if (!res.headersSent) {
-      const output = `
-      <h3>Your password has been changed</h3>
-      <p>New data for authorization</p>
-      <ul>
-          <li><b>Email: </b>${email}</li>
-          <li><b>Password: </b>${newPassword}</li>
-      </ul>
-    `
-
+  if (email !== undefined || req.isUserExist) {
+    const token = jwt.sign({email: email}, process.env.ACCESS_TOKEN_SECRET)
+    const output =
+        `
+        <p>
+            A request to reset your password has been made (valid for 10 minutes). If you did not make this request, simply ignore this email. If you did make this request just click the link below:
+        </p>
+        <p>
+            ${process.env.RESET_PASSWORD_TEMPLATE_LINK + token}
+        </p>
+        <p>
+            If the above URL does not work, try copying and pasting it into your browser. If you continue to experience problems please feel free to contact us.
+        </p>
+       `
       let transporter = nodemailer.createTransport({
         service: "gmail",
         port: 587,
@@ -57,28 +59,38 @@ const resetPassword = async (req, res) => {
       let mailOptions = {
         from: `"OMM" <${process.env.SMTP_EMAIL}>`,
         to: `${email}`,
-        subject: 'OMM Password Change Request',
+        subject: 'OMM - Password Reset Instructions',
         text: 'Password Reset',
         html: output
       };
 
       transporter.sendMail(mailOptions, (err, info) => {
         if (err) {
+          res.status(500).json({message: `${process.env.TRANSPORTER_SERVICE} error`})
           console.log(err)
-          res.sendStatus(500)
         } else {
           // console.log('Message sent: %s', info.messageId)
-          res.status(200).json({status: true, message: "Successful reset password"})
+          res.sendStatus(200)
         }
-      });
-    } else {
-      res.status(200).json({status: false, message: "User undefined"})
-    }
+      })
+  } else {
+    res.status(200).json({message: "User undefined"})
+  }
+}
+
+const updatePassword = (req, res, next) => {
+  if (req.decoded.email !== undefined) {
+    req.params.email = req.decoded.email
+
+    next()
+  } else {
+    res.status(401).json({message: 'Email undefined in JWT'})
   }
 }
 
 module.exports = {
   getRole: getRole,
-  resetPassword: resetPassword
+  resetPassword: resetPassword,
+  updatePassword: updatePassword
 }
 

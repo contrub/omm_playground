@@ -1,28 +1,30 @@
 const styles = theme => ({
   paper: {
     marginTop: theme.spacing(8),
-    display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    display: 'flex',
   },
   avatar: {
-    margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
+    margin: theme.spacing(1)
   },
   form: {
-    width: '100%',
     marginTop: theme.spacing(1),
+    width: '100%'
   },
   submitBtn: {
-    margin: theme.spacing(1, 0, 2),
+    margin: theme.spacing(1, 0, 2)
   },
-  errors: {
+  pass_copy_valid_error: {
     textAlign: 'center',
-    color: 'red',
-    margin: '0 0 16px'
+    margin: '0 0 16px',
+    color: 'red'
   },
-  showPass: {
-    left: '200px'
+  pass_valid_error: {
+    fontFamily: 'Gill Sans',
+    fontSize: '17px',
+    color: 'red'
   },
   myModal: {
     position: 'relative',

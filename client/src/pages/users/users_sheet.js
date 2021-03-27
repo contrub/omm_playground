@@ -1,30 +1,33 @@
+// React componentns
 import React from 'react';
 import {Link} from "react-router-dom";
 
+// Material-UI icons
 import AddBoxIcon from '@material-ui/icons/AddBox';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../styles/css/users.css'
+// Custom styles
+import '../../styles/css/users_sheet.css'
 
-import UserService from '../../services/UserService';
-
+// Third party functions
 import Cookies from 'js-cookie'
 
-class Users extends React.Component {
+// Local functions
+import UserService from '../../services/UserService'
+import {Redirect} from "react-router";
+
+class UsersSheet extends React.Component {
   state = {
     users: [],
-    status: '',
-    currentSort: 'default'
+    db_status: ''
   }
 
   componentDidMount = () => {
-    // скорее всего, всё же есть смысл фильтровать по алфавиту
     UserService.getUsers({token: Cookies.get('accessToken')})
       .then((res) => {
         if (res.message) {
-          this.setState({status: res.message})
+          this.setState({db_status: res.message})
         } else if (!res.length) {
-          this.setState({status: 'UsersDB is empty'})
+          this.setState({db_status: 'UsersDB is empty'})
         } else {
           res.sort((a, b) => {
             if(a.email < b.email) { return -1; }
@@ -49,22 +52,8 @@ class Users extends React.Component {
       })
   }
 
-  onSortChange = () => {
-    const { currentSort } = this.state;
-    let nextSort;
-
-    if (currentSort === 'down') nextSort = 'up';
-    else if (currentSort === 'up') nextSort = 'default';
-    else if (currentSort === 'default') nextSort = 'down';
-
-    this.setState({
-      currentSort: nextSort
-    })
-  }
-
   render() {
     const users = this.state.users.map((user, index) => {
-      // думаю, стоит переделать : возвращать таблицу, а не элементы таблицы
       return (
         <tr key={index}>
           <td>{user.email}</td>
@@ -98,7 +87,7 @@ class Users extends React.Component {
 
     return (
       <div>
-        {!this.state.users.length ||
+        {this.state.users.length ?
           <table className="table">
             <thead>
             <tr>
@@ -117,12 +106,11 @@ class Users extends React.Component {
               {users}
             </tbody>
           </table>
-        }
-        {this.state.users.length ||
+          :
           <section id="wrapper" className="container-fluid">
             <div className="error-box">
               <div className="error-body text-center">
-                <h3>{this.state.status}</h3>
+                <h3>{this.state.db_status}</h3>
               </div>
             </div>
           </section>
@@ -132,4 +120,4 @@ class Users extends React.Component {
   }
 }
 
-export default Users
+export default UsersSheet

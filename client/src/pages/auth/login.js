@@ -1,8 +1,9 @@
-﻿import React from "react";
+﻿// React components
+import React from "react";
 import {Link} from "react-router-dom";
 
+// Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
-
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
@@ -12,44 +13,38 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 
+// Material-UI icons
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
-import isEmpty from 'validator/lib/isEmpty';
-
+// Local functions
 import UserService from '../../services/UserService';
 
+// Third party functions
+import isEmpty from 'validator/lib/isEmpty';
 import Cookies from 'js-cookie'
 
+// Custom styles
 import styles from '../../styles/js/login'
-import 'bootstrap/dist/css/bootstrap.min.css'
 
 class SignIn extends React.Component {
 
-  constructor(props){
-
-    super(props);
-
-    this.state = {
-      inputs: {
-        email: '',
-        password: ''
-      },
-      isValid: false
-    }
+  state = {
+    inputs: {
+      email: '',
+      password: ''
+    },
+    isValid: false,
+    isLogged: false
   }
 
-  isLogged = () => {
-    if (Cookies.get('accessToken') !== undefined && !isEmpty(Cookies.get('accessToken'))) {
-      return true
-    } else {
-      return false
-    }
+  componentDidMount = () => {
+    Cookies.get('accessToken') !== undefined && !isEmpty(Cookies.get('accessToken')) ? this.setState({isLogged: true}) : this.setState({isLogged: false})
   }
 
   contactSubmit = (e) => {
+    e.preventDefault()
 
-    e.preventDefault();
     let email = this.state.inputs.email
     let password = this.state.inputs.password
 
@@ -75,24 +70,19 @@ class SignIn extends React.Component {
 
   handleChange = (input, e) => {
     document.getElementById('validError').innerText = ""
-    let inputs = this.state.inputs;
-    inputs[input] = e.target.value;
+    let inputs = this.state.inputs
+    inputs[input] = e.target.value
     this.setState({input: inputs[input]});
   }
 
   showPassword = () => {
-    if (document.getElementById('password').type === 'password') {
-      document.getElementById('password').type = 'text'
-    } else {
-      document.getElementById('password').type = 'password'
-    }
+    document.getElementById('password').type === 'password' ? document.getElementById('password').type = 'text' : document.getElementById('password').type = 'password'
   }
 
   render() {
-
     const { classes } = this.props;
 
-    if (this.isLogged()) {
+    if (this.state.isLogged) {
       window.location.href = '/'
     } else {
       return (
@@ -143,15 +133,15 @@ class SignIn extends React.Component {
                 fullWidth
                 variant="contained"
                 color="primary"
-                className={classes.submit}
+                className={classes.submit_btn}
               >
                 Sign In
               </Button>
             </form>
-            <div id='validError' className={classes.errors}/>
+            <div id='validError' className={classes.valid_error}/>
             <Grid container>
               <Grid item xs>
-                <Link to='/reset'>
+                <Link to='/reset_request'>
                   Forgot password?
                 </Link>
               </Grid>

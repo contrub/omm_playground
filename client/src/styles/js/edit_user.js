@@ -13,26 +13,13 @@ const styles = theme => ({
     width: '100%',
     marginTop: theme.spacing(1)
   },
-  removeBtn: {
+  remove_btn: {
     margin: theme.spacing(0, 0, 2)
   },
-  editBtn: {
+  edit_btn: {
     margin: theme.spacing(1, 0, 2)
   },
-  selValue: {
-    textAlign: 'center'
-  },
-  errors: {
-    textAlign: 'center',
-    color: 'red',
-    margin: '0 0 16px'
-  },
-  passRequirement: {
-    color: 'red',
-    fontFamily: 'Gill Sans',
-    fontSize: '18px'
-  },
-  formControl: {
+  form_control: {
     margin: theme.spacing(1),
     minWidth: 180
   }

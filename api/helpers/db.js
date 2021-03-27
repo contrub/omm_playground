@@ -1,12 +1,11 @@
+// Third party functions
 const bcrypt = require('bcrypt')
-const isEmpty = require('validator/lib/isEmpty')
-const isEmail = require('validator/lib/isEmail')
 
 const isUserExist = (req, res, next) => {
-  const email = req.decoded.email
+  const email = req.body.email
 
-  if (email === undefined || isEmpty(email)) {
-    res.sendStatus(404)
+  if (email === undefined) {
+    res.status(403).json({message: 'Email undefined'})
   } else {
     User
       .find({email: email})
@@ -20,8 +19,8 @@ const isUserExist = (req, res, next) => {
         }
       })
       .catch((err) => {
-        res.sendStatus(500)
         console.log(err)
+        res.status(500).json({message: 'MongoDB error'})
       })
   }
 }
@@ -30,9 +29,9 @@ const isUserDataExist = (req, res, next) => {
   const email = req.body.email
   const password = req.body.password
 
-  if (email === undefined || isEmpty(email)) {
+  if (email === undefined) {
     res.status(200).json({message: "Email undefined"})
-  } else if (password === undefined || isEmpty(password)) {
+  } else if (password === undefined) {
     res.status(200).json({message: "Password undefined"})
   } else {
     User
@@ -59,7 +58,7 @@ const isUserDataExist = (req, res, next) => {
       })
       .catch((err) => {
         console.log(err)
-        res.sendStatus(500)
+        res.status(500).json({message: 'MongoDB error'})
       })
   }
 }

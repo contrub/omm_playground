@@ -1,39 +1,39 @@
+// React Components
 import React from "react";
 
+// Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
-
-import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
+import TextField from "@material-ui/core/TextField";
+import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import CreateIcon from '@material-ui/icons/Create';
+// Material-UI icons
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import CreateIcon from "@material-ui/icons/Create";
 
-import {emailValidation} from "../../helpers/emailValidation"
-import {passwordValidation} from "../../helpers/passwordValidation"
+// Local functions
+import {passwordValidation} from "../../helpers/passwordValidation";
+import {emailValidation} from "../../helpers/emailValidation";
+import UserService from "../../services/UserService";
 
-import UserService from '../../services/UserService';
-
+// Third party functions
 import Cookies from "js-cookie"
 
+// Custom styles
 import styles from "../../styles/js/create_user";
 
 class CreateUser extends React.Component {
-  constructor(props){
-    super(props);
-
-    this.state = {
-      inputs: {
-        email: '',
-        password: '',
-      },
-      errors: {},
-      isValid: false
-    }
+  state = {
+    inputs: {
+      email: '',
+      password: '',
+    },
+    errors: {},
+    isValid: false
   }
 
   handleFieldValidation = () => {
@@ -70,9 +70,10 @@ class CreateUser extends React.Component {
   }
 
   handleChange = (input, e) => {
-    let inputs = this.state.inputs;
-    inputs[input] = e.target.value;
-    this.setState({input: inputs[input]});
+    let inputs = this.state.inputs
+
+    inputs[input] = e.target.value
+    this.setState({input: inputs[input]})
     this.handleFieldValidation()
   }
 
@@ -100,7 +101,6 @@ class CreateUser extends React.Component {
             <form className={classes.form} noValidate>
               <TextField
                 onChange={this.handleChange.bind(this, "email")}
-                className={classes.field}
                 value={this.state.inputs["email"]}
                 variant="outlined"
                 margin="normal"
@@ -112,10 +112,9 @@ class CreateUser extends React.Component {
                 autoComplete="email"
                 autoFocus
               />
-              <div className={classes.errors}>{this.state.errors["email"]}</div>
+              <div className={classes.valid_error}>{this.state.errors["email"]}</div>
               <TextField
                 onChange={this.handleChange.bind(this, "password")}
-                className={classes.field}
                 value={this.state.inputs["password"]}
                 InputProps={{
                   endAdornment: (
@@ -136,23 +135,23 @@ class CreateUser extends React.Component {
                 autoComplete="current-password"
               />
               <ul id='passwordRequirements' hidden>
-                <li className={classes.passwordRequirement} id='quantityCheck'>At least 8 characters</li>
-                <li className={classes.passwordRequirement} id='numberCheck'>Contains at least 1 number</li>
-                <li className={classes.passwordRequirement} id='lowercaseCheck'>Contains at least lowercase letter</li>
-                <li className={classes.passwordRequirement} id='uppercaseCheck'>Contains at least uppercase letter</li>
-                <li className={classes.passwordRequirement} id='specialCharacterCheck'>Contains a special character (!@#%&)</li>
+                <li className={classes.pass_requirement} id='quantityCheck'>At least 8 characters</li>
+                <li className={classes.pass_requirement} id='numberCheck'>Contains at least 1 number</li>
+                <li className={classes.pass_requirement} id='lowercaseCheck'>Contains at least lowercase letter</li>
+                <li className={classes.pass_requirement} id='uppercaseCheck'>Contains at least uppercase letter</li>
+                <li className={classes.pass_requirement} id='specialCharacterCheck'>Contains a special character (!@#%&)</li>
               </ul>
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
-                className={classes.submit}
+                className={classes.submit_btn}
               >
                 Create
               </Button>
             </form>
-            <div id='validError' className={classes.errors}/>
+            <div id='validError' className={classes.valid_error}/>
           </div>
         </Container>
       </div>

@@ -1,3 +1,4 @@
+// Third party functions
 const isEmail = require('validator/lib/isEmail')
 const isEmpty = require('validator/lib/isEmpty')
 

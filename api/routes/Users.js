@@ -1,4 +1,7 @@
+// Local schema
 const User = require('../models/User');
+
+// Third party functions
 const bcrypt = require('bcrypt')
 
 const getUsers = (req, res) => {
@@ -17,8 +20,8 @@ const getUsers = (req, res) => {
 
       res.json(filteredItems)
     })
-    .catch(err => {
-      res.sendStatus(500)
+    .catch((err) => {
+      res.status(500).json({message: 'MongoDB error'})
       console.log(err)
     });
 }
@@ -35,10 +38,11 @@ const getUser = (req, res) => {
         userRole: user[0].userRole,
         status: user[0].status
       })
+      
       res.json(filteredItem)
     })
-    .catch(err => {
-      res.sendStatus(500)
+    .catch((err) => {
+      res.status(500).json({message: 'MongoDB error'})
       console.log(err)
     });
 }
@@ -56,17 +60,17 @@ const createUser = (req, res) => {
 
   newUser
     .save()
-    .then((item) => {
+    .then((user) => {
       res.send({
         data: {
-          email: item.email,
-          userType: item.userRole,
-          id: item._id
+          email: user.email,
+          userRole: user.userRole,
+          id: user._id
         },
         accessToken: req.accessToken
       })})
-    .catch(err => {
-      res.sendStatus(500)
+    .catch((err) => {
+      res.status(500).json({message: 'MongoDB error'})
       console.log(err)
     })
 }
@@ -83,9 +87,9 @@ const updateUser = (req, res) => {
 
   User
     .updateOne({email: email}, newData)
-    .then((item) => res.json(item))
+    .then((user) => res.json(user))
     .catch(err => {
-      res.sendStatus(500)
+      res.status(500).json({message: 'MongoDB error'})
       console.log(err)
     })
 }
@@ -96,9 +100,8 @@ const deleteUser = (req, res) => {
   User
     .deleteOne({ email: email })
     .then(() => res.sendStatus(200))
-    .catch(err => {
-      res.sendStatus(500)
-
+    .catch((err) => {
+      res.status(500).json({message: 'MongoDB error'})
       console.log(err)
     });
 }
@@ -107,19 +110,17 @@ const clearUserDB = (req, res) => {
   User
     .deleteMany({})
     .then(() => res.sendStatus(200))
-    .catch(err => {
-      res.sendStatus(500)
+    .catch((err) => {
+      res.status(500).json({message: 'MongoDB error'})
       console.log(err)
     })
 }
 
 module.exports = {
-
   getUsers: getUsers,
   getUser: getUser,
   createUser: createUser,
   updateUser: updateUser,
   deleteUser: deleteUser,
   clearUserDB: clearUserDB
-
 }

@@ -1,45 +1,44 @@
+// React components
 import React from "react";
 import { Link }  from "react-router-dom";
 
+// Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
-
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
-import Avatar from "@material-ui/core/Avatar";
 import Checkbox from "@material-ui/core/Checkbox";
+import Button from "@material-ui/core/Button";
+import Avatar from "@material-ui/core/Avatar";
+import Grid from "@material-ui/core/Grid";
 
+// Material-UI icons
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 
-import UserService from '../../services/UserService';
-
-import {emailValidation} from "../../helpers/emailValidation";
-import {passwordValidation} from "../../helpers/passwordValidation";
-import {passwordCopyValidation} from "../../helpers/passwordCopyValidation";
-
+// Third party functions
 import Cookies from 'js-cookie'
 
+// Local functions
+import {passwordCopyValidation} from "../../helpers/passwordCopyValidation";
+import {passwordValidation} from "../../helpers/passwordValidation";
+import {emailValidation} from "../../helpers/emailValidation";
+import UserService from '../../services/UserService';
+
+// Custom styles
 import styles from "../../styles/js/signup";
 
 class SignUp extends React.Component {
-
-  constructor(props){
-    super(props);
-
-    this.state = {
-      inputs: {
-        email: '',
-        password: '',
+  state = {
+    inputs: {
+      email: '',
+      password: '',
         passwordCopy: ''
-      },
-      errors: {},
-      isValid: false
-    }
+    },
+    errors: {},
+    isValid: false
   }
 
   handleFieldValidation = () => {
@@ -57,19 +56,17 @@ class SignUp extends React.Component {
     e.preventDefault();
 
     if (this.state.isValid) {
-      UserService.signup({
-        email: this.state.inputs.email,
-        password: this.state.inputs.password
-      }).then((res) => {
-        if (res.status) {
-          document.getElementById('validError').innerText = res.status
-        } if (res.message) {
-          document.getElementById('validError').innerText = res.message
-        } else {
-          Cookies.set('accessToken', res.accessToken.split(' ')[1])
-          window.location.href = '/'
+      UserService.signup({email: this.state.inputs.email, password: this.state.inputs.password})
+        .then((res) => {
+          if (res.status) {
+            document.getElementById('validError').innerText = res.status
+          } if (res.message) {
+            document.getElementById('validError').innerText = res.message
+          } else {
+            Cookies.set('accessToken', res.accessToken)
         }
       })
+        .finally(() => window.location.href = '/')
     } else {
       this.handleFieldValidation()
       document.getElementById('validError').innerText = "Validation error"
@@ -94,7 +91,6 @@ class SignUp extends React.Component {
   }
 
   render() {
-
     const { classes } = this.props
 
     return (
@@ -177,7 +173,7 @@ class SignUp extends React.Component {
           <div id='validError' className={classes.errors}/>
           <Grid container>
             <Grid item xs>
-              <Link to='/reset'>
+              <Link to='/reset_request'>
                 Forgot password?
               </Link>
             </Grid>

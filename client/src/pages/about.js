@@ -1,16 +1,17 @@
-﻿import React from 'react';
+﻿// React components
+import React from 'react';
 
+// Material-UI components
 import CssBaseline from '@material-ui/core/CssBaseline';
 import ListItemText from '@material-ui/core/ListItemText';
-
-import {withStyles} from "@material-ui/core";
-
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import ListItem from '@material-ui/core/ListItem';
+import {withStyles} from "@material-ui/core";
 import List from '@material-ui/core/List';
 import Link from '@material-ui/core/Link';
 
+// Custom Styles
 import styles from "../styles/js/about"
 
 function Copyright() {

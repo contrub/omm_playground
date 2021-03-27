@@ -1,45 +1,41 @@
+// React components
 import React from "react";
-import Cookies from 'js-cookie'
 
+// Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
-
 import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 
+// Material-UI icons
 import EmailIcon from '@material-ui/icons/Email';
 
+// Local functions
 import {emailValidation} from "../../helpers/emailValidation";
-
 import UserService from '../../services/UserService';
 
+// Third party functions
 import isEmpty from "validator/es/lib/isEmpty";
+import Cookies from 'js-cookie';
 
-import styles from "../../styles/js/reset";
+// Custom styles
+import styles from "../../styles/js/reset_password_request";
 
-class PasswordReset extends React.Component {
-
-  constructor(props){
-    super(props);
-
-    this.state = {
-      inputs: {
-        email: ''
-      },
-      errors: {},
-      isValid: false
-    }
+class PasswordResetRequest extends React.Component {
+  state = {
+    inputs: {
+      email: ''
+    },
+    errors: {},
+    isValid: false,
+    isLogged: false
   }
 
-  isLogged = () => {
-    if (Cookies.get('accessToken') !== undefined && isEmpty(Cookies.get('accessToken'))) {
-      return true
-    } else {
-      return false
-    }
+  componentDidMount = () => {
+    Cookies.get('accessToken') !== undefined && isEmpty(Cookies.get('accessToken')) ? this.setState({isLogged: true}) : this.setState({isLogged: false})
   }
 
   hideModal = () => {
@@ -55,22 +51,24 @@ class PasswordReset extends React.Component {
     let inputs = this.state.inputs;
     let errors = this.state.errors;
 
-    document.getElementById('validError').innerText = ""
     this.setState({isValid: emailValidation(inputs, errors)})
   }
 
   contactSubmit = (e) => {
     const email = this.state.inputs.email
+
     e.preventDefault();
     this.handleFieldValidation()
       .then(() => {
         if (this.state.isValid) {
+          document.getElementById('validError').innerText = ""
+
           UserService.resetPassword({email: email})
             .then((res) => {
-              if (res.ok) {
-                this.showModal()
-              } else {
+              if (res.message) {
                 this.setState({errors: {email: res.message}})
+              } else {
+                this.showModal()
               }
             })
         }
@@ -84,13 +82,9 @@ class PasswordReset extends React.Component {
   }
 
   render() {
-
-    if (this.isLogged()) {
-
-      window.location.href = '/monuments'
-
+    if (this.state.isLogged) {
+      window.location.href = '/'
     } else {
-
       const { classes } = this.props
 
       return (
@@ -122,18 +116,18 @@ class PasswordReset extends React.Component {
                 fullWidth
                 variant="contained"
                 color="primary"
-                className={classes.submitBtn}
+                className={classes.submit_btn}
               >
-                Reset Password
+                Send reset link
               </Button>
             </form>
-            <div id='validError' className={classes.errors}>{this.state.errors["email"]}</div>
+            <div id='validError' className={classes.valid_error}>{this.state.errors["email"]}</div>
           </div>
           <div id="reset_password" className="modal" tabIndex="-1">
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">Password successful rested!</h5>
+                  <h5 className="modal-title">Recovery link has been sent successfully</h5>
                 </div>
                 <div className="modal-body">
                   <p>Check your email - {this.state.inputs.email}</p>
@@ -150,4 +144,4 @@ class PasswordReset extends React.Component {
   }
 }
 
-export default withStyles(styles, {withTheme: true})(PasswordReset)
+export default withStyles(styles, {withTheme: true})(PasswordResetRequest)

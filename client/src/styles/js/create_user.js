@@ -1,33 +1,30 @@
 const styles = theme => ({
   paper: {
     marginTop: theme.spacing(8),
-    display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    display: 'flex',
   },
   avatar: {
-    margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
+    margin: theme.spacing(1),
   },
   form: {
-    width: '100%',
     marginTop: theme.spacing(1),
+    width: '100%',
   },
-  submit: {
+  submit_btn: {
     margin: theme.spacing(2, 0, 2),
   },
-  errors: {
+  valid_error: {
     textAlign: 'center',
-    color: 'red',
-    margin: '0 0 16px'
+    margin: '0 0 16px',
+    color: 'red'
   },
-  passwordRequirement: {
-    color: 'red',
+  pass_requirement: {
     fontFamily: 'Gill Sans',
-    fontSize: '18px'
-  },
-  field: {
-    margin: theme.spacing(1, 0, 1)
+    fontSize: '18px',
+    color: 'red'
   }
 });
 

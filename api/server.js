@@ -1,15 +1,18 @@
+// Third party functions
 require('dotenv').config()
 
-const express = require('express');
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-
-const app = express();
 const port = process.env.PORT
 
+const bodyParser = require('body-parser')
+const mongoose = require('mongoose')
+const express = require('express')
+const cors = require('cors')
+
+// Local functions
 const postman = require('./utils/postman')
 const routes = require('./routes')
+
+const app = express()
 
 mongoose.Promise = global.Promise
 

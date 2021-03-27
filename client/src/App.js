@@ -1,35 +1,50 @@
+// React components
 import React, {Component} from 'react';
-import './styles/css/App.css';
-import Header from './components/Header/';
-import Sidebar from './components/Header/side_bar';
-import About from './pages/about';
-import Login from './pages/auth/login';
-import Monuments from './pages/monuments/monuments';
-import MonumentById from './pages/monuments/monument';
-import Signup from "./pages/auth/signup";
-import Users from "./pages/users/users"
-import EditUser from "./pages/users/edit_user";
-import CreateUser from "./pages/users/create_user"
-import ProtectedRoute from "./components/protectedRoute";
-import ForbiddenPage from "./pages/forbidden";
 import {
   BrowserRouter,
   Switch,
   Route
 } from "react-router-dom";
-import PasswordReset from "./pages/auth/reset";
+
+// Custom styles
+import './styles/css/App.css';
+
+// Custom components
+import ProtectedRoute from "./components/protectedRoute";
+import Sidebar from './components/Header/side_bar';
+import Header from './components/Header/';
+
+// General pages
+import ForbiddenPage from "./pages/forbidden";
+import About from './pages/about';
+
+// Auth pages
+import PasswordResetRequest from "./pages/auth/reset_password_request";
+import PasswordReset from "./pages/auth/reset_password";
+import Signup from "./pages/auth/signup";
+import Login from "./pages/auth/login";
+
+// Monuments pages
+import CreateMonument from "./pages/monuments/create_monument";
+import MonumentsSheet from "./pages/monuments/monuments_sheet"
+import EditMonument from "./pages/monuments/edit_monument";
+import Monuments from './pages/monuments/monuments_sheet'; // not working (dan)
+import MonumentById from './pages/monuments/monument'; // not working (dan)
+
+// Users pages
+import CreateUser from "./pages/users/create_user";
+import UsersSheet from "./pages/users/users_sheet";
+import EditUser from "./pages/users/edit_user";
+
+// Third party functions
 import UserService from "./services/UserService";
 import isEmpty from "validator/es/lib/isEmpty";
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isDrawerOpen: false,
-      isListOpen: false
-    }
+  state = {
+    isDrawerOpen: false,
+    isListOpen: false
   }
 
   componentDidMount = () => {
@@ -41,7 +56,7 @@ class App extends Component {
 
   submitSearch = (data) => {
     setTimeout(() => console.log(data), 1000);
-  };
+  }
 
   openDrawer = () => {
     this.setState({
@@ -71,7 +86,6 @@ class App extends Component {
   }
 
   render() {
-    // console.log(this.state)
     return (
       <BrowserRouter>
         <div className="App">
@@ -92,19 +106,20 @@ class App extends Component {
           />
         </div>
         <Switch>
-          <Route exact path="/" component={Monuments}/>
+          {/*<Route exact path="/" component={Monuments}/>*/}
+          {/*<Route path="/monuments/:id" component={MonumentById}/>*/}
           <Route path="/forbidden" component={ForbiddenPage}/>
           <Route path="/about" component={About}/>
-          <Route path="/login" component={Login}/>
-          <Route path="/monuments/:id" component={MonumentById}/>
-          <Route path="/signup" component={Signup}/>
+          <Route path="/reset_request" component={PasswordResetRequest}/>
           <Route path="/reset" component={PasswordReset}/>
-          {/*<Route path="/create_monument">*/}
-          {/*  <CreateMonument />*/}
-          {/*</Route>*/}
-          <ProtectedRoute exact path="/users" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={Users}/>
+          <Route path="/signup" component={Signup}/>
+          <Route path="/login" component={Login}/>
+          <ProtectedRoute exact path="/users" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={UsersSheet}/>
           <ProtectedRoute path="/users/:email" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={EditUser}/>
           <ProtectedRoute path="/create_user" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={CreateUser}/>
+          <ProtectedRoute path="/monuments" requiredRole={"admin"} userRole={localStorage.getItem('userRole')}  component={MonumentsSheet}/>
+          <ProtectedRoute path="/edit_monument/:id" requiredRole={"admin"} userRole={localStorage.getItem('userRole')} component={EditMonument}/>
+          <ProtectedRoute path="/create_monument" requiredRole={"admin"} userRole={localStorage.getItem('userRole')} component={CreateMonument}/>
         </Switch>
       </BrowserRouter>
     )

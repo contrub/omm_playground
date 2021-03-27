@@ -10,9 +10,6 @@ import withStyles from "@material-ui/core/styles/withStyles";
 import isEmpty from "validator/es/lib/isEmpty";
 import MonumentService from "../../services/MonumentService";
 
-/* Страничка создания памятников (должна быть предоставлена superadmin и admin)
-* */
-
 const styles = theme => ({
   paper: {
     marginTop: theme.spacing(8),

@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+// Third party functions
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const MonumentSchema = new Schema({
   name: {
