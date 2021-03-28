@@ -5,7 +5,7 @@ const fetchMonuments = () => {
 }
 
 const getMonument = (params) => {
-  return api.get(`/api/monuments/${params._id}`, params)
+    return api.get(`/api/monuments/${params._id}`)
 }
 
 const createMonument = (params) => {

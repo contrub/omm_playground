@@ -1,14 +1,13 @@
 const Monument = require('../models/Monument')
-const isEmpty = require('validator/lib/isEmpty')
 
 const isMonumentExist = (req, res, next) => {
-  if (name === req.body) {
-    res.sendStatus(404)
+  if (req.body.name === undefined) {
+    res.status(404).json({message: 'Monument name undefined'})
   } else {
     const name = req.body.name
 
     Monument
-      .find({name: req.body.name})
+      .find({name: name})
       .then((item) => {
         if (item.length) {
           res.status(200).json({message: 'Monument already exist!'})

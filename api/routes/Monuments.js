@@ -5,7 +5,7 @@ const getMonuments = (req, res) => {
   Monument.find()
     .then((items) => res.json(items))
     .catch((err) => {
-      res.sendStatus(500)
+      res.status(500).json({message: 'MongoDB error'})
       console.log(err)
     });
 }
@@ -15,8 +15,8 @@ const getMonument = (req, res) => {
     .findById(req.params.id)
     .then((item) => res.json(item))
     .catch((err) => {
-      console.log(err)
       res.status(500).json({message: 'MongoDB error'})
+      console.log(err)
     })
 }
 

@@ -10,15 +10,15 @@ const getRole = (req, res) => {
   } else {
     const accessToken = req.headers.authorization.split(' ')[1]
 
-    jwt.decode(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+    jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
       if (err) {
-        res.status(200).json({userRole: 'viewer'})
         console.log(err)
+        res.status(200).json({userRole: 'viewer'})
       } else if (decoded) {
         User
           .find({email: decoded.email})
           .then((user) => {
-            res.status(200).json({userRole: user[0].userRole})
+            res.status(200).json({userRole: user[0].userRole === undefined ? 'viewer' : user[0].userRole})
           })
           .catch((err) => {
             res.status(200).json({userRole: 'viewer'})

@@ -23,10 +23,6 @@ const MonumentSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  registryNumber: {
-    type: String,
-    default: 'Неизвестно'
-  },
   imageURL: {
     type: String,
     default: 'https://res.cloudinary.com/gre354gfg/image/upload/v1613916683/monuments/static_monument_kzgbhy.png'

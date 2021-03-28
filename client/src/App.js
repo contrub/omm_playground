@@ -16,7 +16,7 @@ import Header from './components/Header/';
 
 // General pages
 import ForbiddenPage from "./pages/forbidden";
-import About from './pages/about';
+import About from "./pages/about";
 
 // Auth pages
 import PasswordResetRequest from "./pages/auth/reset_password_request";
@@ -28,8 +28,8 @@ import Login from "./pages/auth/login";
 import CreateMonument from "./pages/monuments/create_monument";
 import MonumentsSheet from "./pages/monuments/monuments_sheet"
 import EditMonument from "./pages/monuments/edit_monument";
-import Monuments from './pages/monuments/monuments_sheet'; // not working (dan)
-import MonumentById from './pages/monuments/monument'; // not working (dan)
+import Monuments from './pages/monuments/monuments'; // not working (dan)
+import MonumentById from "./pages/monuments/monument";
 
 // Users pages
 import CreateUser from "./pages/users/create_user";
@@ -114,10 +114,12 @@ class App extends Component {
           <Route path="/reset" component={PasswordReset}/>
           <Route path="/signup" component={Signup}/>
           <Route path="/login" component={Login}/>
-          <ProtectedRoute exact path="/users" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={UsersSheet}/>
+          <Route exact path="/" component={Monuments}/>
+          <Route path="/monuments/:id" component={MonumentById}/>
+          <ProtectedRoute path="/users_sheet" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={UsersSheet}/>
           <ProtectedRoute path="/users/:email" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={EditUser}/>
           <ProtectedRoute path="/create_user" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={CreateUser}/>
-          <ProtectedRoute path="/monuments" requiredRole={"admin"} userRole={localStorage.getItem('userRole')}  component={MonumentsSheet}/>
+          <ProtectedRoute path="/monuments_sheet" requiredRole={"admin"} userRole={localStorage.getItem('userRole')}  component={MonumentsSheet}/>
           <ProtectedRoute path="/edit_monument/:id" requiredRole={"admin"} userRole={localStorage.getItem('userRole')} component={EditMonument}/>
           <ProtectedRoute path="/create_monument" requiredRole={"admin"} userRole={localStorage.getItem('userRole')} component={CreateMonument}/>
         </Switch>

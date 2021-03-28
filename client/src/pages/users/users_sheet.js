@@ -13,7 +13,6 @@ import Cookies from 'js-cookie'
 
 // Local functions
 import UserService from '../../services/UserService'
-import {Redirect} from "react-router";
 
 class UsersSheet extends React.Component {
   state = {

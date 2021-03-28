@@ -52,8 +52,8 @@ class EditUser extends React.Component {
 
         this.setState({user: res[0], inputs: {email: res[0].email}, selects: {userRole: roleValue, status: statusValue}})
       })
-      .catch(e => {
-        // console.log(e.message)
+      .catch((err) => {
+        // console.log(err.message)
         this.showModal()
       })
   }
@@ -83,7 +83,7 @@ class EditUser extends React.Component {
     const email = this.state.user.email
 
     UserService.deleteUser({email: email, token: Cookies.get('accessToken')})
-      .then(() => window.location.href = '/users')
+      .then(() => window.location.href = '/users_sheet')
   }
 
   handleChange = (input, e) => {

@@ -52,7 +52,7 @@ if (process.env.NODE_ENV !== 'development') {
 
   routes.post('/api/monuments', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.MonumentsDB, MonumentService.isMonumentExist, cloudinary.uploadImage, Monuments.createMonument)
 
-  routes.put('/api/monuments/:id', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.MonumentsDB, Monuments.updateMonument)
+  routes.put('/api/monuments/:id', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.MonumentsDB, cloudinary.uploadImage, Monuments.updateMonument)
 
   routes.delete('/api/monuments/:id', jwt.verifyAccessToken, jwt.decodeAccessToken, AuthorizationController.MonumentsDB, Monuments.deleteMonument)
   // routes.delete('/api/monuments/db/all', Monuments.clearMonumentsDB)

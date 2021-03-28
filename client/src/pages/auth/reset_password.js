@@ -12,14 +12,14 @@ import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 
 // Material-UI icons
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import EmailIcon from '@material-ui/icons/Email';
 
 // Local functions
 import {passwordCopyValidation} from "../../helpers/passwordCopyValidation";
 import {passwordValidation} from "../../helpers/passwordValidation";
-import UserService from '../../services/UserService';
+import UserService from "../../services/UserService";
 
 // Third party functions
 import Cookies from "js-cookie";
@@ -91,8 +91,6 @@ class PasswordReset extends React.Component {
     if (this.state.isValid) {
       UserService.updatePassword({token: this.state.token, password: this.state.inputs.password})
         .then((res) => {
-          const status = res.nModified
-
           this.setState({modal: {head: 'Password successfully reset!', body: 'From now on you can use a new password'}})
         })
         .catch((e) => {

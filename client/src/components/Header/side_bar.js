@@ -64,8 +64,13 @@ class Sidebar extends Component {
               {this.checkRole('admin') &&
                 <Collapse in={this.props.isListOpen} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <ListItem button className={classes.nested} component={Link} to="/monuments"
-                              onClick={this.props.closeDrawer}>
+                    <ListItem
+                      button
+                      onClick={this.props.closeDrawer}
+                      className={classes.nested}
+                      component={Link}
+                      to="/monuments_sheet"
+                    >
                       <ListItemIcon>
                         <AccountBalanceIcon/>
                       </ListItemIcon>
@@ -77,7 +82,7 @@ class Sidebar extends Component {
               {this.checkRole('superadmin') &&
                 <Collapse in={this.props.isListOpen} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <ListItem button className={classes.nested} component={Link} to="/monuments"
+                    <ListItem button className={classes.nested} component={Link} to="/monuments_sheet"
                               onClick={this.props.closeDrawer}>
                       <ListItemIcon>
                         <AccountBalanceIcon/>
@@ -86,7 +91,7 @@ class Sidebar extends Component {
                     </ListItem>
                   </List>
                   <List component="div" disablePadding>
-                    <ListItem button className={classes.nested} component={Link} to="/users"
+                    <ListItem button className={classes.nested} component={Link} to="/users_sheet"
                               onClick={this.props.closeDrawer}>
                       <ListItemIcon>
                         <SupervisorAccountIcon/>

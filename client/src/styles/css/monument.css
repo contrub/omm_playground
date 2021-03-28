@@ -1,32 +1,32 @@
 .title {
-    text-align: center;
     font-family: cursive;
-    
+    text-align: center;
 }
-#name{
+#name {
     font-family: 'Times New Roman', Times, serif;
     font-size: 50px;
 }
-.img{
-    
+.img {
     height: 50%;
     width: 50%;
-    
 }
-#Description{
+#description {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 20px ;
     margin: 2%;
-    font-size: 20px ;
-    font-family: 'Times New Roman', Times, serif;
 }
-#Address{
-    font-size: 20px ;
+
+#address {
     font-family: 'Times New Roman', Times, serif;
+    font-size: 20px ;
 }
-#Creator{
-    font-size: 20px ;
+
+#creator {
     font-family: 'Times New Roman', Times, serif;
+    font-size: 20px;
 }
-#Date{
-    font-size: 20px ;
+
+#date {
     font-family: 'Times New Roman', Times, serif;
+    font-size: 20px;
 }

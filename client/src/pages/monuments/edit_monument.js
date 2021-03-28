@@ -1,139 +1,159 @@
-import React from 'react';
+// React components
+import React from "react";
 import {withRouter} from "react-router";
 
+// Material-UI components
+import withStyles from "@material-ui/core/styles/withStyles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
-
-import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
-import VisibilityIcon from "@material-ui/icons/Visibility";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
+import TextField from "@material-ui/core/TextField";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+// Material-UI icons
+import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 
-import withStyles from "@material-ui/core/styles/withStyles";
+// Custom styles
+import styles from "../../styles/js/edit_monument";
 
-import styles from '../../styles/js/edit_user'
-import 'bootstrap/dist/css/bootstrap.min.css';
+// Local functions
+import MonumentService from "../../services/MonumentService";
 
-import {passwordValidation} from "../../helpers/passwordValidation"
-
-import UserService from '../../services/UserService';
-
+// Third party functions
 import Cookies from "js-cookie";
 
 class EditMonument extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      user: [],
-      inputs: {
-        password: '',
-        userRole: '',
-        status: ''
-      },
-      selects: {
-        userRole: 0,
-        status: 0
-      },
-      role: {10: 'viewer', 20: 'admin', 30: 'superadmin', 0: ''},
-      status: {10: 'active', 20: 'disable', 0: ''},
-      isValid: true
-    }
+  state = {
+    user: [],
+    inputs: {
+      description: '',
+      imageURL: '',
+      address: '',
+      creator: '',
+      base64: '',
+      name: '',
+      date: '',
+      id: ''
+    },
+    errors: {
+      image: ''
+    },
+    modal: {
+      head: '',
+      body: ''
+    },
+    isValid: true
   }
 
-  handleFieldValidation = () => {
-    let inputs = this.state.inputs;
+  componentDidMount = async () => {
+    const monumentID = this.props.match.params.id
 
-    document.getElementById('validError').innerText = ""
-    this.setState({isValid: passwordValidation(inputs)})
-    if (inputs.password) {
-      document.getElementById('passwordRequirements').hidden = false
-    } else {
-      document.getElementById('passwordRequirements').hidden = true
-    }
-  }
-
-  componentDidMount () {
-    const email = this.props.match.params.email
-    const rolesObjectKeys = Object.keys(this.state.role)
-    const rolesObjectValues = Object.values(this.state.role)
-    const statusObjectKeys = Object.keys(this.state.status)
-    const statusObjectValues = Object.values(this.state.status)
-
-    UserService.getUser({email: email, token: Cookies.get('accessToken')})
+    MonumentService.getMonument({_id: monumentID})
       .then((res) => {
-        if (res.message) {
-          // понятное дело, нужно переделать для различных ошибок
-          alert(res.message)
-        } else {
-          const roleValue =  rolesObjectKeys[rolesObjectValues.indexOf(res[0].userRole)]
-          const statusValue = statusObjectKeys[statusObjectValues.indexOf(res[0].status)]
+        const name = res.name
 
-          this.setState({user: res[0], inputs: {email: res[0].email}, selects: {userRole: roleValue, status: statusValue}})
+        if (name === undefined) {
+          this.setState({modal: {head: 'Internal Server Error', body: 'Something going wrong'}})
+          this.showModal()
+        } else {
+          this.setState({inputs: {
+              description: res.description,
+              imageURL: res.imageURL,
+              address: res.address,
+              creator: res.creator,
+              name: res.name,
+              date: res.date,
+              _id: res._id
+            }})
         }
+      })
+      .catch((err) => {
+        this.setState({modal: {head: 'Internal Server Error', body: 'Something going wrong'}})
+        this.showModal()
       })
   }
 
   contactSubmit = (e) => {
-
-    e.preventDefault();
+    e.preventDefault()
 
     if (this.state.isValid) {
-      const inputs = this.state.inputs
-      inputs['token'] = Cookies.get('accessToken')
-      this.setState({inputs: inputs})
+      const {errors} = this.state
+      let {inputs} = this.state
 
-      Object.keys(this.state.inputs).forEach((key) => (this.state.inputs[key] === "") && delete this.state.inputs[key]);
-
-      UserService.updateUser(this.state.inputs)
-        .then(() => window.location.href = '/users')
-
-    } else {
-      document.getElementById('validError').innerText = 'ValidationError'
+      inputs["token"] = Cookies.get('accessToken')
+      MonumentService.updateMonument(inputs)
+        .then((res) => {
+          if (res.message) {
+            errors["server"] = res.message
+            this.setState({errors: errors})
+          } else {
+            window.location.href = '/monuments_sheet'
+          }
+        })
+        .catch((err) => {
+          errors["server"] = 'Something going wrong'
+          this.setState({errors: errors})
+        })
     }
   }
 
-  removeUser = () => {
-    const email = this.state.user.email
+  removeMonument = () => {
+    const id = this.state.inputs.id
 
-    UserService.deleteUser({email: email, token: Cookies.get('accessToken')})
-      .then(() => window.location.href = '/users')
+    MonumentService.deleteMonument({_id: id, token: Cookies.get('accessToken')})
+      .then(() => window.location.href = '/monuments_sheet')
   }
 
   handleChange = (input, e) => {
-    let selects = this.state.selects
     let inputs = this.state.inputs
 
-    if (input === "password") {
-      inputs[input] = e.target.value;
-      this.setState({input: inputs[input]});
-      this.handleFieldValidation()
-    } else if (input === "userRole") {
-      selects[input] = e.target.value
-      inputs[input] = this.state.role[`${e.target.value}`]
-      this.setState({input: inputs[input], selects: selects})
-    } else if (input === "status") {
-      selects[input] = e.target.value
-      inputs[input] = this.state.status[`${e.target.value}`]
-      this.setState({input: inputs[input], selects: selects})
+    inputs[input] = e.target.value
+
+    this.setState({input: inputs[input]})
+  }
+
+  handleFileInputChange = (e) => {
+    let inputs = this.state.inputs
+    let errors = this.state.errors
+
+    try {
+      const reader = new FileReader()
+      const file = e.target.files[0]
+      const selectedFile = file
+
+      reader.readAsDataURL(selectedFile)
+      reader.onloadend = () => {
+        const result = reader.result
+        const fileType = result.split('/')[0].split(':')[1]
+
+        if (fileType !== 'image') {
+          errors["image"] = 'Please insert image!'
+          inputs["base64"] = ''
+          this.setState({errors: errors, inputs: inputs})
+        } else {
+          errors["image"] = ''
+          inputs["base64"] = result
+          this.setState({errors: errors, inputs: inputs})
+        }
+      }
+
+      reader.onerror = () => {
+        errors["image"] = 'Something going wrong'
+        this.setState({errors: errors, inputs: inputs})
+      }
+    } catch (e) {
+      this.setState({errors: {image: 'Upload photo error'}})
     }
   }
 
-  showPassword = () => {
-    if (document.getElementById('password').type === 'password') {
-      document.getElementById('password').type = 'text'
-    } else {
-      document.getElementById('password').type = 'password'
-    }
+  showModal = () => {
+    document.getElementById('reset_password').style.display = "block"
+  }
+
+  hideModal = () => {
+    document.getElementById('reset_password').style.display = "none"
+    window.location.href = '/monuments_sheet'
   }
 
   render() {
@@ -143,97 +163,112 @@ class EditMonument extends React.Component {
       <Container id="edit-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
         <CssBaseline/>
         <div className={classes.paper}>
-          <Avatar className={classes.avatar}/>
+          <Avatar className={classes.avatar}>
+            <AccountBalanceIcon/>
+          </Avatar>
           <Typography component="h1" variant="h5">
-            {this.state.user.email || "Loading ..."}
+            {this.state.inputs.name || "Loading ..."}
           </Typography>
           <form className={classes.form} noValidate>
-            {/*<input className="form-control" type="text" placeholder={this.state.user.email} readOnly/>*/}
             <TextField
-              onChange={this.handleChange.bind(this, "password")}
-              value={this.state.inputs["password"] || ""}
-              InputProps={{
-                endAdornment: (
-                  <Checkbox
-                    icon={<VisibilityIcon/>}
-                    checkedIcon={<VisibilityOffIcon/>}
-                    onClick={this.showPassword}
-                  />
-                )
-              }}
+              onChange={this.handleChange.bind(this, "description")}
+              value={this.state.inputs["description"] || ""}
               variant="outlined"
               margin="normal"
+              label="Description"
+              type="text"
+              rowsMax={10}
+              rows={2}
               fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              multiline
             />
-            <ul id='passwordRequirements' hidden>
-              <li className={classes.passRequirement} id='quantityCheck'>At least 8 characters</li>
-              <li className={classes.passRequirement} id='numberCheck'>Contains at least 1 number</li>
-              <li className={classes.passRequirement} id='lowercaseCheck'>Contains at least lowercase letter</li>
-              <li className={classes.passRequirement} id='uppercaseCheck'>Contains at least uppercase letter</li>
-              <li className={classes.passRequirement} id='specialCharacterCheck'>Contains a special character (!@#%&)</li>
-            </ul>
-            <div>
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label">UserRole</InputLabel>
-                <Select
-                  className={classes.selValue}
-                  labelId="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  label="UserRole"
-                  value={this.state.selects.userRole ?? "0"}
-                  onChange={this.handleChange.bind(this, "userRole")}
-                >
-                  <MenuItem value={0} className={classes.optValue}>
-                    <em>Without changes</em>
-                  </MenuItem>
-                  <MenuItem value={10}>viewer</MenuItem>
-                  <MenuItem value={20}>admin</MenuItem>
-                  <MenuItem value={30}>superadmin</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl variant="outlined" className={classes.formControl}>
-                <InputLabel id="demo-simple-select-outlined-label">Status</InputLabel>
-                <Select
-                  className={classes.selValue}
-                  labelId="demo-simple-select-outlined-label"
-                  id="demo-simple-select-outlined"
-                  label="Status"
-                  value={this.state.selects.status ?? "0"}
-                  onChange={this.handleChange.bind(this, "status")}
-                >
-                  <MenuItem value={0}>
-                    <em>Without changes</em>
-                  </MenuItem>
-                  <MenuItem value={10}>Active</MenuItem>
-                  <MenuItem value={20}>Disable</MenuItem>
-                </Select>
-              </FormControl>
-            </div>
-            <Button
-              type="submit"
+            <div className={classes.validation_name_error}>{this.state.errors.name}</div>
+            <TextField
+              onChange={this.handleChange.bind(this, "address")}
+              value={this.state.inputs["address"]}
+              variant="outlined"
+              margin="normal"
+              label="Address"
+              type="text"
+              rowsMax={10}
+              rows={1}
               fullWidth
+              multiline
+            />
+            <TextField
+              onChange={this.handleChange.bind(this, "creator")}
+              value={this.state.inputs["creator"] || ""}
+              variant="outlined"
+              margin="normal"
+              label="Creator"
+              type="text"
+              rowsMax={10}
+              rows={1}
+              fullWidth
+              multiline
+            />
+            <TextField
+              value={this.state.inputs["date"].split('T')[0] || ""}
+              onChange={this.handleChange.bind(this, "date")}
+              variant="outlined"
+              margin="normal"
+              label="Date"
+              type="date"
+              fullWidth
+            />
+            <Button
+              onChange={this.handleFileInputChange}
+              className={classes.upload_btn}
+              variant="contained"
+              component="label"
+            >
+              Upload Photo
+              <input
+                type="file"
+                hidden
+              />
+            </Button>
+            <img
+              src={this.state.inputs.base64 ? this.state.inputs.base64 : this.state.inputs.imageURL}
+              className={classes.image_preview}
+              alt="monument_image"
+            />
+            <div id='validError' className={classes.validation_image_error}>{this.state.errors.image}</div>
+            <Button
+              className={classes.edit_btn}
               variant="contained"
               color="primary"
-              className={classes.editBtn}
+              type="submit"
+              fullWidth
             >
-              Edit User
+              Edit Monument
             </Button>
             <Button
-              onClick={this.removeUser}
-              fullWidth
+              className={classes.remove_btn}
+              onClick={this.removeMonument}
               variant="contained"
               color="secondary"
-              className={classes.removeBtn}
+              fullWidth
             >
-              Remove User
+              Remove Monument
             </Button>
             <div id='validError' className={classes.errors}/>
           </form>
+        </div>
+        <div id="reset_password" className="modal" tabIndex="-1">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">{this.state.modal.head}</h5>
+              </div>
+              <div className="modal-body">
+                <p className="modal-description">{this.state.modal.body}</p>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={this.hideModal}>Close</button>
+              </div>
+            </div>
+          </div>
         </div>
       </Container>
     )

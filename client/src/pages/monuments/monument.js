@@ -1,7 +1,12 @@
-﻿import React from 'react';
-import MonumentService from '../../services/MonumentService'
+// React components
+import React from "react";
 import {withRouter} from "react-router";
-import "../../styles/css/monument.css"
+
+// Local functions
+import MonumentService from "../../services/MonumentService";
+
+// Custom styles
+import "../../styles/css/monument.css";
 
 class MonumentById extends React.Component {
 
@@ -10,28 +15,35 @@ class MonumentById extends React.Component {
   }
 
   componentDidMount = async() => {
-    await MonumentService.getMonument({_id: this.props.match.params.id})
+    const id = this.props.match.params.id
+
+    await MonumentService.getMonument({_id: id})
       .then((res) => {
         this.setState({monumentInfo: res})
       })
   }
 
   render() {
+    const {monumentInfo} = this.state
+
     return (
       <div>
-        <h1 id="name"> {this.state.monumentInfo.name} </h1>
-        <img
-
-          className="img"
-          alt=""
-          src={this.state.monumentInfo.imageURL}
-        />
-        <p id="Description"> {this.state.monumentInfo.description} </p>
+        <h1 id="name"> {monumentInfo.name} </h1>
+          <img
+            className="img"
+            alt="monument_image"
+            src={monumentInfo.imageURL}
+          />
+          <p id="description">
+            {monumentInfo.description}
+          </p>
         <ul>
-          <li><p id="Address">Адрес - {this.state.monumentInfo.address}</p></li>
-          <li><p id="Creator">Архитектор/скульптор - </p></li>
-
-
+          <li>
+            <p id="address">Адрес - {monumentInfo.address}</p>
+          </li>
+          <li>
+            <p id="creator">Архитектор/скульптор - {monumentInfo.creator}</p>
+          </li>
         </ul>
       </div>
     )
