@@ -1,5 +1,6 @@
-// Third pary functions
+// Third party functions
 const cloudinary = require('cloudinary').v2
+const ApiError = require('../error/ApiError')
 require('dotenv').config()
 
 cloudinary.config({
@@ -8,22 +9,19 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 })
 
-uploadImage = async(req, res, next) => {
+uploadImage = async (req, res, next) => {
   const fileStr = req.body.base64
 
-  if (fileStr === undefined) {
-    next()
-  } else {
+  if (!fileStr === undefined) {
     await cloudinary.uploader.upload(fileStr, {
       folder: process.env.CLOUDINATY_FOLDER
     })
       .then((uploadResponse) => {
         const url = uploadResponse.secure_url
         req.body.imageURL = url
-        next()
       })
       .catch((err) => {
-        res.status(500).json({message: 'Cloudinary error'})
+        next(ApiError.internal('Cloudinary error'))
         console.log(err)
       })
   }

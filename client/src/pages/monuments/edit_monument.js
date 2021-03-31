@@ -2,6 +2,9 @@
 import React from "react";
 import {withRouter} from "react-router";
 
+// Custom components
+import ModalWindow from "../../components/modal";
+
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -41,36 +44,32 @@ class EditMonument extends React.Component {
     },
     modal: {
       head: '',
-      body: ''
+      body: '',
+      redirectURL: '/monuments_sheet'
     },
     isValid: true
   }
 
   componentDidMount = async () => {
     const monumentID = this.props.match.params.id
+    let {modal} = this.state
 
-    MonumentService.getMonument({_id: monumentID})
+    MonumentService.getMonument({id: monumentID})
       .then((res) => {
         const name = res.name
 
         if (name === undefined) {
-          this.setState({modal: {head: 'Internal Server Error', body: 'Something going wrong'}})
-          this.showModal()
+          modal["body"] = 'Get monument error'
+          modal["head"] = 'Something going wrong'
+          this.setState({modal: modal})
         } else {
-          this.setState({inputs: {
-              description: res.description,
-              imageURL: res.imageURL,
-              address: res.address,
-              creator: res.creator,
-              name: res.name,
-              date: res.date,
-              _id: res._id
-            }})
+          this.setState({inputs: {description: res.description, imageURL: res.imageURL, address: res.address, creator: res.creator, name: res.name, date: res.date, id: res._id}})
         }
       })
       .catch((err) => {
-        this.setState({modal: {head: 'Internal Server Error', body: 'Something going wrong'}})
-        this.showModal()
+        modal["head"] = 'Server error'
+        modal["body"] = err.message
+        this.setState({modal: modal})
       })
   }
 
@@ -78,31 +77,40 @@ class EditMonument extends React.Component {
     e.preventDefault()
 
     if (this.state.isValid) {
-      const {errors} = this.state
+      let {modal} = this.state
       let {inputs} = this.state
 
       inputs["token"] = Cookies.get('accessToken')
+
       MonumentService.updateMonument(inputs)
         .then((res) => {
-          if (res.message) {
-            errors["server"] = res.message
-            this.setState({errors: errors})
+          if (res.nModified === undefined) {
+            modal["head"] = 'Something going wrong'
+            modal["body"] = 'Update monument error'
+            this.setState({modal: modal})
           } else {
             window.location.href = '/monuments_sheet'
           }
         })
         .catch((err) => {
-          errors["server"] = 'Something going wrong'
-          this.setState({errors: errors})
+          modal["body"] = 'Server error'
+          modal["head"] = err.message
+          this.setState({modal: modal})
         })
     }
   }
 
   removeMonument = () => {
     const id = this.state.inputs.id
+    let {modal} = this.state
 
-    MonumentService.deleteMonument({_id: id, token: Cookies.get('accessToken')})
+    MonumentService.deleteMonument({id: id, token: Cookies.get('accessToken')})
       .then(() => window.location.href = '/monuments_sheet')
+      .catch((err) => {
+        modal["body"] = 'Server error'
+        modal["head"] = err.message
+        this.setState({modal: modal})
+      })
   }
 
   handleChange = (input, e) => {
@@ -147,17 +155,8 @@ class EditMonument extends React.Component {
     }
   }
 
-  showModal = () => {
-    document.getElementById('reset_password').style.display = "block"
-  }
-
-  hideModal = () => {
-    document.getElementById('reset_password').style.display = "none"
-    window.location.href = '/monuments_sheet'
-  }
-
   render() {
-    const { classes } = this.props
+    const {classes} = this.props
 
     return (
       <Container id="edit-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
@@ -255,21 +254,7 @@ class EditMonument extends React.Component {
             <div id='validError' className={classes.errors}/>
           </form>
         </div>
-        <div id="reset_password" className="modal" tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">{this.state.modal.head}</h5>
-              </div>
-              <div className="modal-body">
-                <p className="modal-description">{this.state.modal.body}</p>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={this.hideModal}>Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
+        {this.state.modal.head && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
       </Container>
     )
   }

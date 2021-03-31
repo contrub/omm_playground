@@ -1,6 +1,9 @@
 // React components
 import React from 'react';
 
+// Custom components
+import ModalWindow from "../../components/modal";
+
 // Material-UI components
 import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -22,11 +25,14 @@ import Cookies from "js-cookie";
 import styles from '../../styles/js/create_monument';
 
 class CreateMonument extends React.Component {
-
   state = {
     inputs: {
-      name: '',
-      base64: ''
+      name: ''
+    },
+    modal: {
+      head: '',
+      body: '',
+      redirectURL: ''
     },
     errors: {
       name: '',
@@ -35,20 +41,17 @@ class CreateMonument extends React.Component {
     isValid: false
   }
 
-  handleFormValidation = (name) => {
-    const errors = this.state.errors
-    const inputs = this.state.inputs
-    if (name === "name") {
-      if (isEmpty(inputs.name)) {
-        errors["name"] = 'Cannot be empty!'
-        this.setState({isValid: false})
-      } else {
-        errors["name"] = ''
-        this.setState({isValid: true})
-      }
-    }
+  handleFormValidation = () => {
+    const {errors} = this.state
+    const {inputs} = this.state
 
-    this.setState({errors: errors})
+    if (isEmpty(inputs.name)) {
+      errors["name"] = 'Cannot be empty!'
+      this.setState({isValid: false, errors: errors})
+    } else {
+      errors["name"] = ''
+      this.setState({isValid: true, errors: errors})
+    }
   }
 
   handleChange = (input, e) => {
@@ -57,8 +60,10 @@ class CreateMonument extends React.Component {
     inputs[input] = e.target.value
 
     this.setState({input: inputs[input]})
-    this.handleFormValidation(input)
 
+    if (input === "name") {
+      this.handleFormValidation()
+    }
   }
 
   handleFileInputChange = (e) => {
@@ -87,36 +92,43 @@ class CreateMonument extends React.Component {
 
     reader.onerror = () => {
       errors["image"] = 'Something going wrong'
+      inputs["base64"] = ''
       this.setState({errors: errors, inputs: inputs})
     }
   }
 
   contactSubmit = (e) => {
     e.preventDefault()
-    this.handleFormValidation('name')
+    this.handleFormValidation()
+
     if (this.state.isValid) {
-      const {errors} = this.state
       let {inputs} = this.state
+      let {modal} = this.state
 
       inputs["token"] = Cookies.get('accessToken')
       MonumentService.createMonument(inputs)
         .then((res) => {
-          if (res.message) {
-            errors["server"] = res.message
-            this.setState({errors: errors})
+          const name = res.name
+
+          if (name === undefined) {
+            modal["head"] = 'Monument create error'
+            modal["body"] = res.message ? res.message : 'Something going wrong'
+            this.setState({modal: modal})
           } else {
             window.location.href = '/monuments_sheet'
           }
         })
         .catch((err) => {
-          errors["server"] = 'Something going wrong'
-          this.setState({errors: errors})
+          modal["head"] = 'Server error'
+          modal["body"] = err.message
+          modal["redirectURL"] = '/monument_sheet'
+          this.setState({modal: modal})
         })
     }
   }
 
   render() {
-    const { classes } = this.props
+    const {classes} = this.props
 
     return (
       <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
@@ -162,17 +174,17 @@ class CreateMonument extends React.Component {
               onChange={this.handleChange.bind(this, "date")}
               variant="outlined"
               margin="normal"
-              fullWidth
-              id="date"
               type="Date"
+              id="date"
+              fullWidth
             />
             <TextField
               onChange={this.handleChange.bind(this, "creator")}
               variant="outlined"
               margin="normal"
-              fullWidth
-              id="creator"
               label="Creator"
+              id="creator"
+              fullWidth
             />
             <div>
               <Button
@@ -192,7 +204,7 @@ class CreateMonument extends React.Component {
               <img
                 className={classes.image_preview}
                 src={this.state.inputs.base64}
-                alt="monument_image"
+                alt={this.state.inputs.name ? this.state.inputs.name : 'monument_image'}
               />
             )}
             <div className={classes.validation_image_error}>{this.state.errors.image}</div>
@@ -204,9 +216,9 @@ class CreateMonument extends React.Component {
             >
               Create monument
             </Button>
-            <div className={classes.server_error}>{this.state.errors.server}</div>
           </form>
         </div>
+        {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
       </Container>
     )
   }

@@ -5,7 +5,7 @@ const fetchMonuments = () => {
 }
 
 const getMonument = (params) => {
-    return api.get(`/api/monuments/${params._id}`)
+    return api.get(`/api/monuments/${params.id}`)
 }
 
 const createMonument = (params) => {
@@ -13,11 +13,11 @@ const createMonument = (params) => {
 }
 
 const deleteMonument = (params) => {
-    return api.remove(`/api/monuments/${params._id}`, params)
+    return api.remove(`/api/monuments/${params.id}`, params)
 }
 
 const updateMonument = (params) => {
-    return api.update(`/api/monuments/${params._id}`, params)
+    return api.update(`/api/monuments/${params.id}`, params)
 }
 
 

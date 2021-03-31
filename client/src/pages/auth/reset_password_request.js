@@ -1,6 +1,9 @@
 // React components
 import React from "react";
 
+// Custom components
+import ModalWindow from "../../components/modal";
+
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -15,10 +18,9 @@ import EmailIcon from '@material-ui/icons/Email';
 
 // Local functions
 import {emailValidation} from "../../helpers/emailValidation";
-import UserService from '../../services/UserService';
+import AuthService from '../../services/AuthService';
 
 // Third party functions
-import isEmpty from "validator/es/lib/isEmpty";
 import Cookies from 'js-cookie';
 
 // Custom styles
@@ -29,25 +31,27 @@ class PasswordResetRequest extends React.Component {
     inputs: {
       email: ''
     },
+    modal: {
+      head: '',
+      body: '',
+      redirectURL: ''
+    },
     errors: {},
-    isValid: false,
-    isLogged: false
+    isValid: false
   }
 
   componentDidMount = () => {
-    Cookies.get('accessToken') !== undefined && isEmpty(Cookies.get('accessToken')) ? this.setState({isLogged: true}) : this.setState({isLogged: false})
+    let {modal} = this.state
+
+    if (Cookies.get('accessToken')) {
+      modal["head"] = 'Authorization Error'
+      modal["body"] = 'You already logged!'
+      modal["redirectURL"] = '/'
+      this.setState({modal: modal})
+    }
   }
 
-  hideModal = () => {
-    document.getElementById('reset_password').style.display = "none"
-    window.location.href = '/login'
-  }
-
-  showModal = () => {
-    document.getElementById('reset_password').style.display = "block"
-  }
-
-  handleFieldValidation = async () => {
+  handleFieldValidation = () => {
     let inputs = this.state.inputs;
     let errors = this.state.errors;
 
@@ -55,92 +59,87 @@ class PasswordResetRequest extends React.Component {
   }
 
   contactSubmit = (e) => {
-    const email = this.state.inputs.email
+    e.preventDefault()
 
-    e.preventDefault();
-    this.handleFieldValidation()
-      .then(() => {
-        if (this.state.isValid) {
-          document.getElementById('validError').innerText = ""
+    if (this.state.isValid) {
+      const email = this.state.inputs.email
+      const {inputs} = this.state
+      let {modal} = this.state
 
-          UserService.resetPassword({email: email})
-            .then((res) => {
-              if (res.message) {
-                this.setState({errors: {email: res.message}})
-              } else {
-                this.showModal()
-              }
-            })
-        }
-      })
+
+      document.getElementById('validError').innerText = ""
+
+      AuthService.resetPassword({email: email})
+        .then((res) => {
+          if (res.message) {
+            document.getElementById('validError').innerText = res.message
+          } else {
+            modal["head"] = 'Recovery link has been sent successfully!'
+            modal["body"] = `Check your email - ${inputs.email}`
+            modal["redirectURL"] = '/login'
+            this.setState({modal: modal})
+          }
+        })
+        .catch((err) => {
+          modal["head"] = 'Server error'
+          modal["body"] = err.message
+          modal["redirectURL"] = '/'
+          this.setState({modal: modal})
+        })
+    }
   }
 
   handleChange = (input, e) => {
-    let inputs = this.state.inputs;
-    inputs[input] = e.target.value;
-    this.setState({input: inputs[input]});
+    let inputs = this.state.inputs
+
+    inputs[input] = e.target.value
+
+    this.setState({input: inputs[input]})
+    this.handleFieldValidation()
   }
 
   render() {
-    if (this.state.isLogged) {
-      window.location.href = '/'
-    } else {
-      const { classes } = this.props
+    const {classes} = this.props
 
-      return (
-        <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
-          <CssBaseline />
-          <div className={classes.paper}>
-            <Avatar className={classes.avatar}>
-              <EmailIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Reset Password
-            </Typography>
-            <form className={classes.form} noValidate>
-              <TextField
-                onChange={this.handleChange.bind(this, "email")}
-                value={this.state.inputs["email"]}
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit_btn}
-              >
-                Send reset link
-              </Button>
-            </form>
-            <div id='validError' className={classes.valid_error}>{this.state.errors["email"]}</div>
-          </div>
-          <div id="reset_password" className="modal" tabIndex="-1">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Recovery link has been sent successfully</h5>
-                </div>
-                <div className="modal-body">
-                  <p>Check your email - {this.state.inputs.email}</p>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={this.hideModal}>Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Container>
-      )
-    }
+    return (
+      <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <EmailIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Reset Password
+          </Typography>
+          <form className={classes.form} noValidate>
+            <TextField
+              onChange={this.handleChange.bind(this, "email")}
+              value={this.state.inputs["email"]}
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit_btn}
+            >
+              Send reset link
+            </Button>
+          </form>
+          <div id='validError' className={classes.valid_error}>{this.state.errors["email"]}</div>
+        </div>
+        {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
+      </Container>
+    )
   }
 }
 

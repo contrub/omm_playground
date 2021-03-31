@@ -17,7 +17,7 @@ class MonumentById extends React.Component {
   componentDidMount = async() => {
     const id = this.props.match.params.id
 
-    await MonumentService.getMonument({_id: id})
+    await MonumentService.getMonument({id: id})
       .then((res) => {
         this.setState({monumentInfo: res})
       })

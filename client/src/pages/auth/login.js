@@ -18,7 +18,7 @@ import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 
 // Local functions
-import UserService from '../../services/UserService';
+import AuthService from '../../services/AuthService';
 
 // Third party functions
 import isEmpty from 'validator/lib/isEmpty';
@@ -34,6 +34,10 @@ class SignIn extends React.Component {
       email: '',
       password: ''
     },
+    modal: {
+      body: '',
+      head: ''
+    },
     isValid: false,
     isLogged: false
   }
@@ -45,22 +49,21 @@ class SignIn extends React.Component {
   contactSubmit = (e) => {
     e.preventDefault()
 
-    let email = this.state.inputs.email
-    let password = this.state.inputs.password
+    let {inputs} = this.state
+    let {modal} = this.state
 
-    if (!isEmpty(email) && !isEmpty(password)) {
-      UserService.login({
-        email: email,
-        password: password
+    if (!isEmpty(inputs.email) && !isEmpty(inputs.password)) {
+      AuthService.login({
+        email: inputs.email,
+        password: inputs.password
       })
-        .then(res => {
-          if (res.status) {
-            document.getElementById('validError').innerText = res.status
-          } else if (res.message) {
+        .then((res) => {
+          if (res.message) {
             document.getElementById('validError').innerText = res.message
           } else {
-            Cookies.set('accessToken', res.accessToken.split(' ')[1])
-            window.location.href = '/'
+            modal["head"] = 'Recovery link has been sent successfully!'
+            modal["body"] = `Check your email - ${inputs.email}`
+            this.setState({modal: modal})
           }
         })
     } else {

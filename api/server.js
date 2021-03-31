@@ -11,6 +11,7 @@ const cors = require('cors')
 // Local functions
 const postman = require('./utils/postman')
 const routes = require('./routes')
+const apiErrorHandler = require('./error/api-error-handler')
 
 const app = express()
 
@@ -32,6 +33,7 @@ app.use(bodyParser.json({limit: '50mb', extended: true}));
 
 app.use(cors({postman}))
 app.use('/', routes)
+app.use(apiErrorHandler)
 
 app.listen(port, () => console.log(`Server listening on port: ${port}`));
 

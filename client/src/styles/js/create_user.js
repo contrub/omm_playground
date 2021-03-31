@@ -14,11 +14,12 @@ const styles = theme => ({
     width: '100%',
   },
   submit_btn: {
-    margin: theme.spacing(2, 0, 2),
+    margin: theme.spacing(1, 0, 2),
   },
-  valid_error: {
+  errors: {
+    fontFamily: 'Gill Sans',
     textAlign: 'center',
-    margin: '0 0 16px',
+    fontSize: '18px',
     color: 'red'
   },
   pass_requirement: {

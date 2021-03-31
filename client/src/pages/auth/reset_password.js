@@ -1,6 +1,9 @@
 // React components
 import React from "react";
 
+// Custom components
+import ModalWindow from "../../components/modal";
+
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -19,14 +22,13 @@ import EmailIcon from '@material-ui/icons/Email';
 // Local functions
 import {passwordCopyValidation} from "../../helpers/passwordCopyValidation";
 import {passwordValidation} from "../../helpers/passwordValidation";
-import UserService from "../../services/UserService";
+import AuthService from "../../services/AuthService";
 
 // Third party functions
 import Cookies from "js-cookie";
 
 // Custom styles
 import styles from "../../styles/js/reset_password";
-import {Redirect} from "react-router";
 
 class PasswordReset extends React.Component {
   state = {
@@ -34,29 +36,25 @@ class PasswordReset extends React.Component {
       password: '',
       passwordCopy: ''
     },
-    errors: {},
     modal: {
       head: '',
       body: ''
     },
+    errors: {},
     token: '',
     isValid: false,
     isLogged: false
   }
 
   componentDidMount = () => {
-    const token = window.location.href.split('=')[1]
+    let {modal} = this.state
 
-    Cookies.get('accessToken') !== undefined ? this.setState({isLogged: true, token: token}) : this.setState({isLogged: false, token: token})
-  }
-
-  hideModal = () => {
-    document.getElementById('reset_password').style.display = "none"
-    window.location.href = '/login'
-  }
-
-  showModal = () => {
-    document.getElementById('reset_password').style.display = "block"
+    if (Cookies.get('accessToken')) {
+      modal["head"] = 'Authorization Error'
+      modal["body"] = 'You already logged!'
+      modal["redirectURL"] = '/'
+      this.setState({modal: modal})
+    }
   }
 
   handleFieldValidation = () => {
@@ -89,14 +87,27 @@ class PasswordReset extends React.Component {
     e.preventDefault()
 
     if (this.state.isValid) {
-      UserService.updatePassword({token: this.state.token, password: this.state.inputs.password})
+      const {inputs} = this.state
+      const {token} = this.state
+      let {modal} = this.state
+
+      AuthService.updatePassword({token: token, password: inputs.password})
         .then((res) => {
-          this.setState({modal: {head: 'Password successfully reset!', body: 'From now on you can use a new password'}})
+          if (res.message) {
+            document.getElementById('validError').innerText = res.message
+          } else {
+            modal["head"] = 'Password successfully reset!'
+            modal["body"] = 'From now on you can use a new password'
+            modal["redirectURL"] = '/login'
+            this.setState({modal: modal})
+          }
         })
-        .catch((e) => {
-          this.setState({modal: {head: 'Link time expired!', body: 'Please, try send new reset password link'}})
+        .catch((err) => {
+          modal["head"] = 'Link time expired!'
+          modal["body"] = 'Please, try send new reset password link'
+          modal["redirectURL"] = '/'
+          this.setState({modal: modal})
         })
-        .finally(() => this.showModal())
     }
   }
 
@@ -108,93 +119,75 @@ class PasswordReset extends React.Component {
   }
 
   render() {
-    if (this.state.isLogged) {
-      return (<Redirect to={'/'}/>)
-    } else {
-      const { classes } = this.props
+    const { classes } = this.props
 
-      return (
-        <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
-          <CssBaseline />
-          <div className={classes.paper}>
-            <Avatar className={classes.avatar}>
-              <EmailIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Reset Password
-            </Typography>
-            <form className={classes.form} noValidate>
-              <TextField
-                onChange={this.handleChange.bind(this, "password")}
-                value={this.state.inputs["password"]}
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-              />
-              <ul id='passwordRequirements' hidden>
-                <li className={classes.pass_valid_error} id='quantityCheck'>At least 8 characters</li>
-                <li className={classes.pass_valid_error} id='numberCheck'>Contains at least 1 number</li>
-                <li className={classes.pass_valid_error} id='lowercaseCheck'>Contains at least lowercase letter</li>
-                <li className={classes.pass_valid_error} id='uppercaseCheck'>Contains at least uppercase letter</li>
-                <li className={classes.pass_valid_error} id='specialCharacterCheck'>Contains a special character (!@#%&)</li>
-              </ul>
-              <TextField
-                onChange={this.handleChange.bind(this, "passwordCopy")}
-                value={this.state.inputs["passwordCopy"]}
-                InputProps={{
-                  endAdornment: (
-                    <Checkbox
-                      icon={<VisibilityIcon/>}
-                      checkedIcon={<VisibilityOffIcon/>}
-                      onClick={this.showPassword}
-                    />)
-                }}
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="passwordCopy"
-                label="Repeat Password"
-                type="password"
-                id="passwordCopy"
-                autoComplete="current-password"
-              />
-              <div className={classes.pass_copy_valid_error}>{this.state.errors["passwordCopy"]}</div>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submitBtn}
-              >
-                Change Password
-              </Button>
-            </form>
-          </div>
-          <div id="reset_password" className="modal" tabIndex="-1">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">{this.state.modal.head}</h5>
-                </div>
-                <div className="modal-body">
-                  <p>{this.state.modal.body}</p>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={this.hideModal}>Close</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Container>
-      )
-    }
+    return (
+      <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <EmailIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Reset Password
+          </Typography>
+          <form className={classes.form} noValidate>
+            <TextField
+              onChange={this.handleChange.bind(this, "password")}
+              value={this.state.inputs["password"]}
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+            />
+            <ul id='passwordRequirements' hidden>
+              <li className={classes.pass_valid_error} id='quantityCheck'>At least 8 characters</li>
+              <li className={classes.pass_valid_error} id='numberCheck'>Contains at least 1 number</li>
+              <li className={classes.pass_valid_error} id='lowercaseCheck'>Contains at least lowercase letter</li>
+              <li className={classes.pass_valid_error} id='uppercaseCheck'>Contains at least uppercase letter</li>
+              <li className={classes.pass_valid_error} id='specialCharacterCheck'>Contains a special character (!@#%&)</li>
+            </ul>
+            <TextField
+              onChange={this.handleChange.bind(this, "passwordCopy")}
+              value={this.state.inputs["passwordCopy"]}
+              InputProps={{
+                endAdornment: (
+                  <Checkbox
+                    icon={<VisibilityIcon/>}
+                    checkedIcon={<VisibilityOffIcon/>}
+                    onClick={this.showPassword}
+                  />)
+              }}
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="passwordCopy"
+              label="Repeat Password"
+              type="password"
+              id="passwordCopy"
+              autoComplete="current-password"
+            />
+            <div className={classes.pass_copy_valid_error}>{this.state.errors["passwordCopy"]}</div>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submitBtn}
+            >
+              Change Password
+            </Button>
+          </form>
+        </div>
+        {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
+      </Container>
+    )
   }
 }
 

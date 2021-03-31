@@ -2,6 +2,9 @@
 import React from 'react';
 import {withRouter} from "react-router";
 
+// Custom components
+import ModalWindow from "../../components/modal";
+
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -34,32 +37,50 @@ class EditUser extends React.Component {
       userRole: 0,
       status: 0
     },
-    role: {10: 'viewer', 20: 'admin', 30: 'superadmin'},
-    status: {10: 'active', 20: 'disable'}
+    selects_facilities: {
+      role: {10: 'viewer', 20: 'admin', 30: 'superadmin'},
+      status: {10: 'active', 20: 'disable'}
+    },
+    modal: {
+      head: '',
+      body: '',
+      redirectURL: '/users_sheet'
+    }
   }
 
   componentDidMount () {
+    let {modal} = this.state
     const email = this.props.match.params.email
-    const rolesObjectKeys = Object.keys(this.state.role)
-    const rolesObjectValues = Object.values(this.state.role)
-    const statusObjectKeys = Object.keys(this.state.status)
-    const statusObjectValues = Object.values(this.state.status)
+    const rolesObjectKeys = Object.keys(this.state.selects_facilities.role)
+    const rolesObjectValues = Object.values(this.state.selects_facilities.role)
+    const statusObjectKeys = Object.keys(this.state.selects_facilities.status)
+    const statusObjectValues = Object.values(this.state.selects_facilities.status)
 
     UserService.getUser({email: email, token: Cookies.get('accessToken')})
       .then((res) => {
-        const roleValue =  rolesObjectKeys[rolesObjectValues.indexOf(res[0].userRole)]
-        const statusValue = statusObjectKeys[statusObjectValues.indexOf(res[0].status)]
+        const email = res[0].email
 
-        this.setState({user: res[0], inputs: {email: res[0].email}, selects: {userRole: roleValue, status: statusValue}})
+        if (email === undefined) {
+          modal["head"] = 'Something going wrong'
+          modal["body"] = 'Get user error'
+          this.setState({modal: modal})
+        } else {
+          const roleValue =  rolesObjectKeys[rolesObjectValues.indexOf(res[0].userRole)]
+          const statusValue = statusObjectKeys[statusObjectValues.indexOf(res[0].status)]
+
+          this.setState({user: res[0], inputs: {email: res[0].email}, selects: {userRole: roleValue, status: statusValue}})
+        }
       })
       .catch((err) => {
-        // console.log(err.message)
-        this.showModal()
+        modal["head"] = 'Server error'
+        modal["body"] = err.message
+        this.setState({modal: modal})
       })
   }
 
   contactSubmit = (e) => {
-    e.preventDefault();
+    let {modal} = this.state
+    e.preventDefault()
 
     const inputs = this.state.inputs
     inputs['token'] = Cookies.get('accessToken')
@@ -67,23 +88,25 @@ class EditUser extends React.Component {
 
     Object.keys(this.state.inputs).forEach((key) => (this.state.inputs[key] === "") && delete this.state.inputs[key]);
     UserService.updateUser(this.state.inputs)
-      .then(() => window.location.href = '/users')
-  }
-
-  showModal = () => {
-    document.getElementById('reset_password').style.display = "block"
-  }
-
-  hideModal = () => {
-    document.getElementById('reset_password').style.display = "none"
-    window.location.href = '/'
+      .then(() => window.location.href = '/users_sheet')
+      .catch((err) => {
+        modal["body"] = 'Server error'
+        modal["head"] = err.message
+        this.setState({modal: modal})
+      })
   }
 
   removeUser = () => {
     const email = this.state.user.email
+    let {modal} = this.state
 
     UserService.deleteUser({email: email, token: Cookies.get('accessToken')})
       .then(() => window.location.href = '/users_sheet')
+      .catch((err) => {
+        modal["body"] = 'Server error'
+        modal["head"] = err.message
+        this.setState({modal: modal})
+      })
   }
 
   handleChange = (input, e) => {
@@ -92,11 +115,11 @@ class EditUser extends React.Component {
 
     if (input === "userRole") {
       selects[input] = e.target.value
-      inputs[input] = this.state.role[`${e.target.value}`]
+      inputs[input] = this.state.selects_facilities.role[`${e.target.value}`]
       this.setState({input: inputs[input], selects: selects})
     } else if (input === "status") {
       selects[input] = e.target.value
-      inputs[input] = this.state.status[`${e.target.value}`]
+      inputs[input] = this.state.selects_facilities.status[`${e.target.value}`]
       this.setState({input: inputs[input], selects: selects})
     }
   }
@@ -120,7 +143,8 @@ class EditUser extends React.Component {
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="UserRole"
-                  value={this.state.selects.userRole ?? "0"}
+                  value={this.state.selects.userRole ?? 10}
+                  defaultValue={10}
                   onChange={this.handleChange.bind(this, "userRole")}
                 >
                   <MenuItem value={10}>viewer</MenuItem>
@@ -134,7 +158,7 @@ class EditUser extends React.Component {
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="Status"
-                  value={this.state.selects.status ?? "0"}
+                  value={this.state.selects.status ?? ''}
                   onChange={this.handleChange.bind(this, "status")}
                 >
                   <MenuItem value={10}>Active</MenuItem>
@@ -162,21 +186,7 @@ class EditUser extends React.Component {
             </Button>
           </form>
         </div>
-        <div id="reset_password" className="modal" tabIndex="-1">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Something going wrong</h5>
-              </div>
-              <div className="modal-body">
-                <p>Check your permissions and authorization</p>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={this.hideModal}>Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
+        {this.state.modal.head && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
       </Container>
     )
   }

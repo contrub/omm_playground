@@ -37,7 +37,7 @@ import UsersSheet from "./pages/users/users_sheet";
 import EditUser from "./pages/users/edit_user";
 
 // Third party functions
-import UserService from "./services/UserService";
+import AuthService from "./services/AuthService";
 import isEmpty from "validator/es/lib/isEmpty";
 import Cookies from 'js-cookie';
 
@@ -48,7 +48,7 @@ class App extends Component {
   }
 
   componentDidMount = () => {
-    UserService.getRole({token: Cookies.get('accessToken')})
+    AuthService.getRole({token: Cookies.get('accessToken')})
       .then((res) => {
         localStorage.setItem("userRole", res.userRole)
       })

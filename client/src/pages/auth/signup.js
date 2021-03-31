@@ -2,6 +2,9 @@
 import React from "react";
 import { Link }  from "react-router-dom";
 
+// Custom components
+import ModalWindow from "../../components/modal";
+
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -25,7 +28,7 @@ import Cookies from 'js-cookie'
 import {passwordCopyValidation} from "../../helpers/passwordCopyValidation";
 import {passwordValidation} from "../../helpers/passwordValidation";
 import {emailValidation} from "../../helpers/emailValidation";
-import UserService from '../../services/UserService';
+import AuthService from '../../services/AuthService';
 
 // Custom styles
 import styles from "../../styles/js/signup";
@@ -35,7 +38,12 @@ class SignUp extends React.Component {
     inputs: {
       email: '',
       password: '',
-        passwordCopy: ''
+      passwordCopy: ''
+    },
+    modal: {
+      head: '',
+      body: '',
+      redirectURL: ''
     },
     errors: {},
     isValid: false
@@ -56,17 +64,28 @@ class SignUp extends React.Component {
     e.preventDefault();
 
     if (this.state.isValid) {
-      UserService.signup({email: this.state.inputs.email, password: this.state.inputs.password})
+      let {modal} = this.state
+      let {inputs} = this.state
+
+      AuthService.signup({email: inputs.email, password: inputs.password})
         .then((res) => {
-          if (res.status) {
-            document.getElementById('validError').innerText = res.status
-          } if (res.message) {
-            document.getElementById('validError').innerText = res.message
+          const accessToken = res.accessToken
+
+          if (accessToken === undefined) {
+            modal["head"] = 'Registration error'
+            modal["body"] = res.message ? res.message : 'Something going wrong'
+            this.setState({modal: modal})
           } else {
             Cookies.set('accessToken', res.accessToken)
-        }
-      })
-        .finally(() => window.location.href = '/')
+            window.location.href = '/'
+          }
+        })
+        .catch((err) => {
+          modal["head"] = 'Server error'
+          modal["body"] = err.message
+          modal["redirectURL"] = '/'
+          this.setState({modal: modal})
+        })
     } else {
       this.handleFieldValidation()
       document.getElementById('validError').innerText = "Validation error"
@@ -74,9 +93,11 @@ class SignUp extends React.Component {
   }
 
   handleChange = (input, e) => {
-    let inputs = this.state.inputs;
-    inputs[input] = e.target.value;
-    this.setState({input: inputs[input]});
+    let inputs = this.state.inputs
+
+    inputs[input] = e.target.value
+
+    this.setState({input: inputs[input]})
     this.handleFieldValidation()
   }
 
@@ -91,7 +112,7 @@ class SignUp extends React.Component {
   }
 
   render() {
-    const { classes } = this.props
+    const {classes} = this.props
 
     return (
       <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
@@ -184,8 +205,9 @@ class SignUp extends React.Component {
             </Grid>
           </Grid>
         </div>
+        {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
       </Container>
-    );
+    )
   }
 }
 

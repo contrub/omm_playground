@@ -2,6 +2,9 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 
+// Custom components
+import ModalWindow from "../../components/modal";
+
 // Material-UI icons
 import AddBoxIcon from '@material-ui/icons/AddBox';
 
@@ -17,37 +20,31 @@ import UserService from '../../services/UserService'
 class UsersSheet extends React.Component {
   state = {
     users: [],
-    db_status: ''
+    modal: {
+      head: '',
+      body: ''
+    }
   }
 
   componentDidMount = () => {
+    let {modal} = this.state
+
     UserService.getUsers({token: Cookies.get('accessToken')})
       .then((res) => {
-        if (res.message) {
-          this.setState({db_status: res.message})
-        } else if (!res.length) {
-          this.setState({db_status: 'UsersDB is empty'})
+        const usersCount = res.length
+
+        if (usersCount === 0) {
+          modal["head"] = 'Users database is empty'
+          modal["body"] = 'Please, create new users'
+          this.setState({modal: modal})
         } else {
-          res.sort((a, b) => {
-            if(a.email < b.email) { return -1; }
-            if(a.email > b.email) { return 1; }
-            return 0;
-          })
           this.setState({users: res})
         }
       })
-  }
-
-  removeUser = (e) => {
-    const email = e.target.value
-
-    UserService.deleteUser({token: Cookies.get('accessToken'), email: email})
-      .then((res) => {
-        if (res.message) {
-          alert(res.message)
-        } else {
-          window.location.reload()
-        }
+      .catch((err) => {
+        modal["head"] = 'Server error'
+        modal["body"] = err.message()
+        this.setState({modal: modal})
       })
   }
 
@@ -59,14 +56,13 @@ class UsersSheet extends React.Component {
           <td>{user.userRole}</td>
           <td>{user._id}</td>
           <td>
-            {user.status === 'active' &&
+            {user.status === 'active' ?
               <button className="btn btn-success" disabled>
                 Active
               </button>
-            }
-            {user.status === 'disable' &&
+              :
               <button className="btn btn-danger" disabled>
-                Disable
+              Disable
               </button>
             }
           </td>
@@ -76,9 +72,6 @@ class UsersSheet extends React.Component {
                 <i className="fa fa-edit fa-lg" ></i>
               </button>
             </Link>
-            {/*<button className="btn btn-warning" value={user.email} onClick={this.removeUser}>*/}
-            {/*  <i className="fa fa-trash fa-lg" value={user.email} ></i>*/}
-            {/*</button>*/}
           </td>
         </tr>
       )
@@ -86,8 +79,7 @@ class UsersSheet extends React.Component {
 
     return (
       <div>
-        {this.state.users.length ?
-          <table className="table">
+        <table className="table">
             <thead>
             <tr>
               <th scope="col" >Email</th>
@@ -104,16 +96,8 @@ class UsersSheet extends React.Component {
             <tbody>
               {users}
             </tbody>
-          </table>
-          :
-          <section id="wrapper" className="container-fluid">
-            <div className="error-box">
-              <div className="error-body text-center">
-                <h3>{this.state.db_status}</h3>
-              </div>
-            </div>
-          </section>
-        }
+        </table>
+        {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body}/>}
       </div>
     )
   }

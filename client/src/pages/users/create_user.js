@@ -1,6 +1,9 @@
 // React Components
 import React from "react";
 
+// Custom components
+import ModalWindow from "../../components/modal";
+
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
 import Typography from "@material-ui/core/Typography";
@@ -32,14 +35,16 @@ class CreateUser extends React.Component {
       email: '',
       password: '',
     },
+    modal: {
+      body: '',
+      head: '',
+      redirectURL: ''
+    },
     errors: {},
     isValid: false
   }
 
   handleFieldValidation = () => {
-
-    document.getElementById('validError').innerText = ""
-
     this.setState({isValid: emailValidation(this.state.inputs, this.state.errors)})
     this.setState({isValid: passwordValidation(this.state.inputs)})
 
@@ -47,22 +52,31 @@ class CreateUser extends React.Component {
   }
 
   contactSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
     if (this.state.isValid) {
-      UserService.createUser({
-        email: this.state.inputs.email,
-        password: this.state.inputs.password,
-        token: Cookies.get('accessToken')
-      }).then((res) => {
-        if (res.status) {
-          document.getElementById('validError').innerText = res.status
-        } if (res.message) {
-          document.getElementById('validError').innerText = res.message
-        } else {
-          window.location.href = '/users'
-        }
-      })
+      let {modal} = this.state
+      let {inputs} = this.state
+
+      inputs["token"] = Cookies.get('accessToken')
+      UserService.createUser(inputs)
+        .then((res) => {
+          const email = res.data.email
+
+          if (email === undefined) {
+            modal["head"] = 'Something going wrong'
+            modal["body"] = 'Create user error'
+            this.setState({modal: modal})
+          } else {
+            window.location.href = '/users_sheet'
+          }
+        })
+        .catch((err) => {
+          modal["head"] = 'Server error'
+          modal["body"] = err.message
+          modal["redirectURL"] = '/users_sheet'
+          this.setState({modal: modal})
+        })
     } else {
       this.handleFieldValidation()
       document.getElementById('validError').innerText = "Validation error"
@@ -78,15 +92,11 @@ class CreateUser extends React.Component {
   }
 
   showPassword = () => {
-    if (document.getElementById('password').type === 'password') {
-      document.getElementById('password').type = 'text'
-    } else {
-      document.getElementById('password').type = 'password'
-    }
+    document.getElementById('password').type === 'password' ? document.getElementById('password').type = 'text' : document.getElementById('password').type = 'password'
   }
 
   render() {
-    const { classes } = this.props
+    const {classes} = this.props
 
     return (
       <div>
@@ -112,7 +122,7 @@ class CreateUser extends React.Component {
                 autoComplete="email"
                 autoFocus
               />
-              <div className={classes.valid_error}>{this.state.errors["email"]}</div>
+              <div className={classes.errors}>{this.state.errors["email"]}</div>
               <TextField
                 onChange={this.handleChange.bind(this, "password")}
                 value={this.state.inputs["password"]}
@@ -150,10 +160,11 @@ class CreateUser extends React.Component {
               >
                 Create
               </Button>
+              <div id="validError" className={classes.errors}/>
             </form>
-            <div id='validError' className={classes.valid_error}/>
           </div>
         </Container>
+        {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
       </div>
     )
   }
