@@ -1,7 +1,10 @@
 // Third party functions
 const cloudinary = require('cloudinary').v2
-const ApiError = require('../error/ApiError')
+const isEmpty = require('validator/lib/isEmpty')
 require('dotenv').config()
+
+// Local class
+const ApiError = require('../error/ApiError')
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -12,7 +15,7 @@ cloudinary.config({
 uploadImage = async (req, res, next) => {
   const fileStr = req.body.base64
 
-  if (!fileStr === undefined) {
+  if (fileStr !== undefined && !isEmpty(fileStr)) {
     await cloudinary.uploader.upload(fileStr, {
       folder: process.env.CLOUDINATY_FOLDER
     })
