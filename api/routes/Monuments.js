@@ -1,5 +1,8 @@
 // Local schema
-const Monument = require('../models/Monument');
+const Monument = require("../models/Monument");
+
+// Error class
+const ApiError = require("../error/ApiError");
 
 const getMonuments = (req, res) => {
   Monument.find()
@@ -26,9 +29,9 @@ const createMonument = (req, res) => {
   newMonument
     .save()
     .then((item) => res.json(item))
-    .catch(err => {
-      console.log(err)
+    .catch((err) => {
       res.status(500).json({message: 'MongoDB error'})
+      console.log(err)
     })
 }
 
@@ -36,9 +39,9 @@ const updateMonument = (req, res) => {
   Monument
     .updateOne({_id: req.params.id}, req.body)
     .then((item) => res.json(item))
-    .catch(err => {
-      console.log(err)
+    .catch((err) => {
       res.status(500).json({message: 'MongoDB error'})
+      console.log(err)
     })
 }
 
@@ -46,9 +49,9 @@ const deleteMonument = (req, res) => {
   Monument
     .findByIdAndDelete(req.params.id)
     .then(() => res.sendStatus(204))
-    .catch(err => {
-      console.log(err)
+    .catch((err) => {
       res.status(500).json({message: 'MongoDB error'})
+      console.log(err)
     });
 }
 
@@ -56,9 +59,9 @@ const clearMonumentsDB = (req, res) => {
   Monument
     .deleteMany({})
     .then(() => res.sendStatus(204))
-    .catch(err => {
-      console.log(err)
+    .catch((err) => {
       res.status(500).json({message: 'MongoDB error'})
+      console.log(err)
     })
 }
 
