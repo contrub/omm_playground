@@ -34,6 +34,7 @@ const styles = theme => ({
     display: 'block'
   },
   image_preview: {
+    maxHeight: '200px',
     display: 'block',
     margin: theme.spacing(0, 'auto'),
     borderRadius: '10px',

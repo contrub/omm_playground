@@ -1,22 +1,43 @@
-// React components
-import React from "react";
-import {withRouter} from "react-router";
-
-// Local functions
+import React from 'react';
+import CardMedia from "@material-ui/core/CardMedia";
+import CardContent from "@material-ui/core/CardContent";
+import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
+import CardActionArea from "@material-ui/core/CardActionArea";
 import MonumentService from "../../services/MonumentService";
-import Link from "@material-ui/core/Link";
+import "../../styles/css/monuments.css"
 
-class Monuments extends React.Component {
+class Monuments extends React.Component{
+
 
   state = {
-    monuments: []
+    monuments: [],
+    //monumentInfo: [],
   }
 
-  componentDidMount = async() => {
-    await MonumentService.fetchMonuments()
+  componentDidMount = () => {
+
+    MonumentService.fetchMonuments()
       .then((res) => {
-        this.setState({monuments: res})
+        this.setState({
+          monuments: res
+        })
       })
+  }
+
+  openmonumentpage = (entry) => {
+    const {monuments} = this.state
+    console.log(entry.entry._id)
+
+    let id;
+    let url;
+
+    id= entry.entry._id +" "
+    url="/monuments/" + id;
+    window.location.assign(url);
+    this.renderMonuments(monuments)
+
   }
 
   render() {
@@ -24,35 +45,37 @@ class Monuments extends React.Component {
 
     return (
       <div>
-        {monuments.map((monument, index) => {
-          return (
-            <div key={index}>
-              <h1 id="name"> {monument.name} </h1>
-              <img
-                className="img"
-                alt="monument_image"
-                src={monument.imageURL}
-              />
-              <ul>
-                <li>
-                  <p id="address">Адрес - {monument.address}</p>
-                </li>
-                <li>
-                  <p id="creator">Архитектор/скульптор - {monument.creator}</p>
-                </li>
-              </ul>
-              <Link
-                  href={`monuments/${monument._id}`}
-              >
-                  More info
-              </Link>
-              <hr/>
-            </div>
-          )
-        })}
+        <Grid container spacing={3}  columns={3}>
+          {monuments.map((entry) =>{
+            return(
+
+              <Grid item xl={3} key={entry._id} >
+                <Card  id="card">
+                  <CardActionArea onClick={() => this.openmonumentpage({entry})}>
+                    <CardMedia
+                      component="img"
+
+                      image={entry.imageURL}
+                      title="Learn more"
+                      id="img"
+
+                    />
+                    <CardContent>
+                      <Typography gutterBottom variant="h5"  align="center" color="textPrimary">
+                        {entry.name}
+                      </Typography>
+                    </CardContent>
+
+                  </CardActionArea>
+                </Card>
+              </Grid>
+
+
+            )})}
+        </Grid>
       </div>
     )
   }
 }
 
-export default withRouter(Monuments)
+export default Monuments

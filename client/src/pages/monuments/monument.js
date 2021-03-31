@@ -1,12 +1,7 @@
-// React components
-import React from "react";
+import React from 'react';
+import MonumentService from '../../services/MonumentService'
 import {withRouter} from "react-router";
-
-// Local functions
-import MonumentService from "../../services/MonumentService";
-
-// Custom styles
-import "../../styles/css/monument.css";
+import "../../styles/css/monument.css"
 
 class MonumentById extends React.Component {
 
@@ -15,8 +10,7 @@ class MonumentById extends React.Component {
   }
 
   componentDidMount = async() => {
-    const id = this.props.match.params.id
-
+    let id = this.props.match.params.id
     await MonumentService.getMonument({id: id})
       .then((res) => {
         this.setState({monumentInfo: res})
@@ -24,26 +18,20 @@ class MonumentById extends React.Component {
   }
 
   render() {
-    const {monumentInfo} = this.state
-
     return (
       <div>
-        <h1 id="name"> {monumentInfo.name} </h1>
-          <img
-            className="img"
-            alt="monument_image"
-            src={monumentInfo.imageURL}
-          />
-          <p id="description">
-            {monumentInfo.description}
-          </p>
+        <h1 id="name"> {this.state.monumentInfo.name} </h1>
+        <img
+
+          className="img"
+          alt=""
+          src={this.state.monumentInfo.imageURL}
+        />
+        <p id="Description"> {this.state.monumentInfo.description} </p>
         <ul>
-          <li>
-            <p id="address">Адрес - {monumentInfo.address}</p>
-          </li>
-          <li>
-            <p id="creator">Архитектор/скульптор - {monumentInfo.creator}</p>
-          </li>
+          <li><p id="Address">Адрес - {this.state.monumentInfo.address}</p></li>
+          <li><p id="Creator">Архитектор/скульптор - {this.state.monumentInfo.creator} </p></li>
+          {/* <li><p id="Date">Дата постройки - {this.state.monumentInfo.date.getFullYear()} </p></li> */}
         </ul>
       </div>
     )
