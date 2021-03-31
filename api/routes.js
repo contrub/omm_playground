@@ -3,16 +3,9 @@ const routes = require('express').Router()
 const Monuments = require('./routes/Monuments')
 const Users = require('./routes/Users')
 
-const UserService = require('./services/UserService')
-const MonumentService = require('./services/MonumentService')
-
-const AuthorizationController = require('./Controllers/AuthController')
+const MonumentsController = require('./Controllers/MonumentsController')
 const AccountController = require('./Controllers/AccountController')
 const UsersController = require('./Controllers/UsersController')
-const MonumentsController = require('./Controllers/MonumentsController')
-
-const cloudinary = require('./utils/cloudinary')
-const jwt = require('./helpers/jwt')
 
 if (process.env.NODE_ENV !== 'development') {
 
@@ -21,26 +14,22 @@ if (process.env.NODE_ENV !== 'development') {
   routes.get('/monuments', Monuments.getMonuments)
   routes.get('/monuments/:id', Monuments.getMonument)
 
-  routes.post('/monuments', AccessController.verifyUser, AuthorizationController.UserDB, MonumentService.isMonumentExist, MonumentService.validateData, cloudinary.uploadImage, Monuments.createMonument)
+  routes.post('/monuments', Monuments.createMonument)
 
-  routes.put('/monuments/:id', AccessController.verifyUser, AuthorizationController.MonumentsDB, Monuments.updateMonument)
+  routes.put('/monuments/:id', Monuments.updateMonument)
 
-  routes.delete('/monuments/:id', AccessController.verifyUser, AuthorizationController.MonumentsDB, Monuments.deleteMonument)
-  routes.delete('/monuments/db/all', AccessController.verifyUser, AuthorizationController.MonumentsDB, Monuments.clearMonumentsDB)
+  routes.delete('/monuments/:id', Monuments.deleteMonument)
+  // routes.delete('/monuments/db/all', Monuments.clearMonumentsDB)
 
   //================================Users================================//
 
-  routes.get('/users', AccessController.verifyUser, AuthorizationController.UserDB, Users.getUsers)
-  routes.get('/users/:email', AccessController.verifyUser, AuthorizationController.UserDB, Users.getUser)
+  routes.get('/users', Users.getUsers)
+  routes.get('/users/:email', Users.getUser)
 
-  routes.post('/login', UserService.isUserDataExist, UserController.SignIn)
-  routes.post('/signup', UserService.isUserExist, UserService.isEmailCompliance, UserService.isPasswordCompliance, UserController.SignUp)
+  routes.put('/users/:email', Users.updateUser)
 
-  routes.put('/users/:email', AccessController.verifyUser, AuthorizationController.UserDB, Users.updateUser)
-
-  routes.delete('/users/:email', AccessController.verifyUser, AuthorizationController.UserDB, Users.deleteUser)
-
-  routes.delete('/users/db/all', AccessController.verifyUser, AuthorizationController.UserDB, Users.clearUserDB)
+  routes.delete('/users/:email', Users.deleteUser)
+  // routes.delete('/users/db/all', AccessController.verifyUser, AuthorizationController.UserDB, Users.clearUserDB)
 
 } else {
 
