@@ -43,7 +43,7 @@ class UsersSheet extends React.Component {
       })
       .catch((err) => {
         modal["head"] = 'Server error'
-        modal["body"] = err.message()
+        modal["body"] = err.message
         this.setState({modal: modal})
       })
   }
