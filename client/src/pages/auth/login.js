@@ -34,10 +34,6 @@ class SignIn extends React.Component {
       email: '',
       password: ''
     },
-    modal: {
-      body: '',
-      head: ''
-    },
     isValid: false,
     isLogged: false
   }
@@ -50,7 +46,6 @@ class SignIn extends React.Component {
     e.preventDefault()
 
     let {inputs} = this.state
-    let {modal} = this.state
 
     if (!isEmpty(inputs.email) && !isEmpty(inputs.password)) {
       AuthService.login({
