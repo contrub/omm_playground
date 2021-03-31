@@ -3,9 +3,9 @@ const jwt = require('jsonwebtoken')
 
 const ApiError = require('../error/ApiError')
 
-generateAccessToken = (req, payload, next) => {
+generateAccessToken = (req, payload, next, options={}) => {
   try {
-    const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET)
+    const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, options)
 
     req.accessToken = token
   } catch (err) {
