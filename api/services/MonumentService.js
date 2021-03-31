@@ -1,4 +1,7 @@
+// Local schema
 const Monument = require('../models/Monument')
+
+// Local class
 const ApiError = require('../error/ApiError')
 
 const isMonumentExist = async (req, res, next) => {

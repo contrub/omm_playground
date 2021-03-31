@@ -1,7 +1,9 @@
-// Local functions
-const jwt = require('../helpers/jwt')
+// Local modules
 const AuthController = require('./AuthController')
 const Users = require('../routes/Users')
+const jwt = require('../helpers/jwt')
+
+// Local class
 const ApiError = require('../error/ApiError')
 
 const fetchUsers = async (req, res, next) => {

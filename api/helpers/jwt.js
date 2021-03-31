@@ -1,7 +1,8 @@
-// Third party functions
-const jwt = require('jsonwebtoken')
-
+// Local class
 const ApiError = require('../error/ApiError')
+
+// Third party module
+const jwt = require('jsonwebtoken')
 
 generateAccessToken = (req, payload, next, options={}) => {
   try {

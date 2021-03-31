@@ -1,11 +1,15 @@
-// Local functions
+// Local modules
 const UserService = require('../services/UserService')
 const validator = require('../helpers/validator')
 const User = require('../models/User')
 const Users = require('../routes/Users')
 const jwt = require('../helpers/jwt')
-const nodemailer = require('nodemailer')
+
+// Local class
 const ApiError = require('../error/ApiError')
+
+// Third party modules
+const nodemailer = require('nodemailer')
 
 const signIn = async (req, res, next) => {
   const email = req.body.email

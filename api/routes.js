@@ -1,11 +1,12 @@
-const routes = require('express').Router()
-
-const Monuments = require('./routes/Monuments')
-const Users = require('./routes/Users')
-
+// Local modules
 const MonumentsController = require('./Controllers/MonumentsController')
 const AccountController = require('./Controllers/AccountController')
 const UsersController = require('./Controllers/UsersController')
+const Monuments = require('./routes/Monuments')
+const Users = require('./routes/Users')
+
+// Third party functions
+const routes = require('express').Router()
 
 if (process.env.NODE_ENV !== 'development') {
 

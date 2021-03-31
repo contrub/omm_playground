@@ -1,9 +1,11 @@
-// Third party functions
-const bcrypt = require('bcrypt')
-
-// Local functions
-const ApiError = require('../error/ApiError')
+// Local modules
 const User = require('../models/User')
+
+// Local class
+const ApiError = require('../error/ApiError')
+
+// Third party modules
+const bcrypt = require('bcrypt')
 
 const isUserExist = async (req, res, next) => {
   const email = req.body.email

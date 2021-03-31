@@ -1,5 +1,6 @@
-// Third party functions
+// Third party modules
 const mongoose = require('mongoose')
+
 const Schema = mongoose.Schema
 
 const MonumentSchema = new Schema({
@@ -29,6 +30,6 @@ const MonumentSchema = new Schema({
   }
 }, {
   versionKey: false
-});
+})
 
 module.exports = Monument = mongoose.model('monument', MonumentSchema);

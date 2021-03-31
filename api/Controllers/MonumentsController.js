@@ -1,9 +1,11 @@
 // Local functions
-const jwt = require('../helpers/jwt')
-const AuthController = require('./AuthController')
-const Monuments = require('../routes/Monuments')
-const cloudinary = require('../utils/cloudinary')
 const MonumentService = require('../services/MonumentService')
+const AuthController = require('./AuthController')
+const cloudinary = require('../utils/cloudinary')
+const Monuments = require('../routes/Monuments')
+const jwt = require('../helpers/jwt')
+
+// Local class
 const ApiError = require('../error/ApiError')
 
 const fetchMonuments = async (req, res) => {

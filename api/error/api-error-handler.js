@@ -1,3 +1,4 @@
+// Local class
 const ApiError = require('./ApiError')
 
 function apiErrorHandler(err, req, res, next) {

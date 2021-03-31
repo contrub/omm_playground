@@ -1,5 +1,7 @@
-// Local functions
+// Local schema 
 const User = require('../models/User')
+
+// Local class
 const ApiError = require('../error/ApiError')
 
 const UserDB = (req, res, next) => {

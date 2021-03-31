@@ -1,10 +1,11 @@
-// Third party functions
-const cloudinary = require('cloudinary').v2
-const isEmpty = require('validator/lib/isEmpty')
-require('dotenv').config()
-
 // Local class
 const ApiError = require('../error/ApiError')
+
+// Third party modules
+const cloudinary = require('cloudinary').v2
+
+// Third party functions
+const isEmpty = require('validator/lib/isEmpty')
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
