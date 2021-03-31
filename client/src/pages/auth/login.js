@@ -60,10 +60,9 @@ class SignIn extends React.Component {
         .then((res) => {
           if (res.message) {
             document.getElementById('validError').innerText = res.message
-          } else {
-            modal["head"] = 'Recovery link has been sent successfully!'
-            modal["body"] = `Check your email - ${inputs.email}`
-            this.setState({modal: modal})
+          } else if (res.accessToken) {
+            Cookies.set('accessToken', res.accessToken.split(' ')[1])
+            window.location.href = '/'
           }
         })
     } else {

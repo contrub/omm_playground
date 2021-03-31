@@ -5,7 +5,7 @@ const ApiError = require('../error/ApiError')
 
 generateAccessToken = (req, payload, next) => {
   try {
-    const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '20s'})
+    const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET)
 
     req.accessToken = token
   } catch (err) {
