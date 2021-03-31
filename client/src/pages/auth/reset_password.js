@@ -31,6 +31,7 @@ import Cookies from "js-cookie";
 
 // Custom styles
 import styles from "../../styles/js/reset_password";
+import {withRouter} from "react-router";
 
 class PasswordReset extends React.Component {
   state = {
@@ -56,6 +57,8 @@ class PasswordReset extends React.Component {
       modal["body"] = 'You already logged!'
       modal["redirectURL"] = '/'
       this.setState({modal: modal})
+    } else {
+      this.setState({token: this.props.location.search.split('=')[1]})
     }
   }
 
@@ -193,4 +196,4 @@ class PasswordReset extends React.Component {
   }
 }
 
-export default withStyles(styles, {withTheme: true})(PasswordReset)
+export default withStyles(styles, {withTheme: true})(withRouter(PasswordReset))
