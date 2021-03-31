@@ -64,7 +64,7 @@ const updatePasswordRequest = async (req, res, next) => {
   const email = req.body.email
 
   await UserService.isUserExist(req, res, next)
-  await jwt.generateAccessToken(req, {email: email}, next)
+  await jwt.generateAccessToken(req, {email: email}, next, {expiresIn: '60s'})
 
   if (!req.isUserExist) {
     res.send({message: "User undefined"})
