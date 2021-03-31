@@ -14,14 +14,16 @@ import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 
 // Material-UI icons
-import EmailIcon from '@material-ui/icons/Email';
+import EmailIcon from "@material-ui/icons/Email";
 
 // Local functions
 import {emailValidation} from "../../helpers/emailValidation";
+
+// Local modules
 import AuthService from '../../services/AuthService';
 
-// Third party functions
-import Cookies from 'js-cookie';
+// Third party modules
+import Cookies from "js-cookie";
 
 // Custom styles
 import styles from "../../styles/js/reset_password_request";

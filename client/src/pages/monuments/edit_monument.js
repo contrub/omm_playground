@@ -15,16 +15,16 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 
 // Material-UI icons
-import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+
+// Third party modules
+import Cookies from "js-cookie";
+
+// Local modules
+import MonumentService from "../../services/MonumentService";
 
 // Custom styles
 import styles from "../../styles/js/edit_monument";
-
-// Local functions
-import MonumentService from "../../services/MonumentService";
-
-// Third party functions
-import Cookies from "js-cookie";
 
 class EditMonument extends React.Component {
   state = {

@@ -1,5 +1,5 @@
 // React components
-import React from 'react';
+import React from "react";
 import {withRouter} from "react-router";
 
 // Custom components
@@ -17,14 +17,14 @@ import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import Select from "@material-ui/core/Select";
 
-// Custom styles
-import styles from "../../styles/js/edit_user";
+// Third party modules
+import Cookies from "js-cookie";
 
-// Local functions
+// Local modules
 import UserService from '../../services/UserService';
 
-// Third party functions
-import Cookies from "js-cookie";
+// Custom styles
+import styles from "../../styles/js/edit_user";
 
 class EditUser extends React.Component {
   state = {

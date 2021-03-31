@@ -9,7 +9,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 
-// Custom functions
+// Local modules
 import MonumentService from "../../services/MonumentService";
 
 // Custom styles

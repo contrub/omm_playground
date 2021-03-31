@@ -1,4 +1,4 @@
-// React componentns
+// React components
 import React from 'react';
 import {Link} from "react-router-dom";
 
@@ -8,14 +8,14 @@ import ModalWindow from "../../components/modal";
 // Material-UI icons
 import AddBoxIcon from '@material-ui/icons/AddBox';
 
+// Third party modules
+import Cookies from "js-cookie";
+
+// Local modules
+import UserService from "../../services/UserService";
+
 // Custom styles
-import '../../styles/css/users_sheet.css'
-
-// Third party functions
-import Cookies from 'js-cookie'
-
-// Local functions
-import UserService from '../../services/UserService'
+import "../../styles/css/users_sheet.css";
 
 class UsersSheet extends React.Component {
   state = {
@@ -82,7 +82,7 @@ class UsersSheet extends React.Component {
         <table className="table">
             <thead>
             <tr>
-              <th scope="col" >Email</th>
+              <th scope="col">Email</th>
               <th scope="col">UserRole</th>
               <th scope="col">ID</th>
               <th scope="col">Status</th>

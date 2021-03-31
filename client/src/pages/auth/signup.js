@@ -1,6 +1,6 @@
 // React components
 import React from "react";
-import { Link }  from "react-router-dom";
+import {Link}  from "react-router-dom";
 
 // Custom components
 import ModalWindow from "../../components/modal";
@@ -17,18 +17,20 @@ import Avatar from "@material-ui/core/Avatar";
 import Grid from "@material-ui/core/Grid";
 
 // Material-UI icons
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-
-// Third party functions
-import Cookies from 'js-cookie'
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
 
 // Local functions
 import {passwordCopyValidation} from "../../helpers/passwordCopyValidation";
 import {passwordValidation} from "../../helpers/passwordValidation";
 import {emailValidation} from "../../helpers/emailValidation";
-import AuthService from '../../services/AuthService';
+
+// Third party modules
+import Cookies from "js-cookie";
+
+// Local modules
+import AuthService from "../../services/AuthService";
 
 // Custom styles
 import styles from "../../styles/js/signup";

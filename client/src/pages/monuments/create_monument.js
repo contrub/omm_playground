@@ -5,7 +5,7 @@ import React from 'react';
 import ModalWindow from "../../components/modal";
 
 // Material-UI components
-import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import withStyles from "@material-ui/core/styles/withStyles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
@@ -14,15 +14,15 @@ import TextField from "@material-ui/core/TextField";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 
-// Local functions
-import MonumentService from "../../services/MonumentService";
-
 // Third party functions
 import isEmpty from "validator/es/lib/isEmpty";
 import Cookies from "js-cookie";
 
+// Local modules
+import MonumentService from "../../services/MonumentService";
+
 // Custom styles
-import styles from '../../styles/js/create_monument';
+import styles from "../../styles/js/create_monument";
 
 class CreateMonument extends React.Component {
   state = {

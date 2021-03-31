@@ -1,20 +1,22 @@
 // React components
+import React from "react";
 import {withRouter} from "react-router";
 import {Link} from "react-router-dom";
-import React from 'react';
 
 // Custom components
 import ModalWindow from "../../components/modal";
 
+// Material-UI components
+import withStyles from "@material-ui/core/styles/withStyles";
+
 // Material-UI icons
 import AddBoxIcon from "@material-ui/icons/AddBox";
 
-// Local functions
+// Local modules
 import MonumentService from "../../services/MonumentService";
 
 // Custom styles
 import styles from "../../styles/js/monuments_sheet";
-import withStyles from "@material-ui/core/styles/withStyles";
 
 class MonumentsSheet extends React.Component {
     state = {

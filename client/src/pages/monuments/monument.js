@@ -2,7 +2,7 @@
 import React from "react";
 import {withRouter} from "react-router";
 
-// Custom functions
+// Custom modules
 import MonumentService from "../../services/MonumentService";
 
 // Custom styles

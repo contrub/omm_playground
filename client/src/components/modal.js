@@ -1,5 +1,5 @@
 // React components
-import React from 'react';
+import React from "react";
 
 const ModalWindow = ({head, body, redirectURL}) => {
   const closeWindow = () => {

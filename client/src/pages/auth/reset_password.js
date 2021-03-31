@@ -15,16 +15,18 @@ import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 
 // Material-UI icons
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import EmailIcon from '@material-ui/icons/Email';
 
 // Local functions
 import {passwordCopyValidation} from "../../helpers/passwordCopyValidation";
 import {passwordValidation} from "../../helpers/passwordValidation";
+
+// Local modules
 import AuthService from "../../services/AuthService";
 
-// Third party functions
+// Third party modules
 import Cookies from "js-cookie";
 
 // Custom styles

@@ -1,25 +1,28 @@
+// React components
 import React, {Component} from 'react';
-import {Link} from "react-router-dom"
+import {Link} from "react-router-dom";
 
-import {withStyles} from '@material-ui/core';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
-import Drawer from '@material-ui/core/Drawer';
-
+// Material-UI components
 import ListSubheader from '@material-ui/core/ListSubheader';
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 import ListItem from '@material-ui/core/ListItem';
-import List from '@material-ui/core/List';
+import Collapse from "@material-ui/core/Collapse";
+import Drawer from "@material-ui/core/Drawer";
+import {withStyles} from "@material-ui/core";
+import List from "@material-ui/core/List";
 
-import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
-import ContactSupportIcon from '@material-ui/icons/ContactSupport';
-import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
-import WebAssetIcon from '@material-ui/icons/WebAsset';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import HomeIcon from '@material-ui/icons/Home';
+// Material-UI icons
+import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
+import ContactSupportIcon from "@material-ui/icons/ContactSupport";
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import WebAssetIcon from "@material-ui/icons/WebAsset";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import HomeIcon from "@material-ui/icons/Home";
 
-import styles from '../../styles/js/side_bar'
+// Custom styles
+import styles from '../../styles/js/side_bar';
 
 class Sidebar extends Component {
 

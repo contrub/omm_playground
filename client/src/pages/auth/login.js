@@ -14,18 +14,18 @@ import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 
 // Material-UI icons
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-
-// Local functions
-import AuthService from '../../services/AuthService';
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import VisibilityIcon from "@material-ui/icons/Visibility";
 
 // Third party functions
-import isEmpty from 'validator/lib/isEmpty';
-import Cookies from 'js-cookie'
+import isEmpty from "validator/lib/isEmpty";
+import Cookies from "js-cookie";
+
+// Local modules
+import AuthService from "../../services/AuthService";
 
 // Custom styles
-import styles from '../../styles/js/login'
+import styles from "../../styles/js/login";
 
 class SignIn extends React.Component {
 

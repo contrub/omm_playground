@@ -18,13 +18,15 @@ import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import CreateIcon from "@material-ui/icons/Create";
 
+// Third party functions
+import Cookies from "js-cookie";
+
 // Local functions
 import {passwordValidation} from "../../helpers/passwordValidation";
 import {emailValidation} from "../../helpers/emailValidation";
-import UserService from "../../services/UserService";
 
-// Third party functions
-import Cookies from "js-cookie"
+// Local modules
+import UserService from "../../services/UserService";
 
 // Custom styles
 import styles from "../../styles/js/create_user";
