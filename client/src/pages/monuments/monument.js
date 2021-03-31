@@ -1,17 +1,22 @@
-import React from 'react';
-import MonumentService from '../../services/MonumentService'
+// React components
+import React from "react";
 import {withRouter} from "react-router";
-import "../../styles/css/monument.css"
+
+// Custom functions
+import MonumentService from "../../services/MonumentService";
+
+// Custom styles
+import "../../styles/css/monument.css";
 
 class MonumentById extends React.Component {
-
   state = {
     monumentInfo: []
   }
 
-  componentDidMount = async() => {
+  componentDidMount = () => {
     let id = this.props.match.params.id
-    await MonumentService.getMonument({id: id})
+
+    MonumentService.getMonument({id: id})
       .then((res) => {
         this.setState({monumentInfo: res})
       })
@@ -22,9 +27,8 @@ class MonumentById extends React.Component {
       <div>
         <h1 id="name"> {this.state.monumentInfo.name} </h1>
         <img
-
           className="img"
-          alt=""
+          alt="monument_image"
           src={this.state.monumentInfo.imageURL}
         />
         <p id="Description"> {this.state.monumentInfo.description} </p>
