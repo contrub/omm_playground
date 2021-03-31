@@ -55,7 +55,7 @@ const userRole = async (req, res, next) => {
     User
       .find({email: req.decoded.email})
       .then((user) => {
-        res.send({userRole: user[0].userRole === undefined ? 'viewer' : user[0].userRole})
+        res.send({userRole: user[0] === undefined ? 'viewer' : user[0].userRole})
       })
       .catch((err) => {
         res.send({userRole: 'viewer'})
