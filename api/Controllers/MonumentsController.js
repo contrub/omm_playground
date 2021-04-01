@@ -84,6 +84,8 @@ const deleteMonument = async (req, res, next) => {
     return
   }
 
+  await cloudinary.deleteImage(req, res, next)
+
   Monuments.deleteMonument(req, res)
 }
 
