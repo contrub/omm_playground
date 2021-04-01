@@ -32,9 +32,10 @@ const styles = theme => ({
     display: 'block'
   },
   image_preview: {
-    display: 'block',
     margin: theme.spacing(0, 'auto'),
     borderRadius: '10px',
+    maxHeight: '200px',
+    display: 'block'
   }
 })
 
