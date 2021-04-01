@@ -26,7 +26,7 @@ const MonumentSchema = new Schema({
   },
   imageURL: {
     type: String,
-    default: 'https://res.cloudinary.com/gre354gfg/image/upload/v1613916683/monuments/static_monument_kzgbhy.png'
+    default: process.env.DEFAULT_MONUMENT_IMAGE_URL
   }
 }, {
   versionKey: false
