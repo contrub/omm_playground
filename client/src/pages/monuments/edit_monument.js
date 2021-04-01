@@ -80,7 +80,11 @@ class EditMonument extends React.Component {
       let {modal} = this.state
       let {inputs} = this.state
 
+      const imageURL = inputs.imageURL
+      const imagePublicID = imageURL.split('/')[7] + '/' + imageURL.split('/')[8].split('.')[0]
+
       inputs["token"] = Cookies.get('accessToken')
+      inputs["imagePublicID"] = imagePublicID
 
       MonumentService.updateMonument(inputs)
         .then((res) => {
