@@ -7,8 +7,6 @@ const {ObjectId} = require('mongodb')
 const isIDValid = (req, res, next) => {
   const id = req.params.id
 
-  console.log(id)
-
   if (!id) {
     next(ApiError.custom(404, 'Monument id undefined'))
   }
