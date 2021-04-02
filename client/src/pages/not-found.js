@@ -16,11 +16,11 @@ import "../styles/css/not-found.css";
 
 class NotFoundPage extends React.Component {
   render() {
-    const pathname = this.props.location.state.from.pathname
+    const pathname = this.props.location.pathname
     const {classes} = this.props
 
-    const contactSupport = () => {
-      window.location.href = "mailto:omm.helper@gmail.com"
+    const redirect = (url) => {
+      window.location.href = url
     }
 
     return (
@@ -35,17 +35,18 @@ class NotFoundPage extends React.Component {
               </div>
               <div className="error-actions">
                 <Button
-                  startIcon={<HomeIcon/>}
+                  onClick={() => redirect('/')}
                   className={classes.btn_home}
+                  startIcon={<HomeIcon/>}
                   variant="contained"
                   color="primary"
                 >
                   Take Me Home
                 </Button>
                 <Button
-                  onClick={contactSupport}
-                  startIcon={<HelpOutlineIcon/>}
+                  onClick={() => redirect('mailto:omm.helper@gmail.com')}
                   className={classes.btn_support}
+                  startIcon={<HelpOutlineIcon/>}
                   variant="outlined"
                   color="primary"
                 >
