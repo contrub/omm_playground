@@ -31,12 +31,12 @@ class EditMonument extends React.Component {
     user: [],
     inputs: {
       description: '',
+      buildDate: '',
       imageURL: '',
       address: '',
       creator: '',
       base64: '',
       name: '',
-      date: '',
       id: ''
     },
     errors: {
@@ -63,7 +63,7 @@ class EditMonument extends React.Component {
           modal["head"] = 'Something going wrong'
           this.setState({modal: modal})
         } else {
-          this.setState({inputs: {description: res.description, imageURL: res.imageURL, address: res.address, creator: res.creator, name: res.name, date: res.date, id: res._id}})
+          this.setState({inputs: {description: res.description, imageURL: res.imageURL, address: res.address, creator: res.creator, name: res.name, buildDate: res.buildDate, id: res._id}})
         }
       })
       .catch((err) => {
@@ -211,7 +211,7 @@ class EditMonument extends React.Component {
               multiline
             />
             <TextField
-              value={this.state.inputs["date"].split('T')[0] || ""}
+              value={this.state.inputs["buildDate"].split('T')[0] || ""}
               onChange={this.handleChange.bind(this, "date")}
               variant="outlined"
               margin="normal"

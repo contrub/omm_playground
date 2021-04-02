@@ -2,7 +2,7 @@
 const ApiError = require('../error/ApiError')
 
 // Third party modules
-const {ObjectId} = require('mongodb')
+const mongoose = require('mongoose');
 
 const isIDValid = (req, res, next) => {
   const id = req.params.id
@@ -11,7 +11,9 @@ const isIDValid = (req, res, next) => {
     next(ApiError.custom(404, 'Monument id undefined'))
   }
 
-  if (new ObjectId(id).toString() !== id) {
+  const isValid = mongoose.Types.ObjectId.isValid(id)
+
+  if (!isValid) {
     req.isIDValid = false
   } else {
     req.isIDValid = true
