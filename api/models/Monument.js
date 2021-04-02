@@ -20,7 +20,7 @@ const MonumentSchema = new Schema({
     type: String,
     default: 'Неизвестно'
   },
-  date: {
+  buildDate: {
     type: Date,
     default: Date.now
   },
