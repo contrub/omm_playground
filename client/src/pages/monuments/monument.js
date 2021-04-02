@@ -3,6 +3,7 @@ import React from "react";
 import {withRouter} from "react-router";
 
 // Custom components
+import NotFoundPage from "../not-found";
 import Loading from "../loading"
 
 // Custom modules
@@ -30,10 +31,17 @@ class MonumentById extends React.Component {
 
   render() {
     const {isLoading} = this.state
+    const {monumentInfo} = this.state
 
     if (isLoading) {
       return (
         <Loading/>
+      )
+    }
+
+    if (!isLoading && !monumentInfo.length) {
+      return (
+        <NotFoundPage/>
       )
     }
 
