@@ -14,7 +14,7 @@ import "../../styles/css/monument.css";
 
 class MonumentById extends React.Component {
   state = {
-    monumentInfo: [],
+    monumentInfo: {},
     isLoading: false
   }
 
@@ -39,7 +39,7 @@ class MonumentById extends React.Component {
       )
     }
 
-    if (!isLoading && !monumentInfo.length) {
+    if (!isLoading && monumentInfo.name === undefined) {
       return (
         <NotFoundPage/>
       )
