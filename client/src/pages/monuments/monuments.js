@@ -1,6 +1,9 @@
 // React components
 import React from "react";
 
+// Custom components
+import Loading from "../loading"
+
 // Material-UI components
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
@@ -17,16 +20,17 @@ import "../../styles/css/monuments.css"
 
 class Monuments extends React.Component{
   state = {
-    monuments: []
+    monuments: [],
+    isLoading: false
   }
 
   componentDidMount = () => {
 
+    this.setState({isLoading: true})
+
     MonumentService.fetchMonuments()
       .then((res) => {
-        this.setState({
-          monuments: res
-        })
+        this.setState({monuments: res, isLoading: false})
       })
   }
 
@@ -36,6 +40,13 @@ class Monuments extends React.Component{
 
   render() {
     const {monuments} = this.state
+    const {isLoading} = this.state
+
+    if (isLoading) {
+      return (
+        <Loading/>
+      )
+    }
 
     return (
       <div>
