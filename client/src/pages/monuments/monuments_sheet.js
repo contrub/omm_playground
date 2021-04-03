@@ -65,31 +65,23 @@ class MonumentsSheet extends React.Component {
 
     removeMonument = (e, id) => {
       // const id = e.target.value
-      const {monuments} = this.state
+      let {monuments} = this.state
       let {modal} = this.state
-
-      console.log(id)
 
       const monument = monuments.find(monument => monument._id === id)
       const imagePublicID = monument.imageURL.split('/')[7] + '/' + monument.imageURL.split('/')[8].split('.')[0]
 
       MonumentService.deleteMonument({token: Cookies.get('accessToken'), id: id, imagePublicID: imagePublicID})
-        .then((res) => {
-          console.log(res)
-          // локальное удаление
-          MonumentService.fetchMonuments()
-            .then((res) => {
-              if (!res.length) {
-                modal["head"] = 'Monuments database is empty'
-                modal["body"] = 'Please, create new monuments'
-                modal["redirectURL"] = '/create_monument'
-                this.setState({modal: modal})
-              }
+        .then(() => {
+          monuments = monuments.filter((monument) => monument._id !== id)
 
-              this.setState({monuments: res})
-            })
+          this.setState({monuments: monuments})
         })
-      // отловить ошибку
+        .catch((e) => {
+          modal["head"] = 'Delete monument error'
+          modal["body"] = 'Please, check access rights'
+          this.setState({modal: modal})
+        })
     }
 
     render() {
