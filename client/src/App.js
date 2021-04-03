@@ -117,7 +117,7 @@ class App extends Component {
           <Route exact path="/" component={Monuments}/>
           <Route path="/monuments/:id" component={MonumentById}/>
           <ProtectedRoute path="/users_sheet" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={UsersSheet}/>
-          <ProtectedRoute path="/users/:email" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={EditUser}/>
+          <ProtectedRoute path="/edit_user/:email" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={EditUser}/>
           <ProtectedRoute path="/create_user" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={CreateUser}/>
           <ProtectedRoute path="/monuments_sheet" requiredRole={"admin"} userRole={localStorage.getItem('userRole')}  component={MonumentsSheet}/>
           <ProtectedRoute path="/edit_monument/:id" requiredRole={"admin"} userRole={localStorage.getItem('userRole')} component={EditMonument}/>
