@@ -13,8 +13,8 @@ import Button from "@material-ui/core/Button";
 
 // Material-UI icons
 import DeleteIcon from "@material-ui/icons/Delete";
-import AddBoxIcon from "@material-ui/icons/AddBox";
 import EditIcon from "@material-ui/icons/Edit";
+import AddIcon from "@material-ui/icons/Add";
 
 // Local modules
 import MonumentService from "../../services/MonumentService";
@@ -101,15 +101,46 @@ class MonumentsSheet extends React.Component {
           <table className="table">
             <thead>
             <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Address</th>
-              <th scope="col">Creator</th>
-              <th scope="col">ID</th>
-              <th scope="col">Image</th>
               <th scope="col">
-                <Link to="/create_monument">
-                  <AddBoxIcon/>
-                </Link>
+                <div className={classes.table_head}>
+                  Name
+                </div>
+              </th>
+              <th scope="col">
+                <div className={classes.table_head}>
+                  Address
+                </div>
+              </th>
+              <th scope="col">
+                <div className={classes.table_head}>
+                  Creator
+                </div>
+              </th>
+              <th scope="col">
+                <div className={classes.table_head}>
+                  ID
+                </div>
+              </th>
+              <th scope="col">
+                <div className={classes.table_head}>
+                  Image
+                </div>
+              </th>
+              <th scope="col">
+                {/*<Button*/}
+                {/*  href="/create_monument"*/}
+                {/*  variant="contained"*/}
+                {/*  color="inherit"*/}
+                {/*>*/}
+                {/*  Create Monument*/}
+                {/*</Button>*/}
+                <Button
+                  href="/create_monument"
+                  variant="contained"
+                  color="inherit"
+                >
+                  <AddIcon/>
+                </Button>
               </th>
             </tr>
             </thead>
