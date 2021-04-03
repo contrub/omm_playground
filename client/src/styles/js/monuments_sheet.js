@@ -14,6 +14,9 @@ const styles = theme => ({
     margin: theme.spacing(1, 'auto'),
     maxWidth: '80px',
     width: '80px'
+  },
+  table_head: {
+    margin: theme.spacing(1)
   }
 })
 
