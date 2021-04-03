@@ -4,6 +4,7 @@ import {withRouter} from "react-router";
 
 // Custom components
 import ModalWindow from "../../components/modal";
+import Loading from "../loading"
 
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -47,12 +48,15 @@ class EditMonument extends React.Component {
       body: '',
       redirectURL: '/monuments_sheet'
     },
+    isLoading: false,
     isValid: true
   }
 
   componentDidMount = async () => {
     const monumentID = this.props.match.params.id
     let {modal} = this.state
+
+    this.setState({isLoading: true})
 
     MonumentService.getMonument({id: monumentID})
       .then((res) => {
@@ -61,15 +65,15 @@ class EditMonument extends React.Component {
         if (name === undefined) {
           modal["body"] = 'Get monument error'
           modal["head"] = 'Something going wrong'
-          this.setState({modal: modal})
+          this.setState({modal: modal, isLoading: false})
         } else {
-          this.setState({inputs: {description: res.description, imageURL: res.imageURL, address: res.address, creator: res.creator, name: res.name, buildDate: res.buildDate, id: res._id}})
+          this.setState({inputs: {description: res.description, imageURL: res.imageURL, address: res.address, creator: res.creator, name: res.name, buildDate: res.buildDate, id: res._id}, isLoading: false})
         }
       })
       .catch((err) => {
         modal["head"] = 'Server error'
         modal["body"] = err.message
-        this.setState({modal: modal})
+        this.setState({modal: modal, isLoading: false})
       })
   }
 
@@ -104,18 +108,18 @@ class EditMonument extends React.Component {
     }
   }
 
-  removeMonument = () => {
-    const id = this.state.inputs.id
-    let {modal} = this.state
-
-    MonumentService.deleteMonument({id: id, token: Cookies.get('accessToken')})
-      .then(() => window.location.href = '/monuments_sheet')
-      .catch((err) => {
-        modal["body"] = 'Server error'
-        modal["head"] = err.message
-        this.setState({modal: modal})
-      })
-  }
+  // removeMonument = () => {
+  //   const id = this.state.inputs.id
+  //   let {modal} = this.state
+  //
+  //   MonumentService.deleteMonument({id: id, token: Cookies.get('accessToken')})
+  //     .then(() => window.location.href = '/monuments_sheet')
+  //     .catch((err) => {
+  //       modal["body"] = 'Server error'
+  //       modal["head"] = err.message
+  //       this.setState({modal: modal})
+  //     })
+  // }
 
   handleChange = (input, e) => {
     let inputs = this.state.inputs
@@ -161,6 +165,13 @@ class EditMonument extends React.Component {
 
   render() {
     const {classes} = this.props
+    const {isLoading} = this.state
+
+    if (isLoading) {
+      return (
+        <Loading/>
+      )
+    }
 
     return (
       <Container id="edit-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
@@ -246,15 +257,15 @@ class EditMonument extends React.Component {
             >
               Edit Monument
             </Button>
-            <Button
-              className={classes.remove_btn}
-              onClick={this.removeMonument}
-              variant="contained"
-              color="secondary"
-              fullWidth
-            >
-              Remove Monument
-            </Button>
+            {/*<Button*/}
+            {/*  className={classes.remove_btn}*/}
+            {/*  onClick={this.removeMonument}*/}
+            {/*  variant="contained"*/}
+            {/*  color="secondary"*/}
+            {/*  fullWidth*/}
+            {/*>*/}
+            {/*  Remove Monument*/}
+            {/*</Button>*/}
             <div id='validError' className={classes.errors}/>
           </form>
         </div>
