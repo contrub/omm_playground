@@ -40,8 +40,6 @@ const createMonument = async (req, res, next) => {
     return
   }
 
-  req.body.email = req.decoded.email
-
   await AuthController.MonumentsDB(req, res, next)
   await cloudinary.uploadImage(req, res, next)
 
@@ -56,8 +54,6 @@ const updateMonument = async (req, res, next) => {
     next(ApiError.custom(403, 'Email payload undefined in JWT'))
     return
   }
-
-  req.body.email = req.decoded.email
 
   await AuthController.MonumentsDB(req, res, next)
   await MongoService.isIDValid(req, res, next)
@@ -87,8 +83,6 @@ const deleteMonument = async (req, res, next) => {
     next(ApiError.custom(403, 'Email payload undefined in JWT'))
     return
   }
-
-  req.body.email = req.decoded.email
 
   await AuthController.UserDB(req, res, next)
   await MongoService.isIDValid(req, res, next)

@@ -1,4 +1,5 @@
 // Local modules
+const UserService = require('../services/UserService')
 const AuthController = require('./AuthController')
 const Users = require('../routes/Users')
 const jwt = require('../helpers/jwt')
@@ -15,8 +16,6 @@ const fetchUsers = async (req, res, next) => {
     return
   }
 
-  req.body.email = req.decoded.email
-
   await AuthController.UserDB(req, res, next)
 
   Users.getUsers(req, res)
@@ -30,8 +29,6 @@ const getUser = async (req, res, next) => {
     next(ApiError.custom(403, 'Email payload undefined in JWT'))
     return
   }
-
-  req.body.email = req.decoded.email
 
   await AuthController.UserDB(req, res, next)
 
@@ -47,8 +44,6 @@ const createUser = async (req, res, next) => {
     return
   }
 
-  req.body.email = req.decoded.email
-
   await AuthController.UserDB(req, res, next)
 
   Users.createUser(req, res)
@@ -63,14 +58,14 @@ const updateUser = async (req, res, next) => {
     return
   }
 
-  req.body.email = req.decoded.email
-
-  await AuthController.UserDB(req, res, next)
+  await UserService.isUserExist(req, res, next)
 
   if (!req.isUserExist) {
-    next(ApiError.custom(403, 'Email payload undefined in JWT'))
+    next(ApiError.custom(404, 'Updated user undefined'))
     return
   }
+
+  await AuthController.UserDB(req, res, next)
 
   Users.updateUser(req, res)
 }
@@ -83,8 +78,6 @@ const deleteUser = async (req, res, next) => {
     next(ApiError.custom(403, 'Email payload undefined in JWT'))
     return
   }
-
-  req.body.email = req.decoded.email
 
   await AuthController.UserDB(req, res, next)
 
