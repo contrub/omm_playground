@@ -5,17 +5,28 @@ const styles = theme => ({
     maxWidth: '200px'
   },
   edit_btn: {
-    margin: theme.spacing(1, 'auto'),
-    display: 'block',
+    margin: theme.spacing(1),
     maxWidth: '50px',
     width: '50px'
   },
   delete_btn: {
-    margin: theme.spacing(1, 'auto'),
+    margin: theme.spacing(1),
     maxWidth: '80px',
     width: '80px'
   },
+  active_user_btn: {
+    backgroundColor: 'green',
+    color: 'white',
+    width: '95px'
+  },
+  disable_user_btn: {
+    backgroundColor: 'red',
+    color: 'white'
+  },
   table_head: {
+    margin: theme.spacing(1)
+  },
+  table_cell: {
     margin: theme.spacing(1)
   },
   align_center: {

@@ -1,7 +1,6 @@
 // React components
 import React from "react";
 import {withRouter} from "react-router";
-import {Link} from "react-router-dom";
 
 // Custom components
 import ModalWindow from "../../components/modal";
@@ -100,7 +99,7 @@ class MonumentsSheet extends React.Component {
         <div>
           <table className="table">
             <thead>
-            <tr>
+            <tr className={classes.align_center}>
               <th scope="col">
                 <div className={classes.table_head}>
                   Name
@@ -147,7 +146,7 @@ class MonumentsSheet extends React.Component {
             <tbody>
             {monuments.map((monument, index) => {
               return (
-                <tr key={index}>
+                <tr key={index} className={classes.align_center}>
                   <td>
                     <div>
                       {monument.name}
