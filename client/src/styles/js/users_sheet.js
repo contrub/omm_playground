@@ -15,12 +15,12 @@ const styles = theme => ({
     width: '80px'
   },
   active_user_btn: {
-    backgroundColor: 'green',
+    backgroundColor: '#28a745',
     color: 'white',
     width: '95px'
   },
   disable_user_btn: {
-    backgroundColor: 'red',
+    backgroundColor: '#dc3545',
     color: 'white'
   },
   table_head: {
