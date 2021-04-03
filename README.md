@@ -4,6 +4,8 @@
 This repository contains a simple MERN app as part of the education project, associated with monuments
 # Table of Contents
 
+---
+
 # Project Layout
 
    Here is the project layout:
@@ -26,3 +28,17 @@ This repository contains a simple MERN app as part of the education project, ass
        |__ Dockerfile
        |__ docker-compose.yml
    ```
+## Used third party services
+
+[Cloudinary](https://cloudinary.com/) - cloud service that offers a solution to a web application's entire image management
+
+[MongoDB Atlas Database](https://www.mongodb.com/cloud/atlas) - cloud database service, built-in automation for resource and workload optimization
+
+---
+
+## Setting up the `omm_playground` project
+
+Start by cloning the project with the command:
+```
+$ git clone https://github.com/EgorOnufreychuk/omm_playground
+```
