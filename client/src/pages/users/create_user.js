@@ -29,7 +29,7 @@ import {emailValidation} from "../../helpers/emailValidation";
 import UserService from "../../services/UserService";
 
 // Custom styles
-import styles from "../../styles/js/create_user";
+import styles from "../../styles/js/users/create_user";
 
 class CreateUser extends React.Component {
   state = {

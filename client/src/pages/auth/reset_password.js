@@ -30,7 +30,7 @@ import AuthService from "../../services/AuthService";
 import Cookies from "js-cookie";
 
 // Custom styles
-import styles from "../../styles/js/reset_password";
+import styles from "../../styles/js/auth/reset_password";
 import {withRouter} from "react-router";
 
 class PasswordReset extends React.Component {

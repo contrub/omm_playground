@@ -21,7 +21,7 @@ import Cookies from "js-cookie";
 import UserService from "../../services/UserService";
 
 // Custom styles
-import styles from "../../styles/js/users_sheet";
+import styles from "../../styles/js/users/users_sheet";
 
 class UsersSheet extends React.Component {
   state = {

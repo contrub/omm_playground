@@ -33,7 +33,7 @@ import Cookies from "js-cookie";
 import AuthService from "../../services/AuthService";
 
 // Custom styles
-import styles from "../../styles/js/signup";
+import styles from "../../styles/js/auth/signup";
 
 class SignUp extends React.Component {
   state = {

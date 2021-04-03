@@ -26,7 +26,7 @@ import AuthService from '../../services/AuthService';
 import Cookies from "js-cookie";
 
 // Custom styles
-import styles from "../../styles/js/reset_password_request";
+import styles from "../../styles/js/auth/reset_password_request";
 
 class PasswordResetRequest extends React.Component {
   state = {

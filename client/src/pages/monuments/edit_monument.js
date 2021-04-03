@@ -25,7 +25,7 @@ import Cookies from "js-cookie";
 import MonumentService from "../../services/MonumentService";
 
 // Custom styles
-import styles from "../../styles/js/edit_monument";
+import styles from "../../styles/js/monuments/edit_monument";
 
 class EditMonument extends React.Component {
   state = {

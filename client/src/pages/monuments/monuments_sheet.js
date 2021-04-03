@@ -22,7 +22,7 @@ import MonumentService from "../../services/MonumentService";
 import Cookies from "js-cookie";
 
 // Custom styles
-import styles from "../../styles/js/monuments_sheet";
+import styles from "../../styles/js/monuments/monuments_sheet";
 
 class MonumentsSheet extends React.Component {
     state = {

@@ -25,7 +25,7 @@ import Cookies from "js-cookie";
 import UserService from '../../services/UserService';
 
 // Custom styles
-import styles from "../../styles/js/edit_user";
+import styles from "../../styles/js/users/edit_user";
 
 class EditUser extends React.Component {
   state = {
