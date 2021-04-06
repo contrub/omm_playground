@@ -186,15 +186,17 @@ class MonumentsSheet extends React.Component {
                       >
                         <EditIcon/>
                       </Button>
-                      <Button
-                        onClick={(e) => this.removeMonument(e, monument._id)}
-                        className={classes.edit_btn}
-                        value={monument._id}
-                        variant="contained"
-                        color="secondary"
-                      >
-                        <DeleteIcon/>
-                      </Button>
+                      {localStorage.getItem('userRole') === 'superadmin' &&
+                        <Button
+                          onClick={(e) => this.removeMonument(e, monument._id)}
+                          className={classes.edit_btn}
+                          value={monument._id}
+                          variant="contained"
+                          color="secondary"
+                        >
+                          <DeleteIcon/>
+                        </Button>
+                      }
                     </div>
                   </td>
                 </tr>
