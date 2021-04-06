@@ -8,80 +8,99 @@ const jwt = require('../helpers/jwt')
 const ApiError = require('../error/ApiError')
 
 const fetchUsers = async (req, res, next) => {
-  await jwt.verifyAccessToken(req, res, next)
-  await jwt.decodeAccessToken(req, res, next)
+  try {
+    await jwt.verifyAccessToken(req, res)
+    await jwt.decodeAccessToken(req, res)
 
-  if (req.decoded.email === undefined) {
-    next(ApiError.custom(403, 'Email payload undefined in JWT'))
-    return
+    if (req.decoded.email === undefined) {
+      throw ApiError.custom(403, 'Email payload undefined in JWT')
+    }
+
+    await AuthController.verifyAction(req, 'users:list', res)
+
+    Users.getUsers(req, res)
+  } catch (err) {
+    // console.log(err)
+    next(err)
   }
-
-  await AuthController.verifyAction(req, 'users:list', res, next)
-
-  Users.getUsers(req, res)
 }
 
 const getUser = async (req, res, next) => {
-  await jwt.verifyAccessToken(req, res, next)
-  await jwt.decodeAccessToken(req, res, next)
+  try {
+    await jwt.verifyAccessToken(req, res)
+    await jwt.decodeAccessToken(req, res)
 
-  if (req.decoded.email === undefined) {
-    next(ApiError.custom(403, 'Email payload undefined in JWT'))
-    return
+    if (req.decoded.email === undefined) {
+      throw ApiError.custom(403, 'Email payload undefined in JWT')
+    }
+
+    await AuthController.verifyAction(req, 'users:get-by-id', res)
+
+    Users.getUser(req, res)
+  } catch (err) {
+    // console.log(err)
+    next(err)
   }
-
-  await AuthController.verifyAction(req, 'users:get-by-id', res, next)
-
-  Users.getUser(req, res)
 }
 
 const createUser = async (req, res, next) => {
-  await jwt.verifyAccessToken(req, res, next)
-  await jwt.decodeAccessToken(req, res, next)
+  try {
+    await jwt.verifyAccessToken(req, res)
+    await jwt.decodeAccessToken(req, res)
 
-  if (req.decoded.email === undefined) {
-    next(ApiError.custom(403, 'Email payload undefined in JWT'))
-    return
+    if (req.decoded.email === undefined) {
+      throw ApiError.custom(403, 'Email payload undefined in JWT')
+    }
+
+    await AuthController.verifyAction(req, 'users:create-new', res)
+
+    Users.createUser(req, res)
+  } catch (err) {
+    // console.log(err)
+    next(err)
   }
-
-  await AuthController.verifyAction(req, 'users:create-new', res, next)
-
-  Users.createUser(req, res)
 }
 
 const updateUser = async (req, res, next) => {
-  await jwt.verifyAccessToken(req, res, next)
-  await jwt.decodeAccessToken(req, res, next)
+  try {
+    await jwt.verifyAccessToken(req, res)
+    await jwt.decodeAccessToken(req, res)
 
-  if (req.decoded.email === undefined) {
-    next(ApiError.custom(403, 'Email payload undefined in JWT'))
-    return
+    if (req.decoded.email === undefined) {
+      throw ApiError.custom(403, 'Email payload undefined in JWT')
+    }
+
+    await AuthController.verifyAction(req, 'users:update-by-id', res)
+
+    await UserService.isUserExist(req, res)
+
+    if (!req.isUserExist) {
+      throw ApiError.custom(404, 'Updated user undefined')
+    }
+
+    Users.updateUser(req, res)
+  } catch (err) {
+    // console.log(err)
+    next(err)
   }
-
-  await AuthController.verifyAction(req, 'users:update-by-id', res, next)
-
-  await UserService.isUserExist(req, res, next)
-
-  if (!req.isUserExist) {
-    next(ApiError.custom(404, 'Updated user undefined'))
-    return
-  }
-
-  Users.updateUser(req, res)
 }
 
 const deleteUser = async (req, res, next) => {
-  await jwt.verifyAccessToken(req, res, next)
-  await jwt.decodeAccessToken(req, res, next)
+  try {
+    await jwt.verifyAccessToken(req, res)
+    await jwt.decodeAccessToken(req, res)
 
-  if (req.decoded.email === undefined) {
-    next(ApiError.custom(403, 'Email payload undefined in JWT'))
-    return
+    if (req.decoded.email === undefined) {
+      throw ApiError.custom(403, 'Email payload undefined in JWT')
+    }
+
+    await AuthController.verifyAction(req, 'users:delete-by-id', res)
+
+    Users.deleteUser(req, res)
+  } catch (err) {
+    // console.log(err)
+    next(err)
   }
-
-  await AuthController.verifyAction(req, 'users:delete-by-id', res, next)
-
-  Users.deleteUser(req, res)
 }
 
 module.exports = {

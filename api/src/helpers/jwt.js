@@ -4,29 +4,29 @@ const ApiError = require('../error/ApiError')
 // Third party module
 const jwt = require('jsonwebtoken')
 
-generateAccessToken = (req, payload, next, options={}) => {
+generateAccessToken = (req, payload, options={}) => {
   try {
     const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, options)
 
     req.accessToken = token
   } catch (err) {
-    next(ApiError.custom(403, 'AccessToken generate error'))
     console.log(err)
+    throw ApiError.custom(403, 'AccessToken generate error')
   }
 }
 
-decodeAccessToken = (req, res, next) => {
+decodeAccessToken = (req, res) => {
   const authHeader = req.headers['authorization']
 
   if (authHeader === undefined) {
-    res.status(401).json({message: 'AccessToken undefined'})
+    throw ApiError.custom(401, 'AccessToken undefined')
   } else {
     const accessToken = req.headers.authorization.split(' ')[1]
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
       if (err) {
-        next(ApiError.custom(403, 'AccessToken decode error'))
         console.log(err)
+        throw ApiError.custom(403, 'AccessToken decode error')
       } else if (decoded) {
         req.decoded = decoded
       }
@@ -34,18 +34,18 @@ decodeAccessToken = (req, res, next) => {
   }
 }
 
-verifyAccessToken = (req, res, next) => {
+verifyAccessToken = (req, res) => {
   const authHeader = req.headers['authorization']
   
   if (authHeader === undefined) {
-    next(ApiError.custom(401, 'AccessToken undefined'))
+    throw ApiError.custom(401, 'AccessToken undefined')
   } else {
     const accessToken = req.headers.authorization.split(' ')[1];
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
       if (err) {
-        next(ApiError.custom(403, 'AccessToken validation error'))
         console.log(err)
+        throw ApiError.custom(403, 'AccessToken validation error')
       }
     })
   }

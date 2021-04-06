@@ -11,109 +11,125 @@ const jwt = require('../helpers/jwt')
 const ApiError = require('../error/ApiError')
 
 const fetchMonuments = async (req, res, next) => {
-  await AuthController.verifyAction(req, 'monuments:list', res, next)
-  Monuments.getMonuments(req, res)
+  try {
+    await AuthController.verifyAction(req, 'monuments:list', res)
+
+    Monuments.getMonuments(req, res)
+  } catch (err) {
+    // console.log(err)
+    next(err)
+  }
 }
 
 const getMonument = async (req, res, next) => {
+  try {
+    await MongoService.isIDValid(req, res, next)
 
-  await MongoService.isIDValid(req, res, next)
+    if (!req.isIDValid) {
+      throw ApiError.custom(404, 'Monument id validation error')
+    }
 
-  if (!req.isIDValid) {
-    next(ApiError.custom(404, 'Monument id validation error'))
+    await AuthController.verifyAction(req, 'monuments:get-by-id', res, next)
+    await MonumentService.isMonumentNameExist(req, res, next)
+
+    if (!req.isMonumentExist) {
+      throw ApiError.custom(404, 'Monument undefined')
+    }
+
+    Monuments.getMonument(req, res)
+  } catch (err) {
+    // console.log(err)
+    next(err)
   }
-
-  await AuthController.verifyAction(req, 'monuments:get-by-id', res, next)
-  await MonumentService.isMonumentNameExist(req, res, next)
-
-  if (!req.isMonumentExist) {
-    next(ApiError.custom(404, 'Monument undefined'))
-    return
-  }
-
-  Monuments.getMonument(req, res)
 }
 
 const createMonument = async (req, res, next) => {
-  await jwt.verifyAccessToken(req, res, next)
-  await jwt.decodeAccessToken(req, res, next)
+  try {
+    await jwt.verifyAccessToken(req, res, next)
+    await jwt.decodeAccessToken(req, res, next)
 
-  if (req.decoded.email === undefined) {
-    next(ApiError.custom(403, 'Email payload undefined in JWT'))
-    return
+    if (req.decoded.email === undefined) {
+      throw ApiError.custom(403, 'Email payload undefined in JWT')
+    }
+
+    await AuthController.verifyAction(req, 'monuments:create-new', res)
+
+    await MonumentService.isMonumentNameExist(req, res)
+
+    if (req.isMonumentExist) {
+      throw ApiError.custom(200, 'Monument already exist')
+    }
+
+    await cloudinary.uploadImage(req, res)
+
+    Monuments.createMonument(req, res)
+  } catch (err) {
+    // console.log(err)
+    next(err)
   }
-
-  await AuthController.verifyAction(req, 'monuments:create-new', res, next)
-
-  await MonumentService.isMonumentNameExist(req, res, next)
-
-  console.log(req.isMonumentExist)
-
-  if (req.isMonumentExist) {
-    next(ApiError.custom(200, 'Monument already exist'))
-    return
-  }
-
-  await cloudinary.uploadImage(req, res, next)
-
-  Monuments.createMonument(req, res)
 }
 
 const updateMonument = async (req, res, next) => {
-  await jwt.verifyAccessToken(req, res, next)
-  await jwt.decodeAccessToken(req, res, next)
+  try {
+    await jwt.verifyAccessToken(req, res)
+    await jwt.decodeAccessToken(req, res)
 
-  if (req.decoded.email === undefined) {
-    next(ApiError.custom(403, 'Email payload undefined in JWT'))
-    return
+    if (req.decoded.email === undefined) {
+      throw ApiError.custom(403, 'Email payload undefined in JWT')
+    }
+
+    await AuthController.verifyAction(req, res)
+    await MongoService.isIDValid(req, 'monuments:update-by-id', res)
+
+    if (!req.isIDValid) {
+      throw ApiError.custom(404, 'Monument id validation error')
+    }
+
+    await MonumentService.isMonumentIDExist(req, res)
+
+    if (!req.isMonumentExist) {
+      throw ApiError.custom(404, 'Monument undefined')
+    }
+
+    await cloudinary.deleteImage(req, res)
+    await cloudinary.uploadImage(req, res)
+
+    Monuments.updateMonument(req, res)
+  } catch (err) {
+    // console.log(err)
+    next(err)
   }
-
-  await AuthController.verifyAction(req, res, next)
-  await MongoService.isIDValid(req, 'monuments:update-by-id', res, next)
-
-  if (!req.isIDValid) {
-    next(ApiError.custom(404, 'Monument id validation error'))
-  }
-
-  await MonumentService.isMonumentIDExist(req, res, next)
-
-  if (!req.isMonumentExist) {
-    next(ApiError.custom(404, 'Monument undefined'))
-    return
-  }
-
-  await cloudinary.deleteImage(req, res, next)
-  await cloudinary.uploadImage(req, res, next)
-
-  Monuments.updateMonument(req, res)
 }
 
 const deleteMonument = async (req, res, next) => {
-  await jwt.verifyAccessToken(req, res, next)
-  await jwt.decodeAccessToken(req, res, next)
+  try {
+    await jwt.verifyAccessToken(req, res)
+    await jwt.decodeAccessToken(req, res)
 
-  if (req.decoded.email === undefined) {
-    next(ApiError.custom(403, 'Email payload undefined in JWT'))
-    return
+    if (req.decoded.email === undefined) {
+      throw ApiError.custom(403, 'Email payload undefined in JWT')
+    }
+
+    await AuthController.verifyAction(req, 'monuments:delete-by-id', res)
+    await MongoService.isIDValid(req, res)
+
+    if (!req.isIDValid) {
+      throw ApiError.custom(404, 'Monument id validation error')
+    }
+
+    await MonumentService.isMonumentIDExist(req, res)
+
+    if (!req.isMonumentExist) {
+      throw ApiError.custom(404, 'Monument undefined')
+    }
+
+    await cloudinary.deleteImage(req, res)
+
+    Monuments.deleteMonument(req, res)
+  } catch (err) {
+    // console.log(err)
+    next(err)
   }
-
-  await AuthController.verifyAction(req, 'monuments:delete-by-id', res, next)
-  await MongoService.isIDValid(req, res, next)
-
-  if (!req.isIDValid) {
-    next(ApiError.custom(404, 'Monument id validation error'))
-  }
-
-  await MonumentService.isMonumentIDExist(req, res, next)
-
-  if (!req.isMonumentExist) {
-    next(ApiError.custom(404, 'Monument undefined'))
-    return
-  }
-
-  await cloudinary.deleteImage(req, res, next)
-
-  Monuments.deleteMonument(req, res)
 }
 
 module.exports = {

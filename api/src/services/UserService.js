@@ -7,11 +7,11 @@ const ApiError = require('../error/ApiError')
 // Third party modules
 const bcrypt = require('bcrypt')
 
-const isUserExist = async (req, res, next) => {
+const isUserExist = async (req, res) => {
   const email = req.body.email
 
   if (email === undefined) {
-    next(ApiError.custom(403, 'Email undefined'))
+    throw ApiError.custom(403, 'Email undefined')
   } else {
     await User
       .find({email: email})
@@ -20,12 +20,12 @@ const isUserExist = async (req, res, next) => {
       })
       .catch((err) => {
         console.log(err)
-        next(ApiError.internal(500, 'MongoDB error'))
+        throw ApiError.internal(500, 'MongoDB error')
       })
   }
 }
 
-const isUserDataExist = async (req, res, next) => {
+const isUserDataExist = async (req, res) => {
   const email = req.body.email
   const password = req.body.password
 
@@ -48,16 +48,16 @@ const isUserDataExist = async (req, res, next) => {
       })
       .catch((err) => {
         console.log(err)
-        next(ApiError.internal('MongoDB error'))
+        throw ApiError.internal('MongoDB error')
       })
   }
 }
 
-const isUserActive = async (req, res, next) => {
+const isUserActive = async (req, res) => {
   const email = req.body.email
 
   if (email === undefined) {
-    next(ApiError.custom(403, 'Email undefined'))
+    throw ApiError.custom(403, 'Email undefined')
   } else {
     await User
       .find({email: email})
@@ -65,12 +65,12 @@ const isUserActive = async (req, res, next) => {
         if (user[0]) {
           req.isUserActive = user[0].status === 'active' ? true : false
         } else {
-          next(ApiError.custom(403, 'User undefined'))
+          throw ApiError.custom(403, 'User undefined')
         }
       })
       .catch((err) => {
         console.log(err)
-        next(ApiError.internal( 'MongoDB error'))
+        throw ApiError.internal( 'MongoDB error')
       })
   }
 }

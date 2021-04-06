@@ -13,7 +13,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 })
 
-uploadImage = async (req, res, next) => {
+uploadImage = async (req, res) => {
   const fileStr = req.body.base64
 
   if (fileStr !== undefined && !isEmpty(fileStr)) {
@@ -23,20 +23,20 @@ uploadImage = async (req, res, next) => {
         req.body.imageURL = url
       })
       .catch((err) => {
-        next(ApiError.internal('Cloudinary error'))
         console.log(err)
+        throw ApiError.internal('Cloudinary error')
       })
   }
 }
 
-deleteImage = async (req, res, next) => {
+deleteImage = async (req, res) => {
   const imagePublicID = req.body.imagePublicID
 
   if (imagePublicID !== undefined && !isEmpty(imagePublicID) && imagePublicID !== process.env.DEFAULT_MONUMENT_IMAGE_PUBLIC_ID) {
     await cloudinary.api.delete_resources([imagePublicID])
       .catch((err) => {
-        next(ApiError.internal('Cloudinary error'))
         console.log(err)
+        throw ApiError.internal('Cloudinary error')
       })
   }
 }
