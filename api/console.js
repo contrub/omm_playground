@@ -1,6 +1,6 @@
 require('dotenv').config()
 const mongoose = require('mongoose');
-const User = require('./models/User');
+const User = require('./src/models/User');
 const fs = require('fs');
 const bcrypt = require('bcrypt')
 const sAdminJSON = './resources/superadmin.json'

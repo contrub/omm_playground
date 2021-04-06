@@ -7,11 +7,11 @@ const express = require('express')
 const cors = require('cors')
 
 // Local modules
-const postman = require('./utils/postman')
+const postman = require('./src/utils/postman')
 const routes = require('./routes')
 
 // Local functions
-const apiErrorHandler = require('./error/api-error-handler')
+const apiErrorHandler = require('./src/error/api-error-handler')
 
 const app = express()
 const port = process.env.PORT
