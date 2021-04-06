@@ -47,7 +47,7 @@ const userRole = async (req, res, next) => {
   const authHeader = req.headers['authorization']
 
   if (authHeader === undefined) {
-    res.send({userRole: 'viewer'})
+    res.send({userRole: 'guest'})
   } else {
     await jwt.verifyAccessToken(req, res, next)
     await jwt.decodeAccessToken(req, res, next)
@@ -55,7 +55,7 @@ const userRole = async (req, res, next) => {
     User
       .find({email: req.decoded.email})
       .then((user) => {
-        res.send({userRole: user[0] === undefined ? 'viewer' : user[0].userRole})
+        res.send({userRole: user[0] === undefined ? 'guest' : user[0].userRole})
       })
       .catch((err) => {
         res.send({userRole: 'viewer'})
