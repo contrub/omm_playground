@@ -24,7 +24,7 @@ const getMonument = async (req, res, next) => {
   }
 
   await AuthController.verifyAction(req, 'monuments:get-by-id', res, next)
-  await MonumentService.isMonumentExist(req, res, next)
+  await MonumentService.isMonumentNameExist(req, res, next)
 
   if (!req.isMonumentExist) {
     next(ApiError.custom(404, 'Monument undefined'))
@@ -44,6 +44,16 @@ const createMonument = async (req, res, next) => {
   }
 
   await AuthController.verifyAction(req, 'monuments:create-new', res, next)
+
+  await MonumentService.isMonumentNameExist(req, res, next)
+
+  console.log(req.isMonumentExist)
+
+  if (req.isMonumentExist) {
+    next(ApiError.custom(200, 'Monument already exist'))
+    return
+  }
+
   await cloudinary.uploadImage(req, res, next)
 
   Monuments.createMonument(req, res)
@@ -65,7 +75,7 @@ const updateMonument = async (req, res, next) => {
     next(ApiError.custom(404, 'Monument id validation error'))
   }
 
-  await MonumentService.isMonumentExist(req, res, next)
+  await MonumentService.isMonumentIDExist(req, res, next)
 
   if (!req.isMonumentExist) {
     next(ApiError.custom(404, 'Monument undefined'))
@@ -94,7 +104,7 @@ const deleteMonument = async (req, res, next) => {
     next(ApiError.custom(404, 'Monument id validation error'))
   }
 
-  await MonumentService.isMonumentExist(req, res, next)
+  await MonumentService.isMonumentIDExist(req, res, next)
 
   if (!req.isMonumentExist) {
     next(ApiError.custom(404, 'Monument undefined'))
