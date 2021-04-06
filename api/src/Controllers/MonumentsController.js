@@ -87,7 +87,7 @@ const deleteMonument = async (req, res, next) => {
     return
   }
 
-  await AuthController.verifyAction(req, res, 'monuments:delete-by-id', next)
+  await AuthController.verifyAction(req, 'monuments:delete-by-id', res, next)
   await MongoService.isIDValid(req, res, next)
 
   if (!req.isIDValid) {
