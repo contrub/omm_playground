@@ -4,7 +4,7 @@ const Monument = require('../models/Monument')
 // Local class
 const ApiError = require('../error/ApiError')
 
-const isMonumentExist = async (req, res, next) => {
+const isMonumentIDExist = async (req, res, next) => {
   const id = req.params.id
 
   await Monument
@@ -18,6 +18,21 @@ const isMonumentExist = async (req, res, next) => {
     })
 }
 
+const isMonumentNameExist = async (req, res, next) => {
+  const name = req.body.name
+
+  await Monument
+    .find({name: name})
+    .then((item) => {
+      req.isMonumentExist = item === null || item === undefined ? false : true
+    })
+    .catch((err) => {
+      next(ApiError.internal('MongoDB error'))
+      console.log(err)
+    })
+}
+
 module.exports = {
-  isMonumentExist: isMonumentExist
+  isMonumentNameExist: isMonumentNameExist,
+  isMonumentIDExist: isMonumentIDExist
 }
