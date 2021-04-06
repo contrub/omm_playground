@@ -42,28 +42,17 @@ class MonumentsSheet extends React.Component {
 
       MonumentService.fetchMonuments()
         .then((res) => {
-          const monumentsCount = res.length
-
-          if (monumentsCount === 0) {
-            modal["head"] = 'Monuments database is empty'
-            modal["body"] = 'Please, create new monuments'
-            modal["redirectURL"] = '/create_monument'
-            this.setState({modal: modal})
-          } else {
-            this.setState({monuments: res})
-          }
-
-          this.setState({isLoading: false})
+          this.setState({monuments: res, isLoading: false})
         })
         .catch((err) => {
           modal["head"] = 'Server error'
           modal["body"] = err.message
+          modal["redirectURL"] = '/'
           this.setState({modal: modal, isLoading: false})
         })
     }
 
     removeMonument = (e, id) => {
-      // const id = e.target.value
       let {monuments} = this.state
       let {modal} = this.state
 
@@ -96,10 +85,10 @@ class MonumentsSheet extends React.Component {
       }
 
       return (
-        <div>
+        <div id="users-sheet">
           <table className="table">
             <thead>
-            <tr className={classes.align_center}>
+            <tr className={classes.table_row}>
               <th scope="col">
                 <div className={classes.table_head}>
                   Name
@@ -126,13 +115,6 @@ class MonumentsSheet extends React.Component {
                 </div>
               </th>
               <th scope="col">
-                {/*<Button*/}
-                {/*  href="/create_monument"*/}
-                {/*  variant="contained"*/}
-                {/*  color="inherit"*/}
-                {/*>*/}
-                {/*  Create Monument*/}
-                {/*</Button>*/}
                 <Button
                   href="/create_monument"
                   variant="contained"
@@ -146,7 +128,7 @@ class MonumentsSheet extends React.Component {
             <tbody>
             {monuments.map((monument, index) => {
               return (
-                <tr key={index} className={classes.align_center}>
+                <tr key={index} className={classes.table_row}>
                   <td>
                     <div>
                       {monument.name}
@@ -204,6 +186,12 @@ class MonumentsSheet extends React.Component {
             })}
             </tbody>
           </table>
+          {!monuments.length &&
+            <div className={classes.monuments_state}>
+              <h2>MonumentsDB is empty!</h2>
+              Let's create <a href={'/create_monument'}>new monument</a>!
+            </div>
+          }
           {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
         </div>
       )
