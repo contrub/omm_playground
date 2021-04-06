@@ -69,9 +69,6 @@ MONGODB_URL =
 
 SMTP_EMAIL = 
 SMTP_PASSWORD = 
-
-MONUMENTS_DB_ACCESS_GROUP = ['admin', 'superadmin']
-USERS_DB_ACCESS_GROUP = ['superadmin']
 ```
 
 ## Setting up the `omm_playground` project with Docker
