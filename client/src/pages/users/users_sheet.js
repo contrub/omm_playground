@@ -40,18 +40,7 @@ class UsersSheet extends React.Component {
 
     UserService.getUsers({token: Cookies.get('accessToken')})
       .then((res) => {
-        const usersCount = res.length
-        // Если не будет пользователей вовсе, то как человек получил доступ к данной странице ?
-        if (usersCount === 0) {
-          modal["head"] = 'Users database is empty'
-          modal["body"] = 'Please, create new users'
-          modal["redirectURL"] = '/create_user'
-          this.setState({modal: modal})
-        } else {
-          this.setState({users: res})
-        }
-
-        this.setState({isLoading: false})
+        this.setState({users: res, isLoading: false})
       })
       .catch((err) => {
         modal["head"] = 'Server error'
@@ -62,7 +51,6 @@ class UsersSheet extends React.Component {
   }
 
   removeUser = (e, email) => {
-    // const id = e.target.value
     let {users} = this.state
     let {modal} = this.state
 
@@ -94,7 +82,7 @@ class UsersSheet extends React.Component {
       <div>
         <table className="table">
           <thead>
-            <tr className={classes.align_center}>
+            <tr className={classes.table_row}>
               <th scope="col">
                 <div className={classes.table_head}>
                   Email
@@ -129,7 +117,7 @@ class UsersSheet extends React.Component {
           <tbody>
           {users.map((user, index) => {
             return (
-              <tr key={index} className={classes.align_center}>
+              <tr key={index} className={classes.table_row}>
                 <td>
                   <div className={classes.table_cell}>
                     {user.email}
@@ -147,39 +135,19 @@ class UsersSheet extends React.Component {
                 </td>
                 <td>
                   <div className={classes.table_cell}>
-                    {user.status === 'active' ?
-                      <Button
-                        className={classes.active_user_btn}
-                        variant="contained"
-                      >
-                        Active
-                      </Button>
-                      // <button className="btn btn-success" disabled>
-                      //   Active
-                      // </button>
-                      :
-                      <Button
-                        className={classes.disable_user_btn}
-                        variant="contained"
-                      >
-                        Disable
-                      </Button>
-                      // <button className="btn btn-danger" disabled>
-                      //   Disable
-                      // </button>
-                    }
+                    <Button
+                      className={user.status === 'active' ? classes.active_user_btn : classes.disable_user_btn}
+                      variant="contained"
+                      disabled
+                    >
+                      {user.status === 'active' ? 'Active' : 'Disable'}
+                    </Button>
                   </div>
                 </td>
                 <td>
-                  {/*<Link to={`/users/${user.email}`}>*/}
-                  {/*  <button className="btn btn-secondary">*/}
-                  {/*    <i className="fa fa-edit fa-lg" ></i>*/}
-                  {/*  </button>*/}
-                  {/*</Link>*/}
                   <div>
                     <Button
                       href={`/edit_user/${user.email}`}
-                      // className={classes.edit_btn}
                       variant="contained"
                       color="primary"
                     >
