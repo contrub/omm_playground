@@ -1,9 +1,15 @@
 require('dotenv').config()
+
+// Third party functions
 const mongoose = require('mongoose');
-const User = require('./src/models/User');
+const bcrypt = require('bcrypt');
 const fs = require('fs');
-const bcrypt = require('bcrypt')
-const sAdminJSON = './resources/superadmin.json'
+
+// Local models
+const User = require('./src/models/User');
+
+// Local path
+const sAdminJSON = './src/resources/superadmin.json';
 
 mongoose.Promise = global.Promise
 
@@ -51,9 +57,11 @@ const cleanCopiesDB = async () => {
       await users.map(async user => {
         await User
           .find({email: user.email})
-          .then(async items => {
+          .then(async (items) => {
             // рассмотреть случай нескольких копий
-            if (items.length) await deleteUser(items[0].email)
+            if (items.length) {
+              await deleteUser(items[0].email)
+            }
           })
           .catch((err) => console.log(err))
     }))
@@ -65,7 +73,6 @@ const cleanCopiesDB = async () => {
 
   } finally {
 
-    console.log('Successfully removed copies')
     process.exit(0)
 
   }
@@ -88,7 +95,6 @@ const seedUsersDB = async () => {
 
   } finally {
 
-    console.log('Successfully seeded users')
     process.exit(0)
 
   }
