@@ -18,7 +18,10 @@ const styles = theme => ({
   table_head: {
     margin: theme.spacing(1)
   },
-  align_center: {
+  table_row: {
+    textAlign: 'center'
+  },
+  monuments_state: {
     textAlign: 'center'
   }
 })
