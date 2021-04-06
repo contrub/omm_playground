@@ -36,8 +36,8 @@ class EditUser extends React.Component {
       status: ''
     },
     selects: {
-      userRole: 0,
-      status: 0
+      userRole: 10,
+      status: 10
     },
     selects_facilities: {
       role: {10: 'viewer', 20: 'admin', 30: 'superadmin'},
@@ -66,7 +66,7 @@ class EditUser extends React.Component {
 
         if (email === undefined) {
           modal["head"] = 'Something going wrong'
-          modal["body"] = 'Get user error'
+          modal["body"] = 'Check your permissions'
           this.setState({modal: modal})
         } else {
           const roleValue =  rolesObjectKeys[rolesObjectValues.indexOf(res[0].userRole)]
@@ -96,7 +96,6 @@ class EditUser extends React.Component {
         if (res.nModified === undefined) {
           modal["head"] = 'Something going wrong'
           modal["body"] = 'Update user error'
-          modal["redirectURL"] = ''
           this.setState({modal: modal})
         } else {
           window.location.href = '/users_sheet'
@@ -126,6 +125,7 @@ class EditUser extends React.Component {
 
   render() {
     const {classes} = this.props
+    const {selects} = this.state
     const {isLoading} = this.state
 
     if (isLoading) {
@@ -150,8 +150,7 @@ class EditUser extends React.Component {
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="UserRole"
-                  value={this.state.selects.userRole ?? '10'}
-                  defaultValue={10}
+                  value={selects.userRole}
                   onChange={this.handleChange.bind(this, "userRole")}
                 >
                   <MenuItem value={10}>viewer</MenuItem>
@@ -165,7 +164,7 @@ class EditUser extends React.Component {
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="Status"
-                  value={this.state.selects.status ?? '10'}
+                  value={selects.status}
                   onChange={this.handleChange.bind(this, "status")}
                 >
                   <MenuItem value={10}>Active</MenuItem>
@@ -181,15 +180,6 @@ class EditUser extends React.Component {
               className={classes.edit_btn}
             >
               Edit User
-            </Button>
-            <Button
-              onClick={this.removeUser}
-              fullWidth
-              variant="contained"
-              color="secondary"
-              className={classes.remove_btn}
-            >
-              Remove User
             </Button>
           </form>
         </div>
