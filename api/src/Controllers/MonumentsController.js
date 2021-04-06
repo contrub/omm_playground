@@ -10,7 +10,8 @@ const jwt = require('../helpers/jwt')
 // Local class
 const ApiError = require('../error/ApiError')
 
-const fetchMonuments = async (req, res) => {
+const fetchMonuments = async (req, res, next) => {
+  await AuthController.verifyAction(req, 'monuments:list', res, next)
   Monuments.getMonuments(req, res)
 }
 
@@ -22,6 +23,7 @@ const getMonument = async (req, res, next) => {
     next(ApiError.custom(404, 'Monument id validation error'))
   }
 
+  await AuthController.verifyAction(req, 'monuments:get-by-id', res, next)
   await MonumentService.isMonumentExist(req, res, next)
 
   if (!req.isMonumentExist) {
@@ -41,7 +43,7 @@ const createMonument = async (req, res, next) => {
     return
   }
 
-  await AuthController.MonumentsDB(req, res, next)
+  await AuthController.verifyAction(req, 'monuments:create-new', res, next)
   await cloudinary.uploadImage(req, res, next)
 
   Monuments.createMonument(req, res)
@@ -56,8 +58,8 @@ const updateMonument = async (req, res, next) => {
     return
   }
 
-  await AuthController.MonumentsDB(req, res, next)
-  await MongoService.isIDValid(req, res, next)
+  await AuthController.verifyAction(req, res, next)
+  await MongoService.isIDValid(req, 'monuments:update-by-id', res, next)
 
   if (!req.isIDValid) {
     next(ApiError.custom(404, 'Monument id validation error'))
@@ -85,7 +87,7 @@ const deleteMonument = async (req, res, next) => {
     return
   }
 
-  await AuthController.UserDB(req, res, next)
+  await AuthController.verifyAction(req, res, 'monuments:delete-by-id', next)
   await MongoService.isIDValid(req, res, next)
 
   if (!req.isIDValid) {

@@ -16,7 +16,7 @@ const fetchUsers = async (req, res, next) => {
     return
   }
 
-  await AuthController.UserDB(req, res, next)
+  await AuthController.verifyAction(req, 'users:list', res, next)
 
   Users.getUsers(req, res)
 }
@@ -30,7 +30,7 @@ const getUser = async (req, res, next) => {
     return
   }
 
-  await AuthController.UserDB(req, res, next)
+  await AuthController.verifyAction(req, 'users:get-by-id', res, next)
 
   Users.getUser(req, res)
 }
@@ -44,7 +44,7 @@ const createUser = async (req, res, next) => {
     return
   }
 
-  await AuthController.UserDB(req, res, next)
+  await AuthController.verifyAction(req, 'users:create-new', res, next)
 
   Users.createUser(req, res)
 }
@@ -58,14 +58,14 @@ const updateUser = async (req, res, next) => {
     return
   }
 
+  await AuthController.verifyAction(req, 'users:update-by-id', res, next)
+
   await UserService.isUserExist(req, res, next)
 
   if (!req.isUserExist) {
     next(ApiError.custom(404, 'Updated user undefined'))
     return
   }
-
-  await AuthController.UserDB(req, res, next)
 
   Users.updateUser(req, res)
 }
@@ -79,7 +79,7 @@ const deleteUser = async (req, res, next) => {
     return
   }
 
-  await AuthController.UserDB(req, res, next)
+  await AuthController.verifyAction(req, 'users:delete-by-id', res, next)
 
   Users.deleteUser(req, res)
 }
