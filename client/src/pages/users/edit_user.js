@@ -4,6 +4,7 @@ import {withRouter} from "react-router";
 
 // Custom components
 import ModalWindow from "../../components/modal";
+import Loading from "../loading";
 
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -24,11 +25,12 @@ import Cookies from "js-cookie";
 import UserService from '../../services/UserService';
 
 // Custom styles
-import styles from "../../styles/js/edit_user";
+import styles from "../../styles/js/users/edit_user";
 
 class EditUser extends React.Component {
   state = {
     user: [],
+    isLoading: false,
     inputs: {
       userRole: '',
       status: ''
@@ -56,6 +58,8 @@ class EditUser extends React.Component {
     const statusObjectKeys = Object.keys(this.state.selects_facilities.status)
     const statusObjectValues = Object.values(this.state.selects_facilities.status)
 
+    this.setState({isLoading: true})
+
     UserService.getUser({email: email, token: Cookies.get('accessToken')})
       .then((res) => {
         const email = res[0].email
@@ -68,13 +72,13 @@ class EditUser extends React.Component {
           const roleValue =  rolesObjectKeys[rolesObjectValues.indexOf(res[0].userRole)]
           const statusValue = statusObjectKeys[statusObjectValues.indexOf(res[0].status)]
 
-          this.setState({user: res[0], inputs: {email: res[0].email}, selects: {userRole: roleValue, status: statusValue}})
+          this.setState({user: res[0], inputs: {email: res[0].email}, selects: {userRole: roleValue, status: statusValue}, isLoading: false})
         }
       })
       .catch((err) => {
         modal["head"] = 'Server error'
         modal["body"] = err.message
-        this.setState({modal: modal})
+        this.setState({modal: modal, isLoading: false})
       })
   }
 
@@ -88,20 +92,16 @@ class EditUser extends React.Component {
 
     Object.keys(this.state.inputs).forEach((key) => (this.state.inputs[key] === "") && delete this.state.inputs[key]);
     UserService.updateUser(this.state.inputs)
-      .then(() => window.location.href = '/users_sheet')
-      .catch((err) => {
-        modal["body"] = 'Server error'
-        modal["head"] = err.message
-        this.setState({modal: modal})
+      .then((res) => {
+        if (res.nModified === undefined) {
+          modal["head"] = 'Something going wrong'
+          modal["body"] = 'Update user error'
+          modal["redirectURL"] = ''
+          this.setState({modal: modal})
+        } else {
+          window.location.href = '/users_sheet'
+        }
       })
-  }
-
-  removeUser = () => {
-    const email = this.state.user.email
-    let {modal} = this.state
-
-    UserService.deleteUser({email: email, token: Cookies.get('accessToken')})
-      .then(() => window.location.href = '/users_sheet')
       .catch((err) => {
         modal["body"] = 'Server error'
         modal["head"] = err.message
@@ -125,7 +125,14 @@ class EditUser extends React.Component {
   }
 
   render() {
-    const { classes } = this.props
+    const {classes} = this.props
+    const {isLoading} = this.state
+
+    if (isLoading) {
+      return (
+        <Loading/>
+      )
+    }
 
     return (
       <Container id="edit-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
@@ -143,7 +150,7 @@ class EditUser extends React.Component {
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="UserRole"
-                  value={this.state.selects.userRole ?? 10}
+                  value={this.state.selects.userRole ?? '10'}
                   defaultValue={10}
                   onChange={this.handleChange.bind(this, "userRole")}
                 >
@@ -158,7 +165,7 @@ class EditUser extends React.Component {
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="Status"
-                  value={this.state.selects.status ?? ''}
+                  value={this.state.selects.status ?? '10'}
                   onChange={this.handleChange.bind(this, "status")}
                 >
                   <MenuItem value={10}>Active</MenuItem>

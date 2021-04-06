@@ -1,5 +1,6 @@
 // Local functions
 const MonumentService = require('../services/MonumentService')
+const MongoService = require('../services/MongoService')
 const AuthController = require('./AuthController')
 const cloudinary = require('../utils/cloudinary')
 const Monuments = require('../routes/Monuments')
@@ -13,6 +14,12 @@ const fetchMonuments = async (req, res) => {
 }
 
 const getMonument = async (req, res, next) => {
+
+  await MongoService.isIDValid(req, res, next)
+
+  if (!req.isIDValid) {
+    next(ApiError.custom(404, 'Monument id validation error'))
+  }
 
   await MonumentService.isMonumentExist(req, res, next)
 
@@ -33,8 +40,6 @@ const createMonument = async (req, res, next) => {
     return
   }
 
-  req.body.email = req.decoded.email
-
   await AuthController.MonumentsDB(req, res, next)
   await cloudinary.uploadImage(req, res, next)
 
@@ -50,9 +55,13 @@ const updateMonument = async (req, res, next) => {
     return
   }
 
-  req.body.email = req.decoded.email
+  await AuthController.MonumentsDB(req, res, next)
+  await MongoService.isIDValid(req, res, next)
 
-  await AuthController.UserDB(req, res, next)
+  if (!req.isIDValid) {
+    next(ApiError.custom(404, 'Monument id validation error'))
+  }
+
   await MonumentService.isMonumentExist(req, res, next)
 
   if (!req.isMonumentExist) {
@@ -60,6 +69,7 @@ const updateMonument = async (req, res, next) => {
     return
   }
 
+  await cloudinary.deleteImage(req, res, next)
   await cloudinary.uploadImage(req, res, next)
 
   Monuments.updateMonument(req, res)
@@ -74,15 +84,21 @@ const deleteMonument = async (req, res, next) => {
     return
   }
 
-  req.body.email = req.decoded.email
-
   await AuthController.UserDB(req, res, next)
+  await MongoService.isIDValid(req, res, next)
+
+  if (!req.isIDValid) {
+    next(ApiError.custom(404, 'Monument id validation error'))
+  }
+
   await MonumentService.isMonumentExist(req, res, next)
 
   if (!req.isMonumentExist) {
     next(ApiError.custom(404, 'Monument undefined'))
     return
   }
+
+  await cloudinary.deleteImage(req, res, next)
 
   Monuments.deleteMonument(req, res)
 }

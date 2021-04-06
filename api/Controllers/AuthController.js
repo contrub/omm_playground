@@ -5,7 +5,7 @@ const User = require('../models/User')
 const ApiError = require('../error/ApiError')
 
 const UserDB = (req, res, next) => {
-  const email = req.body.email
+  const email = req.decoded.email
 
   User
     .find({email: email})
@@ -28,7 +28,7 @@ const UserDB = (req, res, next) => {
 }
 
 const MonumentsDB = async (req, res, next) => {
-  const email = req.body.email
+  const email = req.decoded.email
 
   User
     .find({email: email})

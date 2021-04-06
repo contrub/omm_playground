@@ -17,11 +17,9 @@ uploadImage = async (req, res, next) => {
   const fileStr = req.body.base64
 
   if (fileStr !== undefined && !isEmpty(fileStr)) {
-    await cloudinary.uploader.upload(fileStr, {
-      folder: process.env.CLOUDINATY_FOLDER
-    })
-      .then((uploadResponse) => {
-        const url = uploadResponse.secure_url
+    await cloudinary.uploader.upload(fileStr, {folder: process.env.CLOUDINATY_FOLDER})
+      .then((res) => {
+        const url = res.url
         req.body.imageURL = url
       })
       .catch((err) => {
@@ -31,6 +29,19 @@ uploadImage = async (req, res, next) => {
   }
 }
 
+deleteImage = async (req, res, next) => {
+  const imagePublicID = req.body.imagePublicID
+
+  if (imagePublicID !== undefined && !isEmpty(imagePublicID) && imagePublicID !== process.env.DEFAULT_MONUMENT_IMAGE_PUBLIC_ID) {
+    await cloudinary.api.delete_resources([imagePublicID])
+      .catch((err) => {
+        next(ApiError.internal('Cloudinary error'))
+        console.log(err)
+      })
+  }
+}
+
 module.exports = {
-  uploadImage: uploadImage
+  uploadImage: uploadImage,
+  deleteImage: deleteImage
 }

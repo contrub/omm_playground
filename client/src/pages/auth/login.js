@@ -25,7 +25,7 @@ import Cookies from "js-cookie";
 import AuthService from "../../services/AuthService";
 
 // Custom styles
-import styles from "../../styles/js/login";
+import styles from "../../styles/js/auth/login";
 
 class SignIn extends React.Component {
 
