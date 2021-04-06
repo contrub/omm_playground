@@ -13,6 +13,7 @@
     "dotenv": "^8.2.0",
     "history": "^5.0.0",
     "js-cookie": "^2.2.1",
+    "ol": "^6.5.0",
     "react": "^17.0.2",
     "react-count-to": "^0.12.0",
     "react-dom": "^17.0.2",

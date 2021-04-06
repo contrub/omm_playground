@@ -8,9 +8,10 @@
     font-size: 50px;
 }
 
-.img {
+#imgs {
     height: 50%;
     width: 50%;
+    margin: 2%;
 }
 
 #Description, #Address, #Creator {

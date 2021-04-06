@@ -8,6 +8,8 @@ import MonumentService from "../../services/MonumentService";
 // Custom styles
 import "../../styles/css/monument.css";
 
+// import ""
+
 class MonumentById extends React.Component {
   state = {
     monumentInfo: []
@@ -27,7 +29,7 @@ class MonumentById extends React.Component {
       <div>
         <h1 id="name"> {this.state.monumentInfo.name} </h1>
         <img
-          className="img"
+          id="imgs"
           alt="monument_image"
           src={this.state.monumentInfo.imageURL}
         />
@@ -37,6 +39,7 @@ class MonumentById extends React.Component {
           <li><p id="Creator">Архитектор/скульптор - {this.state.monumentInfo.creator} </p></li>
           {/* <li><p id="Date">Дата постройки - {this.state.monumentInfo.date.getFullYear()} </p></li> */}
         </ul>
+       
       </div>
     )
   }

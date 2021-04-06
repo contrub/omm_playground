@@ -38,8 +38,8 @@ class Monuments extends React.Component{
     const {monuments} = this.state
 
     return (
-      <div>
-        <Grid container spacing={3}  columns={3}>
+      <div id="main">
+        <Grid container spacing={0}  >
           {monuments.map((entry, index) => {
             return (
                 <Grid item xl={3} key={index} >
@@ -52,7 +52,8 @@ class Monuments extends React.Component{
                         id="img"
                       />
                       <CardContent>
-                        <Typography gutterBottom variant="h5"  align="center" color="textPrimary">
+                        <Typography gutterBottom   align="center"  id="text">   
+                        {/*   color="textPrimary" variant="h5"*/}
                           {entry.name}
                         </Typography>
                       </CardContent>
