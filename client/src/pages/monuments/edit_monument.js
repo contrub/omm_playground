@@ -108,19 +108,6 @@ class EditMonument extends React.Component {
     }
   }
 
-  // removeMonument = () => {
-  //   const id = this.state.inputs.id
-  //   let {modal} = this.state
-  //
-  //   MonumentService.deleteMonument({id: id, token: Cookies.get('accessToken')})
-  //     .then(() => window.location.href = '/monuments_sheet')
-  //     .catch((err) => {
-  //       modal["body"] = 'Server error'
-  //       modal["head"] = err.message
-  //       this.setState({modal: modal})
-  //     })
-  // }
-
   handleChange = (input, e) => {
     let inputs = this.state.inputs
 
