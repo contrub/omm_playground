@@ -47,11 +47,11 @@ const seedUsersDB = async () => {
   } catch (err) {
     console.log(`Parsing error: ${err}`)
   } finally {
-    process.exit(0)
+    process.exit(1)
   }
 }
 
-const cleanUsersDB = async () => {
+const cleanDuplicatesUsersDB = async () => {
   await MongoConnect()
 
   try {
@@ -77,7 +77,7 @@ const cleanUsersDB = async () => {
   } catch (err) {
     console.log(`Parsing error: ${err}`)
   } finally {
-    process.exit(0)
+    process.exit(1)
   }
 }
 
@@ -106,6 +106,18 @@ const deleteUser = async (email) => {
     })
 }
 
+const clearUsersDB = async () => {
+  await MongoConnect()
+
+  User
+    .deleteMany({})
+    .then(() => console.log('Successfully cleared UsersDB!'))
+    .catch((err) => {
+      console.log(err)
+    })
+    .finally(() => process.exit(0))
+}
+
 //=================MonumentsDB=================//
 
 const seedMonumentsDB = async () => {
@@ -124,11 +136,11 @@ const seedMonumentsDB = async () => {
   } catch (err) {
     console.log(`Parsing error: ${err}`)
   } finally {
-    process.exit(0)
+    process.exit(1)
   }
 }
 
-const cleanMonumentsDB = async () => {
+const cleanDuplicatesMonumentsDB = async () => {
   await MongoConnect()
 
   try {
@@ -140,8 +152,7 @@ const cleanMonumentsDB = async () => {
         await Monument
           .find({name: monument.name})
           .then(async (monument) => {
-            console.log(monument[0].name)
-            if (monument[0].name) {
+            if (monument) {
               await deleteMonument(monument[0].name)
             }
           })
@@ -155,7 +166,7 @@ const cleanMonumentsDB = async () => {
   } catch (err) {
     console.log(`Parsing error: ${err}`)
   } finally {
-    process.exit(0)
+    process.exit(1c)
   }
 }
 
@@ -167,6 +178,7 @@ const createMonument = async (data) => {
     .catch((err) => {
       console.log(`MongoDB error: ${err}`)
     })
+    .finally(() => process.exit(0))
 }
 
 const deleteMonument = async (name) => {
@@ -175,12 +187,27 @@ const deleteMonument = async (name) => {
     .catch((err) => {
       console.log(`MongoDB error ${err}`)
     })
+    .finally(() => process.exit(0))
+}
+
+const clearMonumentsDB = async () => {
+  await MongoConnect()
+
+  Monument
+    .deleteMany({})
+    .then(() => console.log('Successfully clear MonumentsDB!'))
+    .catch((err) => {
+      console.log(err)
+    })
+    .finally(() => process.exit(0))
 }
 
 module.exports = {
-  clean_users: cleanUsersDB,
+  clean_users: cleanDuplicatesUsersDB,
   seed_users: seedUsersDB,
-  clean_monuments: cleanMonumentsDB,
-  seed_monuments: seedMonumentsDB
+  clear_users: clearUsersDB,
+  clean_monuments: cleanDuplicatesMonumentsDB,
+  seed_monuments: seedMonumentsDB,
+  clear_monuments: clearMonumentsDB
 }
 
