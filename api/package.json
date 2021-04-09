@@ -4,13 +4,14 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "console.log('test')",
     "serve": "nodemon ./server.js",
     "seed-users": "npm run users-db:clean && npm run users-db:seed",
-    "seed-monuments": "npm run monuments-db:clean && npm run monuments-db:seed",
     "users-db:clean": "node -e require('./console.js').clean_users()",
+    "users-db:clear": "node -e require('./console.js').clear_users()",
     "users-db:seed": "node -e require('./console.js').seed_users()",
+    "seed-monuments": "npm run monuments-db:clean && npm run monuments-db:seed",
     "monuments-db:clean": "node -e require('./console.js').clean_monuments()",
+    "monuments-db:clear": "node -e require('./console.js').clear_monuments()",
     "monuments-db:seed": "node -e require('./console.js').seed_monuments()"
   },
   "author": "",
