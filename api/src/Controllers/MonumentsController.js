@@ -6,7 +6,6 @@ const cloudinary = require('../utils/cloudinary')
 const Monuments = require('../routes/Monuments')
 const jwt = require('../helpers/jwt')
 
-
 // Local class
 const ApiError = require('../error/ApiError')
 
@@ -30,7 +29,7 @@ const getMonument = async (req, res, next) => {
     }
 
     await AuthController.verifyAction(req, 'monuments:get-by-id', res, next)
-    await MonumentService.isMonumentNameExist(req, res, next)
+    await MonumentService.isMonumentPayloadExist(req, {name: req.body.name})
 
     if (!req.isMonumentExist) {
       throw ApiError.custom(404, 'Monument undefined')
@@ -54,7 +53,7 @@ const createMonument = async (req, res, next) => {
 
     await AuthController.verifyAction(req, 'monuments:create-new', res)
 
-    await MonumentService.isMonumentNameExist(req, res)
+    await MonumentService.isMonumentPayloadExist(req, {name: req.body.name})
 
     if (req.isMonumentExist) {
       throw ApiError.custom(200, 'Monument already exist')
@@ -78,14 +77,14 @@ const updateMonument = async (req, res, next) => {
       throw ApiError.custom(403, 'Email payload undefined in JWT')
     }
 
-    await AuthController.verifyAction(req, res)
-    await MongoService.isIDValid(req, 'monuments:update-by-id', res)
+    await AuthController.verifyAction(req, 'monuments:update-by-id', res)
+    await MongoService.isIDValid(req, res)
 
     if (!req.isIDValid) {
       throw ApiError.custom(404, 'Monument id validation error')
     }
 
-    await MonumentService.isMonumentIDExist(req, res)
+    await MonumentService.isMonumentPayloadExist(req, {_id: req.params._id})
 
     if (!req.isMonumentExist) {
       throw ApiError.custom(404, 'Monument undefined')
@@ -117,7 +116,7 @@ const deleteMonument = async (req, res, next) => {
       throw ApiError.custom(404, 'Monument id validation error')
     }
 
-    await MonumentService.isMonumentIDExist(req, res)
+    await MonumentService.isMonumentPayloadExist(req, {_id: req.params._id})
 
     if (!req.isMonumentExist) {
       throw ApiError.custom(404, 'Monument undefined')
