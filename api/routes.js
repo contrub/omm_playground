@@ -2,8 +2,6 @@
 const MonumentsController = require('./src/Controllers/MonumentsController')
 const AccountController = require('./src/Controllers/AccountController')
 const UsersController = require('./src/Controllers/UsersController')
-const Monuments = require('./src/routes/Monuments')
-const Users = require('./src/routes/Users')
 
 // Third party functions
 const routes = require('express').Router()
