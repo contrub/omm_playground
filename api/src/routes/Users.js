@@ -106,21 +106,10 @@ const deleteUser = (req, res) => {
     });
 }
 
-const clearUserDB = (req, res) => {
-  User
-    .deleteMany({})
-    .then(() => res.sendStatus(200))
-    .catch((err) => {
-      res.status(500).json({message: 'MongoDB error'})
-      console.log(err)
-    })
-}
-
 module.exports = {
   getUsers: getUsers,
   getUser: getUser,
   createUser: createUser,
   updateUser: updateUser,
-  deleteUser: deleteUser,
-  clearUserDB: clearUserDB
+  deleteUser: deleteUser
 }

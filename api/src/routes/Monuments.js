@@ -1,9 +1,6 @@
 // Local schema
 const Monument = require("../models/Monument");
 
-// Error class
-const ApiError = require("../error/ApiError");
-
 const getMonuments = (req, res) => {
   Monument.find()
     .then((items) => res.json(items))
@@ -55,21 +52,10 @@ const deleteMonument = (req, res) => {
     });
 }
 
-const clearMonumentsDB = (req, res) => {
-  Monument
-    .deleteMany({})
-    .then(() => res.sendStatus(204))
-    .catch((err) => {
-      res.status(500).json({message: 'MongoDB error'})
-      console.log(err)
-    })
-}
-
 module.exports = {
   getMonuments: getMonuments,
   getMonument: getMonument,
   createMonument: createMonument,
   updateMonument: updateMonument,
-  deleteMonument: deleteMonument,
-  clearMonumentsDB: clearMonumentsDB
+  deleteMonument: deleteMonument
 }
