@@ -166,7 +166,7 @@ const cleanDuplicatesMonumentsDB = async () => {
   } catch (err) {
     console.log(`Parsing error: ${err}`)
   } finally {
-    process.exit(1c)
+    process.exit(0)
   }
 }
 
