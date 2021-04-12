@@ -87,7 +87,7 @@ const updatePasswordRequest = async (req, res, next) => {
     await jwt.generateAccessToken(req, {email: email}, {expiresIn: '60s'})
 
     if (!req.isUserExist) {
-      res.send({message: "User undefined"})
+      throw ApiError.custom(200, 'User undefined')
     }
 
     const token = req.accessToken
