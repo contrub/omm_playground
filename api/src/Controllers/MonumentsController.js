@@ -84,7 +84,7 @@ const updateMonument = async (req, res, next) => {
       throw ApiError.custom(404, 'Monument id validation error')
     }
 
-    await MonumentService.isMonumentPayloadExist(req, {_id: req.params._id})
+    await MonumentService.isMonumentPayloadExist(req, {_id: req.params.id})
 
     if (!req.isMonumentExist) {
       throw ApiError.custom(404, 'Monument undefined')
