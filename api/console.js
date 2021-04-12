@@ -47,7 +47,7 @@ const seedUsersDB = async () => {
   } catch (err) {
     console.log(`Parsing error: ${err}`)
   } finally {
-    process.exit(1)
+    process.exit(0)
   }
 }
 
@@ -77,7 +77,7 @@ const cleanDuplicatesUsersDB = async () => {
   } catch (err) {
     console.log(`Parsing error: ${err}`)
   } finally {
-    process.exit(1)
+    process.exit(0)
   }
 }
 
@@ -136,7 +136,7 @@ const seedMonumentsDB = async () => {
   } catch (err) {
     console.log(`Parsing error: ${err}`)
   } finally {
-    process.exit(1)
+    process.exit(0)
   }
 }
 
@@ -152,7 +152,7 @@ const cleanDuplicatesMonumentsDB = async () => {
         await Monument
           .find({name: monument.name})
           .then(async (monument) => {
-            if (monument) {
+            if (monument.length) {
               await deleteMonument(monument[0].name)
             }
           })
@@ -178,7 +178,6 @@ const createMonument = async (data) => {
     .catch((err) => {
       console.log(`MongoDB error: ${err}`)
     })
-    .finally(() => process.exit(0))
 }
 
 const deleteMonument = async (name) => {
@@ -187,7 +186,6 @@ const deleteMonument = async (name) => {
     .catch((err) => {
       console.log(`MongoDB error ${err}`)
     })
-    .finally(() => process.exit(0))
 }
 
 const clearMonumentsDB = async () => {
