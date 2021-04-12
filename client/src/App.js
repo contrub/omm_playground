@@ -19,6 +19,7 @@ import PasswordResetRequest from "./pages/auth/reset_password_request";
 import PasswordReset from "./pages/auth/reset_password";
 import Signup from "./pages/auth/signup";
 import Login from "./pages/auth/login";
+import Logout from "./pages/auth/logout";
 
 // Monuments pages
 import CreateMonument from "./pages/monuments/create_monument";
@@ -110,6 +111,7 @@ class App extends Component {
           <Route path="/reset" component={PasswordReset}/>
           <Route path="/signup" component={Signup}/>
           <Route path="/login" component={Login}/>
+          <Route path="/logout" component={Logout}/>
           <Route exact path="/" component={Monuments}/>
           <Route path="/monuments/:id" component={MonumentById}/>
           <ProtectedRoute path="/users_sheet" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={UsersSheet}/>
