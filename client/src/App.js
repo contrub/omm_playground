@@ -1,10 +1,6 @@
 // React components
 import React, {Component} from 'react';
-import {
-  BrowserRouter,
-  Switch,
-  Route
-} from "react-router-dom";
+import {BrowserRouter, Switch, Route} from "react-router-dom";
 
 // Custom styles
 import './styles/css/App.css';
@@ -28,7 +24,7 @@ import Login from "./pages/auth/login";
 import CreateMonument from "./pages/monuments/create_monument";
 import MonumentsSheet from "./pages/monuments/monuments_sheet"
 import EditMonument from "./pages/monuments/edit_monument";
-import Monuments from './pages/monuments/monuments'; // not working (dan)
+import Monuments from './pages/monuments/monuments';
 import MonumentById from "./pages/monuments/monument";
 
 // Users pages
