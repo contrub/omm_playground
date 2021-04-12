@@ -2,7 +2,7 @@
 import React from 'react';
 
 // Custom components
-import ModalWindow from "../../components/modal";
+import ModalForm from "../../components/modal";
 import Loading from "../loading";
 
 // Material-UI components
@@ -29,7 +29,9 @@ class UsersSheet extends React.Component {
     isLoading: false,
     modal: {
       head: '',
-      body: ''
+      body: '',
+      redirectURL: '/',
+      redirectBtnName: 'Home'
     }
   }
 
@@ -45,14 +47,21 @@ class UsersSheet extends React.Component {
       .catch((err) => {
         modal["head"] = 'Server error'
         modal["body"] = err.message
-        modal["redirectURL"] = '/'
+
         this.setState({modal: modal})
+        this.changeModalState(true)
       })
   }
 
-  removeUser = (e, email) => {
-    let {users} = this.state
+  changeModalState = (state) => {
     let {modal} = this.state
+    modal["isOpen"] = state
+
+    this.setState({modal: modal})
+  }
+
+  removeUser = (e, email) => {
+    let {users, modal} = this.state
 
     UserService.deleteUser({token: Cookies.get('accessToken'), email: email})
       .then(() => {
@@ -60,17 +69,18 @@ class UsersSheet extends React.Component {
 
         this.setState({users: users})
       })
-      .catch((e) => {
+      .catch((err) => {
         modal["head"] = 'Delete user error'
-        modal["body"] = 'Please, check access rights'
+        modal["body"] = err.message
+
         this.setState({modal: modal})
+        this.changeModalState(true)
       })
   }
 
   render() {
-    const {isLoading} = this.state
-    const {users} = this.state
     const {classes} = this.props
+    const {users, isLoading, modal} = this.state
 
     if (isLoading) {
       return (
@@ -168,7 +178,15 @@ class UsersSheet extends React.Component {
           })}
           </tbody>
         </table>
-        {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body}/>}
+        {modal.isOpen ?
+          <ModalForm
+            head={modal.head}
+            body={modal.body}
+            redirect_url={modal.redirectURL}
+            redirect_btn_name={modal.redirectBtnName}
+            show={modal.isOpen}
+            onHide={() => this.changeModalState(false)}
+          /> : null}
       </div>
     )
   }

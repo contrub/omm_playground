@@ -26,6 +26,7 @@ import UserService from '../../services/UserService';
 
 // Custom styles
 import styles from "../../styles/js/users/edit_user";
+import ModalForm from "../../components/modal";
 
 class EditUser extends React.Component {
   state = {
@@ -44,8 +45,10 @@ class EditUser extends React.Component {
       status: {10: 'active', 20: 'disable'}
     },
     modal: {
+      isOpen: false,
       head: '',
       body: '',
+      redirectBtnName: 'Monuments-sheet',
       redirectURL: '/users_sheet'
     }
   }
@@ -66,8 +69,10 @@ class EditUser extends React.Component {
 
         if (email === undefined) {
           modal["head"] = 'Something going wrong'
-          modal["body"] = 'Check your permissions'
+          modal["body"] = res.message
+
           this.setState({modal: modal})
+          this.changeModalState(true)
         } else {
           const roleValue =  rolesObjectKeys[rolesObjectValues.indexOf(res[0].userRole)]
           const statusValue = statusObjectKeys[statusObjectValues.indexOf(res[0].status)]
@@ -78,8 +83,17 @@ class EditUser extends React.Component {
       .catch((err) => {
         modal["head"] = 'Server error'
         modal["body"] = err.message
+
         this.setState({modal: modal, isLoading: false})
+        this.changeModalState(true)
       })
+  }
+
+  changeModalState = (state) => {
+    let {modal} = this.state
+    modal["isOpen"] = state
+
+    this.setState({modal: modal})
   }
 
   contactSubmit = (e) => {
@@ -94,9 +108,11 @@ class EditUser extends React.Component {
     UserService.updateUser(this.state.inputs)
       .then((res) => {
         if (res.nModified === undefined) {
-          modal["head"] = 'Something going wrong'
-          modal["body"] = 'Update user error'
+          modal["head"] = 'Update user error'
+          modal["body"] = res.message
+
           this.setState({modal: modal})
+          this.changeModalState(true)
         } else {
           window.location.href = '/users_sheet'
         }
@@ -104,7 +120,9 @@ class EditUser extends React.Component {
       .catch((err) => {
         modal["body"] = 'Server error'
         modal["head"] = err.message
+
         this.setState({modal: modal})
+        this.changeModalState(true)
       })
   }
 
@@ -125,8 +143,7 @@ class EditUser extends React.Component {
 
   render() {
     const {classes} = this.props
-    const {selects} = this.state
-    const {isLoading} = this.state
+    const {selects, isLoading, modal} = this.state
 
     if (isLoading) {
       return (
@@ -140,7 +157,7 @@ class EditUser extends React.Component {
         <div className={classes.paper}>
           <Avatar className={classes.avatar}/>
           <Typography component="h1" variant="h5">
-            {this.state.user.email || "Loading ..."}
+            {this.state.user.email}
           </Typography>
           <form className={classes.form} noValidate>
             <div>
@@ -183,7 +200,15 @@ class EditUser extends React.Component {
             </Button>
           </form>
         </div>
-        {this.state.modal.head && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
+        {modal.isOpen ?
+          <ModalForm
+            head={modal.head}
+            body={modal.body}
+            redirect_url={modal.redirectURL}
+            redirect_btn_name={modal.redirectBtnName}
+            show={modal.isOpen}
+            onHide={() => this.changeModalState(false)}
+          /> : null}
       </Container>
     )
   }

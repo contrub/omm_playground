@@ -2,7 +2,7 @@
 import React from 'react';
 
 // Custom components
-import ModalWindow from "../../components/modal";
+import ModalForm from "../../components/modal";
 
 // Material-UI components
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
@@ -30,9 +30,11 @@ class CreateMonument extends React.Component {
       name: ''
     },
     modal: {
+      isOpen: false,
       head: '',
       body: '',
-      redirectURL: ''
+      redirectURL: '',
+      redirectBtnName: ''
     },
     errors: {
       name: '',
@@ -40,6 +42,14 @@ class CreateMonument extends React.Component {
     },
     isValid: false
   }
+
+  changeModalState = (state) => {
+    let {modal} = this.state
+    modal["isOpen"] = state
+
+    this.setState({modal: modal})
+  }
+
 
   handleFormValidation = () => {
     const {errors} = this.state
@@ -112,8 +122,12 @@ class CreateMonument extends React.Component {
 
           if (name === undefined) {
             modal["head"] = 'Monument create error'
-            modal["body"] = res.message ? res.message : 'Something going wrong'
+            modal["body"] = 'Something going wrong'
+            modal["redirectURL"] = '/monuments_sheet'
+            modal["redirectBtnName"] = 'Monuments-sheet'
+
             this.setState({modal: modal})
+            this.changeModalState(true)
           } else {
             window.location.href = '/monuments_sheet'
           }
@@ -122,16 +136,20 @@ class CreateMonument extends React.Component {
           modal["head"] = 'Server error'
           modal["body"] = err.message
           modal["redirectURL"] = '/monument_sheet'
+          modal["redirectBtnName"] = 'Monuments-sheet'
+
           this.setState({modal: modal})
+          this.changeModalState(true)
         })
     }
   }
 
   render() {
     const {classes} = this.props
+    const {inputs, errors, modal} = this.state
 
     return (
-      <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
+      <Container component="main" maxWidth="xs" onSubmit={this.contactSubmit.bind(this)}>
         <CssBaseline />
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
@@ -150,7 +168,7 @@ class CreateMonument extends React.Component {
               required
               fullWidth
             />
-            <div className={classes.validation_name_error}>{this.state.errors.name}</div>
+            <div className={classes.validation_name_error}>{errors.name}</div>
             <TextField
               onChange={this.handleChange.bind(this, "description")}
               variant="outlined"
@@ -200,14 +218,14 @@ class CreateMonument extends React.Component {
                 />
               </Button>
             </div>
-            {this.state.inputs.base64 && (
+            {inputs.base64 && (
               <img
                 className={classes.image_preview}
-                src={this.state.inputs.base64}
-                alt={this.state.inputs.name ? this.state.inputs.name : 'monument_image'}
+                src={inputs.base64}
+                alt={inputs.name ? inputs.name : 'monument_image'}
               />
             )}
-            <div className={classes.validation_image_error}>{this.state.errors.image}</div>
+            <div className={classes.validation_image_error}>{errors.image}</div>
             <Button
               variant="contained"
               color="primary"
@@ -218,7 +236,15 @@ class CreateMonument extends React.Component {
             </Button>
           </form>
         </div>
-        {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
+        {modal.isOpen ?
+          <ModalForm
+            head={modal.head}
+            body={modal.body}
+            redirect_url={modal.redirectURL}
+            redirect_btn_name={modal.redirectBtnName}
+            show={modal.isOpen}
+            onHide={() => this.changeModalState(false)}
+          /> : null}
       </Container>
     )
   }

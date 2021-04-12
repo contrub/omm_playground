@@ -3,7 +3,7 @@ import React from "react";
 import {withRouter} from "react-router";
 
 // Custom components
-import ModalWindow from "../../components/modal";
+import ModalForm from "../../components/modal";
 import Loading from "../loading";
 
 // Material-UI components
@@ -29,9 +29,11 @@ class MonumentsSheet extends React.Component {
       monuments: [],
       isLoading: false,
       modal: {
-        redirectURL: '',
+        isOpen: false,
         head: '',
-        body: ''
+        body: '',
+        redirectURL: '/',
+        redirectBtnName: 'Home'
       }
     }
 
@@ -47,9 +49,17 @@ class MonumentsSheet extends React.Component {
         .catch((err) => {
           modal["head"] = 'Server error'
           modal["body"] = err.message
-          modal["redirectURL"] = '/'
+
           this.setState({modal: modal, isLoading: false})
+          this.changeModalState(true)
         })
+    }
+
+    changeModalState = (state) => {
+      let {modal} = this.state
+      modal["isOpen"] = state
+
+      this.setState({modal: modal})
     }
 
     removeMonument = (e, id) => {
@@ -61,21 +71,23 @@ class MonumentsSheet extends React.Component {
 
       MonumentService.deleteMonument({token: Cookies.get('accessToken'), id: id, imagePublicID: imagePublicID})
         .then(() => {
+          // Сервер возвращает 204 статус, но в res.status = error
           monuments = monuments.filter((monument) => monument._id !== id)
 
           this.setState({monuments: monuments})
         })
-        .catch((e) => {
+        .catch((err) => {
           modal["head"] = 'Delete monument error'
-          modal["body"] = 'Please, check access rights'
+          modal["body"] = err.message
+
           this.setState({modal: modal})
+          this.changeModalState(true)
         })
     }
 
     render() {
-      const {monuments} = this.state
-      const {isLoading} = this.state
       const {classes} = this.props
+      const {isLoading, monuments,  modal} = this.state
 
 
       if (isLoading) {
@@ -192,8 +204,15 @@ class MonumentsSheet extends React.Component {
               Let's create <a href={'/create_monument'}>new monument</a>!
             </div>
           }
-          {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
-        </div>
+          {modal.isOpen ?
+            <ModalForm
+              head={modal.head}
+              body={modal.body}
+              redirect_url={modal.redirectURL}
+              redirect_btn_name={modal.redirectBtnName}
+              show={modal.isOpen}
+              onHide={() => this.changeModalState(false)}
+            /> : null}        </div>
       )
     }
 }
