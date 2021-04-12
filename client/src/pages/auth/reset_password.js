@@ -2,7 +2,7 @@
 import React from "react";
 
 // Custom components
-import ModalWindow from "../../components/modal";
+import ModalForm from "../../components/modal";
 
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -31,8 +31,6 @@ import Cookies from "js-cookie";
 
 // Custom styles
 import styles from "../../styles/js/auth/reset_password";
-import {withRouter} from "react-router";
-import ModalForm from "../../components/modal";
 
 class PasswordReset extends React.Component {
   state = {
@@ -231,4 +229,4 @@ class PasswordReset extends React.Component {
   }
 }
 
-export default withStyles(styles, {withTheme: true})(withRouter(PasswordReset))
+export default withStyles(styles, {withTheme: true})(PasswordReset)

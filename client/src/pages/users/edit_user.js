@@ -3,7 +3,7 @@ import React from "react";
 import {withRouter} from "react-router";
 
 // Custom components
-import ModalWindow from "../../components/modal";
+import ModalForm from "../../components/modal";
 import Loading from "../loading";
 
 // Material-UI components
@@ -26,7 +26,6 @@ import UserService from '../../services/UserService';
 
 // Custom styles
 import styles from "../../styles/js/users/edit_user";
-import ModalForm from "../../components/modal";
 
 class EditUser extends React.Component {
   state = {

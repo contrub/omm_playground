@@ -3,7 +3,7 @@ import React from "react";
 import {Link}  from "react-router-dom";
 
 // Custom components
-import ModalWindow from "../../components/modal";
+import ModalForm from "../../components/modal";
 
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -34,7 +34,6 @@ import AuthService from "../../services/AuthService";
 
 // Custom styles
 import styles from "../../styles/js/auth/signup";
-import ModalForm from "../../components/modal";
 
 class SignUp extends React.Component {
   state = {
