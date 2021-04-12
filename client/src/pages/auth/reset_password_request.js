@@ -52,7 +52,9 @@ class PasswordResetRequest extends React.Component {
       modal["body"] = 'You already logged!'
       modal["redirectBtnName"] = 'Home'
       modal["redirectURL"] = '/'
+
       this.setState({modal: modal})
+      this.changeModalState(true)
     }
   }
 

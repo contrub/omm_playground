@@ -32,6 +32,7 @@ import Cookies from "js-cookie";
 // Custom styles
 import styles from "../../styles/js/auth/reset_password";
 import {withRouter} from "react-router";
+import ModalForm from "../../components/modal";
 
 class PasswordReset extends React.Component {
   state = {
@@ -40,8 +41,11 @@ class PasswordReset extends React.Component {
       passwordCopy: ''
     },
     modal: {
+      isOpen: '',
       head: '',
-      body: ''
+      body: '',
+      redirectURL: '',
+      redirectBtnName: ''
     },
     errors: {},
     token: '',
@@ -53,13 +57,23 @@ class PasswordReset extends React.Component {
     let {modal} = this.state
 
     if (Cookies.get('accessToken')) {
-      modal["head"] = 'Authorization Error'
+      modal["head"] = 'Already authorized'
       modal["body"] = 'You already logged!'
+      modal["redirectBtnName"] = 'Home'
       modal["redirectURL"] = '/'
+
       this.setState({modal: modal})
-    } else {
-      this.setState({token: this.props.location.search.split('=')[1]})
+      this.changeModalState(true)
     }
+
+    this.setState({token: this.props.location.search.split('=')[1]})
+  }
+
+  changeModalState = (state) => {
+    let {modal} = this.state
+    modal["isOpen"] = state
+
+    this.setState({modal: modal})
   }
 
   handleFieldValidation = () => {
@@ -99,19 +113,29 @@ class PasswordReset extends React.Component {
       AuthService.updatePassword({token: token, password: inputs.password})
         .then((res) => {
           if (res.message) {
-            document.getElementById('validError').innerText = res.message
+            modal["head"] = 'Link time expired!'
+            modal["body"] = 'Please, try send new reset password link'
+            modal["redirectURL"] = '/reset_request'
+            modal["redirectBtnName"] = 'New-request'
+            console.log(modal)
+            this.setState({modal: modal})
           } else {
             modal["head"] = 'Password successfully reset!'
             modal["body"] = 'From now on you can use a new password'
             modal["redirectURL"] = '/login'
+            modal["redirectBtnName"] = 'Login'
             this.setState({modal: modal})
           }
         })
         .catch((err) => {
-          modal["head"] = 'Link time expired!'
-          modal["body"] = 'Please, try send new reset password link'
+          modal["head"] = 'Server error'
+          modal["body"] = err.message
           modal["redirectURL"] = '/'
+          modal["redirectBtnName"] = 'Home'
           this.setState({modal: modal})
+        })
+        .finally(() => {
+          this.changeModalState(true)
         })
     }
   }
@@ -124,7 +148,8 @@ class PasswordReset extends React.Component {
   }
 
   render() {
-    const { classes } = this.props
+    const {classes} = this.props
+    const {modal} = this.state
 
     return (
       <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
@@ -190,7 +215,15 @@ class PasswordReset extends React.Component {
             </Button>
           </form>
         </div>
-        {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
+        {modal.isOpen ?
+          <ModalForm
+            head={modal.head}
+            body={modal.body}
+            redirect_url={modal.redirectURL}
+            redirect_btn_name={modal.redirectBtnName}
+            show={modal.isOpen}
+            onHide={() => this.changeModalState(false)}
+          /> : null}
       </Container>
     )
   }

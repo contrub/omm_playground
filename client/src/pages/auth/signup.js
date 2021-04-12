@@ -34,6 +34,7 @@ import AuthService from "../../services/AuthService";
 
 // Custom styles
 import styles from "../../styles/js/auth/signup";
+import ModalForm from "../../components/modal";
 
 class SignUp extends React.Component {
   state = {
@@ -45,7 +46,8 @@ class SignUp extends React.Component {
     modal: {
       head: '',
       body: '',
-      redirectURL: ''
+      redirectURL: '',
+      redirectBtnName: ''
     },
     errors: {},
     isValid: false
@@ -75,8 +77,10 @@ class SignUp extends React.Component {
 
           if (accessToken === undefined) {
             modal["head"] = 'Registration error'
-            modal["body"] = res.message ? res.message : 'Something going wrong'
+            modal["body"] = res.message
+
             this.setState({modal: modal})
+            this.changeModalState(true)
           } else {
             Cookies.set('accessToken', res.accessToken)
             window.location.href = '/'
@@ -85,13 +89,23 @@ class SignUp extends React.Component {
         .catch((err) => {
           modal["head"] = 'Server error'
           modal["body"] = err.message
+          modal["redirectBtnName"] = 'Home'
           modal["redirectURL"] = '/'
+
           this.setState({modal: modal})
+          this.changeModalState(true)
         })
     } else {
       this.handleFieldValidation()
       document.getElementById('validError').innerText = "Validation error"
     }
+  }
+
+  changeModalState = (state) => {
+    let {modal} = this.state
+    modal["isOpen"] = state
+
+    this.setState({modal: modal})
   }
 
   handleChange = (input, e) => {
@@ -115,6 +129,7 @@ class SignUp extends React.Component {
 
   render() {
     const {classes} = this.props
+    const {modal} = this.state
 
     return (
       <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
@@ -207,7 +222,15 @@ class SignUp extends React.Component {
             </Grid>
           </Grid>
         </div>
-        {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
+        {modal.isOpen ?
+          <ModalForm
+            head={modal.head}
+            body={modal.body}
+            redirect_url={modal.redirectURL}
+            redirect_btn_name={modal.redirectBtnName}
+            show={modal.isOpen}
+            onHide={() => this.changeModalState(false)}
+          /> : null}
       </Container>
     )
   }
