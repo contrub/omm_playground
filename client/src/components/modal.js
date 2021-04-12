@@ -1,32 +1,43 @@
 // React components
 import React from "react";
+import { Modal } from "react-bootstrap";
 
-const ModalWindow = ({head, body, redirectURL}) => {
-  const closeWindow = () => {
-    if (redirectURL && redirectURL !== '') {
-      window.location.href = redirectURL
-    } else {
-      window.location.reload()
-    }
+// Material-UI components
+import Button from "@material-ui/core/Button";
+
+const ModalForm = (props) => {
+  const redirect = () => {
+    window.location.href = props.redirect_url
   }
 
   return (
-    <div id="modal-window" className="modal" tabIndex="-1" style={{display: "block"}}>
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">{head}</h5>
-          </div>
-          <div className="modal-body">
-            <p className="modal-description">{body}</p>
-          </div>
-          <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={closeWindow}>Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
+      <>
+        <Modal
+          {...props}
+          centered
+          backdrop="static"
+          keyboard={false}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>{props.head}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{props.body}</Modal.Body>
+          <Modal.Footer>
+            {props.redirect_url
+              ?
+              <Button variant="contained" color="inherit" onClick={() => redirect()}>
+                {props.redirect_btn_name}
+              </Button>
+            :
+              null
+            }
+            <Button variant="contained" color="primary" onClick={props.onHide}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </>
   )
 }
 
-export default ModalWindow;
+export default ModalForm
