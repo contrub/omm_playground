@@ -29,7 +29,7 @@ const getMonument = async (req, res, next) => {
     }
 
     await AuthController.verifyAction(req, 'monuments:get-by-id', res, next)
-    await MonumentService.isMonumentPayloadExist(req, {name: req.body.name})
+    await MonumentService.isMonumentPayloadExist(req, {_id: req.params.id})
 
     if (!req.isMonumentExist) {
       throw ApiError.custom(404, 'Monument undefined')
