@@ -50,8 +50,8 @@ class PasswordResetRequest extends React.Component {
     if (Cookies.get('accessToken')) {
       modal["head"] = 'Already authorized'
       modal["body"] = 'You already logged!'
-      modal["redirectBtnName"] = 'Home'
-      modal["redirectURL"] = '/'
+      modal["redirectBtnName"] = 'Logout'
+      modal["redirectURL"] = '/logout'
 
       this.setState({modal: modal})
       this.changeModalState(true)
@@ -120,6 +120,8 @@ class PasswordResetRequest extends React.Component {
 
   render() {
     const {classes} = this.props
+    const {inputs} = this.state
+    const {errors} = this.state
     const {modal} = this.state
 
     return (
@@ -135,7 +137,7 @@ class PasswordResetRequest extends React.Component {
           <form className={classes.form} noValidate>
             <TextField
               onChange={this.handleChange.bind(this, "email")}
-              value={this.state.inputs["email"]}
+              value={inputs["email"]}
               variant="outlined"
               margin="normal"
               required
@@ -156,7 +158,7 @@ class PasswordResetRequest extends React.Component {
               Send reset link
             </Button>
           </form>
-          <div id='validError' className={classes.valid_error}>{this.state.errors["email"]}</div>
+          <div id='validError' className={classes.valid_error}>{errors["email"]}</div>
         </div>
         {modal.isOpen ?
           <ModalForm

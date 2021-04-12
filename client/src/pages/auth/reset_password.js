@@ -59,8 +59,8 @@ class PasswordReset extends React.Component {
     if (Cookies.get('accessToken')) {
       modal["head"] = 'Already authorized'
       modal["body"] = 'You already logged!'
-      modal["redirectBtnName"] = 'Home'
-      modal["redirectURL"] = '/'
+      modal["redirectBtnName"] = 'Logout'
+      modal["redirectURL"] = '/logout'
 
       this.setState({modal: modal})
       this.changeModalState(true)
@@ -149,6 +149,8 @@ class PasswordReset extends React.Component {
 
   render() {
     const {classes} = this.props
+    const {inputs} = this.state
+    const {errors} = this.state
     const {modal} = this.state
 
     return (
@@ -164,7 +166,7 @@ class PasswordReset extends React.Component {
           <form className={classes.form} noValidate>
             <TextField
               onChange={this.handleChange.bind(this, "password")}
-              value={this.state.inputs["password"]}
+              value={inputs["password"]}
               variant="outlined"
               margin="normal"
               required
@@ -184,7 +186,7 @@ class PasswordReset extends React.Component {
             </ul>
             <TextField
               onChange={this.handleChange.bind(this, "passwordCopy")}
-              value={this.state.inputs["passwordCopy"]}
+              value={inputs["passwordCopy"]}
               InputProps={{
                 endAdornment: (
                   <Checkbox
@@ -203,7 +205,7 @@ class PasswordReset extends React.Component {
               id="passwordCopy"
               autoComplete="current-password"
             />
-            <div className={classes.pass_copy_valid_error}>{this.state.errors["passwordCopy"]}</div>
+            <div className={classes.pass_copy_valid_error}>{errors["passwordCopy"]}</div>
             <Button
               type="submit"
               fullWidth

@@ -78,6 +78,8 @@ class SignUp extends React.Component {
           if (accessToken === undefined) {
             modal["head"] = 'Registration error'
             modal["body"] = res.message
+            modal["redirectURL"] = '/'
+            modal["redirectBtnName"] = 'Home'
 
             this.setState({modal: modal})
             this.changeModalState(true)
@@ -129,10 +131,12 @@ class SignUp extends React.Component {
 
   render() {
     const {classes} = this.props
+    const {inputs} = this.state
+    const {errors} = this.state
     const {modal} = this.state
 
     return (
-      <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
+      <Container component="main" maxWidth="xs" onSubmit={this.contactSubmit.bind(this)}>
         <CssBaseline />
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
@@ -144,7 +148,7 @@ class SignUp extends React.Component {
           <form className={classes.form} noValidate>
             <TextField
               onChange={this.handleChange.bind(this, "email")}
-              value={this.state.inputs["email"]}
+              value={inputs["email"]}
               variant="outlined"
               margin="normal"
               required
@@ -155,10 +159,10 @@ class SignUp extends React.Component {
               autoComplete="email"
               autoFocus
             />
-            <div className={classes.errors}>{this.state.errors["email"]}</div>
+            <div className={classes.errors}>{errors["email"]}</div>
             <TextField
               onChange={this.handleChange.bind(this, "password")}
-              value={this.state.inputs["password"]}
+              value={inputs["password"]}
               variant="outlined"
               margin="normal"
               required
@@ -178,7 +182,7 @@ class SignUp extends React.Component {
             </ul>
             <TextField
               onChange={this.handleChange.bind(this, "passwordCopy")}
-              value={this.state.inputs["passwordCopy"]}
+              value={inputs["passwordCopy"]}
               InputProps={{
                 endAdornment: (
                   <Checkbox
@@ -197,7 +201,7 @@ class SignUp extends React.Component {
               id="passwordCopy"
               autoComplete="current-password"
             />
-            <div className={classes.errors}>{this.state.errors["passwordCopy"]}</div>
+            <div className={classes.errors}>{errors["passwordCopy"]}</div>
             <Button
               type="submit"
               fullWidth
