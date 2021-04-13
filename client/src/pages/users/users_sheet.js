@@ -64,10 +64,18 @@ class UsersSheet extends React.Component {
     let {users, modal} = this.state
 
     UserService.deleteUser({token: Cookies.get('accessToken'), email: email})
-      .then(() => {
-        users = users.filter((user) => user.email !== email)
+      .then((res) => {
+        if (res.message) {
+          modal["head"] = 'Delete user error'
+          modal["body"] = 'Check your permissions'
 
-        this.setState({users: users})
+          this.setState({modal: modal})
+          this.changeModalState(true)
+        } else {
+          users = users.filter((user) => user.email !== email)
+
+          this.setState({users: users})
+        }
       })
       .catch((err) => {
         modal["head"] = 'Delete user error'
