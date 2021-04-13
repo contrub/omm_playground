@@ -123,14 +123,17 @@ class PasswordReset extends React.Component {
             modal["body"] = 'Please, try send new reset password link'
             modal["redirectURL"] = '/reset_request'
             modal["redirectBtnName"] = 'New-request'
-            console.log(modal)
             this.setState({modal: modal})
           } else {
-            modal["head"] = 'Password successfully reset!'
-            modal["body"] = 'From now on you can use a new password'
-            modal["redirectURL"] = '/login'
-            modal["redirectBtnName"] = 'Login'
-            this.setState({modal: modal})
+            //*
+            // Хотелось бы использовать модальное окно, но нужно продумать переход на /login
+            // *//
+            // modal["head"] = 'Password successfully reset!'
+            // modal["body"] = 'From now on you can use a new password'
+            // modal["redirectURL"] = '/login'
+            // modal["redirectBtnName"] = 'Login'
+            // this.setState({modal: modal})
+            window.location.href = '/login'
           }
         })
         .catch((err) => {
