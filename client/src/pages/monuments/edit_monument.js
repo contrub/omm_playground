@@ -85,18 +85,18 @@ class EditMonument extends React.Component {
 
   changeModalState = (state) => {
     let {modal} = this.state
+
     modal["isOpen"] = state
 
     this.setState({modal: modal})
   }
 
   contactSubmit = (e) => {
+    let {inputs, modal} = this.state
+
     e.preventDefault()
 
     if (this.state.isValid) {
-      let {modal} = this.state
-      let {inputs} = this.state
-
       const imageURL = inputs.imageURL
       const imagePublicID = imageURL.split('/')[7] + '/' + imageURL.split('/')[8].split('.')[0]
 
@@ -134,8 +134,7 @@ class EditMonument extends React.Component {
   }
 
   handleFileInputChange = (e) => {
-    let inputs = this.state.inputs
-    let errors = this.state.errors
+    let {inputs, errors} = this.state
 
     try {
       const reader = new FileReader()
@@ -150,12 +149,12 @@ class EditMonument extends React.Component {
         if (fileType !== 'image') {
           errors["image"] = 'Please insert image!'
           inputs["base64"] = ''
-          this.setState({errors: errors, inputs: inputs})
         } else {
           errors["image"] = ''
           inputs["base64"] = result
-          this.setState({errors: errors, inputs: inputs})
         }
+
+        this.setState({errors: errors, inputs: inputs})
       }
 
       reader.onerror = () => {

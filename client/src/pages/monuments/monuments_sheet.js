@@ -138,7 +138,7 @@ class MonumentsSheet extends React.Component {
             </tr>
             </thead>
             <tbody>
-            {monuments.map((monument, index) => {
+            {monuments.length && monuments.map((monument, index) => {
               return (
                 <tr key={index} className={classes.table_row}>
                   <td>
@@ -212,7 +212,8 @@ class MonumentsSheet extends React.Component {
               redirect_btn_name={modal.redirectBtnName}
               show={modal.isOpen}
               onHide={() => this.changeModalState(false)}
-            /> : null}        </div>
+            /> : null}
+        </div>
       )
     }
 }

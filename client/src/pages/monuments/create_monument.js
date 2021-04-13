@@ -45,6 +45,7 @@ class CreateMonument extends React.Component {
 
   changeModalState = (state) => {
     let {modal} = this.state
+
     modal["isOpen"] = state
 
     this.setState({modal: modal})
@@ -52,20 +53,21 @@ class CreateMonument extends React.Component {
 
 
   handleFormValidation = () => {
-    const {errors} = this.state
-    const {inputs} = this.state
+    let {inputs, errors, isValid} = this.state
 
     if (isEmpty(inputs.name)) {
       errors["name"] = 'Cannot be empty!'
-      this.setState({isValid: false, errors: errors})
+      isValid = false
     } else {
       errors["name"] = ''
-      this.setState({isValid: true, errors: errors})
+      isValid = true
     }
+
+    this.setState({isValid: isValid, errors: errors})
   }
 
   handleChange = (input, e) => {
-    let inputs = this.state.inputs
+    let {inputs} = this.state
 
     inputs[input] = e.target.value
 
@@ -77,8 +79,7 @@ class CreateMonument extends React.Component {
   }
 
   handleFileInputChange = (e) => {
-    let inputs = this.state.inputs
-    let errors = this.state.errors
+    let {inputs, errors} = this.state
 
     const reader = new FileReader()
     const file = e.target.files[0]
@@ -92,23 +93,25 @@ class CreateMonument extends React.Component {
       if (fileType !== 'image') {
         errors["image"] = 'Please insert image!'
         inputs["base64"] = ''
-        this.setState({errors: errors, inputs: inputs})
       } else {
         errors["image"] = ''
         inputs["base64"] = result
-        this.setState({errors: errors, inputs: inputs})
       }
+
+      this.setState({errors: errors, inputs: inputs})
     }
 
     reader.onerror = () => {
       errors["image"] = 'Something going wrong'
       inputs["base64"] = ''
+
       this.setState({errors: errors, inputs: inputs})
     }
   }
 
   contactSubmit = (e) => {
     e.preventDefault()
+
     this.handleFormValidation()
 
     if (this.state.isValid) {
