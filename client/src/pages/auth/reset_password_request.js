@@ -76,14 +76,11 @@ class PasswordResetRequest extends React.Component {
     e.preventDefault()
 
     if (this.state.isValid) {
-      const email = this.state.inputs.email
-      const {inputs} = this.state
-      let {modal} = this.state
+      const {inputs, errors, modal} = this.state
 
+      errors["email"] = ''
 
-      document.getElementById('validError').innerText = ""
-
-      AuthService.resetPassword({email: email})
+      AuthService.resetPassword({email: inputs.email})
         .then((res) => {
           if (res.message) {
             document.getElementById('validError').innerText = res.message
@@ -92,7 +89,7 @@ class PasswordResetRequest extends React.Component {
             modal["body"] = `Check your email - ${inputs.email} (will expire in 10 minutes)`
             modal["redirectURL"] = '/login'
             modal["redirectBtnName"] = 'Login'
-            this.setState({modal: modal})
+            this.setState({modal: modal, errors: errors})
 
             this.changeModalState(true)
           }
@@ -102,7 +99,7 @@ class PasswordResetRequest extends React.Component {
           modal["body"] = err.message
           modal["redirectURL"] = '/'
           modal["redirectBtnName"] = 'Home'
-          this.setState({modal: modal})
+          this.setState({modal: modal, errors: errors})
 
           this.changeModalState(true)
         })
@@ -120,9 +117,7 @@ class PasswordResetRequest extends React.Component {
 
   render() {
     const {classes} = this.props
-    const {inputs} = this.state
-    const {errors} = this.state
-    const {modal} = this.state
+    const {inputs, errors, modal} = this.state
 
     return (
       <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>

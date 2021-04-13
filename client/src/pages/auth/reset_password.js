@@ -45,9 +45,14 @@ class PasswordReset extends React.Component {
       redirectURL: '',
       redirectBtnName: ''
     },
-    errors: {},
+    errors: {
+      pass: '',
+      pass1: '',
+      validError: ''
+    },
     token: '',
-    isValid: false
+    isValid: false,
+    isPasswordHidden: true
   }
 
   componentDidMount = () => {
@@ -73,29 +78,44 @@ class PasswordReset extends React.Component {
     this.setState({modal: modal})
   }
 
-  handleFieldValidation = () => {
-    let inputs = this.state.inputs;
-    let errors = this.state.errors;
+  handleFieldValidation = (name) => {
+    let {inputs, errors, isValid} = this.state
 
-    this.setState({isValid: passwordValidation(inputs)})
-    this.setState({isValid: passwordCopyValidation(inputs, errors)})
-    document.getElementById('passwordRequirements').hidden = false
+    if (name === 'password') {
+      this.setState({isValid: passwordValidation(inputs, errors)})
+    } else if (name === 'passwordCopy') {
+      this.setState({isValid: passwordCopyValidation(inputs, errors)})
+    }
+
+    if (isValid) {
+      errors["validError"] = ""
+
+      this.setState({errors: errors})
+    }
   }
 
   handleChange = (input, e) => {
-    let inputs = this.state.inputs;
-    inputs[input] = e.target.value;
-    this.setState({input: inputs[input]});
-    this.handleFieldValidation()
+    let {inputs} = this.state
+
+    inputs[input] = e.target.value
+
+    this.setState({input: inputs[input]})
+    this.handleFieldValidation(input)
   }
 
 
+  showPassword = () => {
+    let {isPasswordHidden} = this.state
+
+    this.setState({isPasswordHidden: !isPasswordHidden})
+  }
+
   contactSubmit = (e) => {
+    let {inputs, errors, token, modal} = this.state
+
     e.preventDefault()
 
     if (this.state.isValid) {
-      const {inputs, token, modal} = this.state
-
       AuthService.updatePassword({token: token, password: inputs.password})
         .then((res) => {
           if (res.message) {
@@ -123,24 +143,19 @@ class PasswordReset extends React.Component {
         .finally(() => {
           this.changeModalState(true)
         })
+    } else {
+      errors["validError"] = 'ValidationError'
+
+      this.setState({errors: errors})
     }
-  }
-
-  handleChange = (input, e) => {
-    let {inputs} = this.state
-
-    inputs[input] = e.target.value
-
-    this.setState({input: inputs[input]})
-    this.handleFieldValidation()
   }
 
   render() {
     const {classes} = this.props
-    const {inputs, errors, modal} = this.state
+    const {inputs, errors, modal, isPasswordHidden} = this.state
 
     return (
-      <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
+      <Container component="main" maxWidth="xs" onSubmit={this.contactSubmit.bind(this)}>
         <CssBaseline />
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
@@ -152,26 +167,25 @@ class PasswordReset extends React.Component {
           <form className={classes.form} noValidate>
             <TextField
               onChange={this.handleChange.bind(this, "password")}
+              type={isPasswordHidden ? 'password' : 'text'}
               value={inputs["password"]}
               variant="outlined"
               margin="normal"
-              required
-              fullWidth
-              name="password"
               label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              name="password"
+              fullWidth
+              required
             />
-            <ul id='passwordRequirements' hidden>
-              <li className={classes.pass_valid_error} id='quantityCheck'>At least 8 characters</li>
-              <li className={classes.pass_valid_error} id='numberCheck'>Contains at least 1 number</li>
-              <li className={classes.pass_valid_error} id='lowercaseCheck'>Contains at least lowercase letter</li>
-              <li className={classes.pass_valid_error} id='uppercaseCheck'>Contains at least uppercase letter</li>
-              <li className={classes.pass_valid_error} id='specialCharacterCheck'>Contains a special character (!@#%&)</li>
+            <ul className={classes.passwordRequirements}>
+              {!errors["quantityCheck"] && <li>At least 8 characters</li>}
+              {!errors["numberCheck"] && <li>Contains at least 1 number</li>}
+              {!errors["lowercaseCheck"] && <li>Contains at least lowercase letter</li>}
+              {!errors["uppercaseCheck"] && <li>Contains at least uppercase letter</li>}
+              {!errors["specialCharacterCheck"] && <li>Contains a special character (!@#%&)</li>}
             </ul>
             <TextField
               onChange={this.handleChange.bind(this, "passwordCopy")}
+              type={isPasswordHidden ? 'password' : 'text'}
               value={inputs["passwordCopy"]}
               InputProps={{
                 endAdornment: (
@@ -183,25 +197,23 @@ class PasswordReset extends React.Component {
               }}
               variant="outlined"
               margin="normal"
-              required
-              fullWidth
-              name="passwordCopy"
               label="Repeat Password"
-              type="password"
-              id="passwordCopy"
-              autoComplete="current-password"
-            />
-            <div className={classes.pass_copy_valid_error}>{errors["passwordCopy"]}</div>
-            <Button
-              type="submit"
+              name="passwordCopy"
               fullWidth
+              required
+            />
+            <div className={classes.passwordCopyRequirements}>{errors["passwordCopy"]}</div>
+            <Button
+              className={classes.submitBtn}
               variant="contained"
               color="primary"
-              className={classes.submitBtn}
+              type="submit"
+              fullWidth
             >
               Change Password
             </Button>
           </form>
+          <div className={classes.validError}>{errors["validError"]}</div>
         </div>
         {modal.isOpen ?
           <ModalForm

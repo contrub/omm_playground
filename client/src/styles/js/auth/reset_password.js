@@ -16,19 +16,22 @@ const styles = theme => ({
   submitBtn: {
     margin: theme.spacing(1, 0, 2)
   },
-  pass_copy_valid_error: {
+  passwordCopyRequirements: {
+    margin: theme.spacing(1),
+    fontFamily: 'Gill Sans',
     textAlign: 'center',
-    margin: '0 0 16px',
     color: 'red'
   },
-  pass_valid_error: {
+  passwordRequirements: {
+    margin: theme.spacing(1),
     fontFamily: 'Gill Sans',
     fontSize: '17px',
     color: 'red'
   },
-  myModal: {
-    position: 'relative',
-    top: '20px'
+  validError: {
+    fontFamily: 'Gill Sans',
+    textAlign: 'center',
+    color: 'red'
   }
 });
 
