@@ -1,12 +1,18 @@
 // React components
 import React from 'react';
-import {Link} from "react-router-dom";
 
 // Custom components
-import ModalWindow from "../../components/modal";
+import ModalForm from "../../components/modal";
+import Loading from "../loading";
+
+// Material-UI components
+import withStyles from "@material-ui/core/styles/withStyles";
+import Button from "@material-ui/core/Button";
 
 // Material-UI icons
-import AddBoxIcon from '@material-ui/icons/AddBox';
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import AddIcon from "@material-ui/icons/Add";
 
 // Third party modules
 import Cookies from "js-cookie";
@@ -15,92 +21,175 @@ import Cookies from "js-cookie";
 import UserService from "../../services/UserService";
 
 // Custom styles
-import "../../styles/css/users_sheet.css";
+import styles from "../../styles/js/users/users_sheet";
 
 class UsersSheet extends React.Component {
   state = {
     users: [],
+    isLoading: false,
     modal: {
       head: '',
-      body: ''
+      body: '',
+      redirectURL: '/',
+      redirectBtnName: 'Home'
     }
   }
 
   componentDidMount = () => {
     let {modal} = this.state
 
+    this.setState({isLoading: true})
+
     UserService.getUsers({token: Cookies.get('accessToken')})
       .then((res) => {
-        const usersCount = res.length
-
-        if (usersCount === 0) {
-          modal["head"] = 'Users database is empty'
-          modal["body"] = 'Please, create new users'
-          this.setState({modal: modal})
-        } else {
-          this.setState({users: res})
-        }
+        this.setState({users: res, isLoading: false})
       })
       .catch((err) => {
         modal["head"] = 'Server error'
-        modal["body"] = err.message()
+        modal["body"] = err.message
+
         this.setState({modal: modal})
+        this.changeModalState(true)
+      })
+  }
+
+  changeModalState = (state) => {
+    let {modal} = this.state
+    modal["isOpen"] = state
+
+    this.setState({modal: modal})
+  }
+
+  removeUser = (e, email) => {
+    let {users, modal} = this.state
+
+    UserService.deleteUser({token: Cookies.get('accessToken'), email: email})
+      .then(() => {
+        users = users.filter((user) => user.email !== email)
+
+        this.setState({users: users})
+      })
+      .catch((err) => {
+        modal["head"] = 'Delete user error'
+        modal["body"] = err.message
+
+        this.setState({modal: modal})
+        this.changeModalState(true)
       })
   }
 
   render() {
-    const users = this.state.users.map((user, index) => {
+    const {classes} = this.props
+    const {users, isLoading, modal} = this.state
+
+    if (isLoading) {
       return (
-        <tr key={index}>
-          <td>{user.email}</td>
-          <td>{user.userRole}</td>
-          <td>{user._id}</td>
-          <td>
-            {user.status === 'active' ?
-              <button className="btn btn-success" disabled>
-                Active
-              </button>
-              :
-              <button className="btn btn-danger" disabled>
-              Disable
-              </button>
-            }
-          </td>
-          <td>
-            <Link to={`/users/${user.email}`}>
-              <button className="btn btn-secondary">
-                <i className="fa fa-edit fa-lg" ></i>
-              </button>
-            </Link>
-          </td>
-        </tr>
+        <Loading/>
       )
-    })
+    }
 
     return (
       <div>
         <table className="table">
-            <thead>
-            <tr>
-              <th scope="col">Email</th>
-              <th scope="col">UserRole</th>
-              <th scope="col">ID</th>
-              <th scope="col">Status</th>
+          <thead>
+            <tr className={classes.table_row}>
               <th scope="col">
-                <Link to="/create_user">
-                  <AddBoxIcon/>
-                </Link>
+                <div className={classes.table_head}>
+                  Email
+                </div>
+              </th>
+              <th scope="col">
+                <div className={classes.table_head}>
+                  UserRole
+                </div>
+              </th>
+              <th scope="col">
+                <div className={classes.table_head}>
+                  ID
+                </div>
+              </th>
+              <th scope="col">
+                <div className={classes.table_head}>
+                  Status
+                </div>
+              </th>
+              <th scope="col">
+                <Button
+                  href="/create_user"
+                  variant="contained"
+                  color="inherit"
+                >
+                  <AddIcon/>
+                </Button>
               </th>
             </tr>
-            </thead>
-            <tbody>
-              {users}
-            </tbody>
+          </thead>
+          <tbody>
+          {users.map((user, index) => {
+            return (
+              <tr key={index} className={classes.table_row}>
+                <td>
+                  <div className={classes.table_cell}>
+                    {user.email}
+                  </div>
+                </td>
+                <td>
+                  <div className={classes.table_cell}>
+                    {user.userRole}
+                  </div>
+                </td>
+                <td>
+                  <div className={classes.table_cell}>
+                    {user._id}
+                  </div>
+                </td>
+                <td>
+                  <div className={classes.table_cell}>
+                    <Button
+                      className={user.status === 'active' ? classes.active_user_btn : classes.disable_user_btn}
+                      variant="contained"
+                      disabled
+                    >
+                      {user.status === 'active' ? 'Active' : 'Disable'}
+                    </Button>
+                  </div>
+                </td>
+                <td>
+                  <div>
+                    <Button
+                      href={`/edit_user/${user.email}`}
+                      variant="contained"
+                      color="primary"
+                    >
+                      <EditIcon/>
+                    </Button>
+                    <Button
+                      onClick={(e) => this.removeUser(e, user.email)}
+                      className={classes.edit_btn}
+                      variant="contained"
+                      color="secondary"
+                    >
+                      <DeleteIcon/>
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            )
+          })}
+          </tbody>
         </table>
-        {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body}/>}
+        {modal.isOpen ?
+          <ModalForm
+            head={modal.head}
+            body={modal.body}
+            redirect_url={modal.redirectURL}
+            redirect_btn_name={modal.redirectBtnName}
+            show={modal.isOpen}
+            onHide={() => this.changeModalState(false)}
+          /> : null}
       </div>
     )
   }
 }
 
-export default UsersSheet
+export default withStyles(styles, {withTheme: true})(UsersSheet)

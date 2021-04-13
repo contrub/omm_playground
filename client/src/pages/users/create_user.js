@@ -2,7 +2,7 @@
 import React from "react";
 
 // Custom components
-import ModalWindow from "../../components/modal";
+import ModalForm from "../../components/modal";
 
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -29,7 +29,7 @@ import {emailValidation} from "../../helpers/emailValidation";
 import UserService from "../../services/UserService";
 
 // Custom styles
-import styles from "../../styles/js/create_user";
+import styles from "../../styles/js/users/create_user";
 
 class CreateUser extends React.Component {
   state = {
@@ -38,12 +38,23 @@ class CreateUser extends React.Component {
       password: '',
     },
     modal: {
+      isOpen: false,
       body: '',
       head: '',
-      redirectURL: ''
+      redirectURL: '/users_sheet',
+      redirectBtnName: 'Users-sheet'
     },
-    errors: {},
+    errors: {
+      validation: ''
+    },
     isValid: false
+  }
+
+  changeModalState = (state) => {
+    let {modal} = this.state
+    modal["isOpen"] = state
+
+    this.setState({modal: modal})
   }
 
   handleFieldValidation = () => {
@@ -54,11 +65,11 @@ class CreateUser extends React.Component {
   }
 
   contactSubmit = (e) => {
+    let {inputs, errors, modal} = this.state
+
     e.preventDefault()
 
     if (this.state.isValid) {
-      let {modal} = this.state
-      let {inputs} = this.state
 
       inputs["token"] = Cookies.get('accessToken')
       UserService.createUser(inputs)
@@ -68,7 +79,9 @@ class CreateUser extends React.Component {
           if (email === undefined) {
             modal["head"] = 'Something going wrong'
             modal["body"] = 'Create user error'
+
             this.setState({modal: modal})
+            this.changeModalState(true)
           } else {
             window.location.href = '/users_sheet'
           }
@@ -76,12 +89,15 @@ class CreateUser extends React.Component {
         .catch((err) => {
           modal["head"] = 'Server error'
           modal["body"] = err.message
-          modal["redirectURL"] = '/users_sheet'
+
           this.setState({modal: modal})
+          this.changeModalState(true)
         })
     } else {
+      errors["validation"] = "ValidationError"
+
       this.handleFieldValidation()
-      document.getElementById('validError').innerText = "Validation error"
+      this.setState({errors: errors})
     }
   }
 
@@ -99,6 +115,7 @@ class CreateUser extends React.Component {
 
   render() {
     const {classes} = this.props
+    const {inputs, errors, modal} = this.state
 
     return (
       <div>
@@ -113,7 +130,7 @@ class CreateUser extends React.Component {
             <form className={classes.form} noValidate>
               <TextField
                 onChange={this.handleChange.bind(this, "email")}
-                value={this.state.inputs["email"]}
+                value={inputs["email"]}
                 variant="outlined"
                 margin="normal"
                 required
@@ -124,10 +141,10 @@ class CreateUser extends React.Component {
                 autoComplete="email"
                 autoFocus
               />
-              <div className={classes.errors}>{this.state.errors["email"]}</div>
+              <div className={classes.errors}>{errors["email"]}</div>
               <TextField
                 onChange={this.handleChange.bind(this, "password")}
-                value={this.state.inputs["password"]}
+                value={inputs["password"]}
                 InputProps={{
                   endAdornment: (
                     <Checkbox
@@ -162,11 +179,21 @@ class CreateUser extends React.Component {
               >
                 Create
               </Button>
-              <div id="validError" className={classes.errors}/>
+              <div className={classes.errors}>
+                {errors.validation}
+              </div>
             </form>
           </div>
         </Container>
-        {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
+        {modal.isOpen ?
+          <ModalForm
+            head={modal.head}
+            body={modal.body}
+            redirect_url={modal.redirectURL}
+            redirect_btn_name={modal.redirectBtnName}
+            show={modal.isOpen}
+            onHide={() => this.changeModalState(false)}
+          /> : null}
       </div>
     )
   }

@@ -1,6 +1,9 @@
 // React components
 import React from "react";
 
+// Custom components
+import Loading from "../loading"
+
 // Material-UI components
 import CardActionArea from "@material-ui/core/CardActionArea";
 import CardContent from "@material-ui/core/CardContent";
@@ -17,16 +20,17 @@ import "../../styles/css/monuments.css"
 
 class Monuments extends React.Component{
   state = {
-    monuments: []
+    monuments: [],
+    isLoading: false
   }
 
   componentDidMount = () => {
 
+    this.setState({isLoading: true})
+
     MonumentService.fetchMonuments()
       .then((res) => {
-        this.setState({
-          monuments: res
-        })
+        this.setState({monuments: res, isLoading: false})
       })
   }
 
@@ -36,10 +40,17 @@ class Monuments extends React.Component{
 
   render() {
     const {monuments} = this.state
+    const {isLoading} = this.state
+
+    if (isLoading) {
+      return (
+        <Loading/>
+      )
+    }
 
     return (
-      <div>
-        <Grid container spacing={3}  columns={3}>
+      <div id="main">
+        <Grid container spacing={0}  >
           {monuments.map((entry, index) => {
             return (
                 <Grid item xl={3} key={index} >
@@ -52,7 +63,8 @@ class Monuments extends React.Component{
                         id="img"
                       />
                       <CardContent>
-                        <Typography gutterBottom variant="h5"  align="center" color="textPrimary">
+                        <Typography gutterBottom   align="center"  id="text">   
+                        {/*   color="textPrimary" variant="h5"*/}
                           {entry.name}
                         </Typography>
                       </CardContent>

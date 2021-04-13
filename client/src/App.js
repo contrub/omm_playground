@@ -1,10 +1,6 @@
 // React components
 import React, {Component} from 'react';
-import {
-  BrowserRouter,
-  Switch,
-  Route
-} from "react-router-dom";
+import {BrowserRouter, Switch, Route} from "react-router-dom";
 
 // Custom styles
 import './styles/css/App.css';
@@ -23,12 +19,13 @@ import PasswordResetRequest from "./pages/auth/reset_password_request";
 import PasswordReset from "./pages/auth/reset_password";
 import Signup from "./pages/auth/signup";
 import Login from "./pages/auth/login";
+import Logout from "./pages/auth/logout";
 
 // Monuments pages
 import CreateMonument from "./pages/monuments/create_monument";
 import MonumentsSheet from "./pages/monuments/monuments_sheet"
 import EditMonument from "./pages/monuments/edit_monument";
-import Monuments from './pages/monuments/monuments'; // not working (dan)
+import Monuments from './pages/monuments/monuments';
 import MonumentById from "./pages/monuments/monument";
 
 // Users pages
@@ -114,10 +111,11 @@ class App extends Component {
           <Route path="/reset" component={PasswordReset}/>
           <Route path="/signup" component={Signup}/>
           <Route path="/login" component={Login}/>
+          <Route path="/logout" component={Logout}/>
           <Route exact path="/" component={Monuments}/>
           <Route path="/monuments/:id" component={MonumentById}/>
           <ProtectedRoute path="/users_sheet" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={UsersSheet}/>
-          <ProtectedRoute path="/users/:email" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={EditUser}/>
+          <ProtectedRoute path="/edit_user/:email" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={EditUser}/>
           <ProtectedRoute path="/create_user" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={CreateUser}/>
           <ProtectedRoute path="/monuments_sheet" requiredRole={"admin"} userRole={localStorage.getItem('userRole')}  component={MonumentsSheet}/>
           <ProtectedRoute path="/edit_monument/:id" requiredRole={"admin"} userRole={localStorage.getItem('userRole')} component={EditMonument}/>

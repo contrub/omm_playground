@@ -3,7 +3,8 @@ import React from "react";
 import {withRouter} from "react-router";
 
 // Custom components
-import ModalWindow from "../../components/modal";
+import ModalForm from "../../components/modal";
+import Loading from "../loading"
 
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -24,35 +25,40 @@ import Cookies from "js-cookie";
 import MonumentService from "../../services/MonumentService";
 
 // Custom styles
-import styles from "../../styles/js/edit_monument";
+import styles from "../../styles/js/monuments/edit_monument";
 
 class EditMonument extends React.Component {
   state = {
     user: [],
     inputs: {
       description: '',
+      buildDate: '',
       imageURL: '',
       address: '',
       creator: '',
       base64: '',
       name: '',
-      date: '',
       id: ''
     },
     errors: {
       image: ''
     },
     modal: {
+      isOpen: false,
       head: '',
       body: '',
-      redirectURL: '/monuments_sheet'
+      redirectURL: '/monuments_sheet',
+      redirectBtnName: 'Monuments-sheet'
     },
+    isLoading: false,
     isValid: true
   }
 
   componentDidMount = async () => {
     const monumentID = this.props.match.params.id
     let {modal} = this.state
+
+    this.setState({isLoading: true})
 
     MonumentService.getMonument({id: monumentID})
       .then((res) => {
@@ -61,16 +67,27 @@ class EditMonument extends React.Component {
         if (name === undefined) {
           modal["body"] = 'Get monument error'
           modal["head"] = 'Something going wrong'
-          this.setState({modal: modal})
+
+          this.setState({modal: modal, isLoading: false})
+          this.changeModalState(true)
         } else {
-          this.setState({inputs: {description: res.description, imageURL: res.imageURL, address: res.address, creator: res.creator, name: res.name, date: res.date, id: res._id}})
+          this.setState({inputs: {description: res.description, imageURL: res.imageURL, address: res.address, creator: res.creator, name: res.name, buildDate: res.buildDate, id: res._id}, isLoading: false})
         }
       })
       .catch((err) => {
         modal["head"] = 'Server error'
         modal["body"] = err.message
-        this.setState({modal: modal})
+
+        this.setState({modal: modal, isLoading: false})
+        this.changeModalState(true)
       })
+  }
+
+  changeModalState = (state) => {
+    let {modal} = this.state
+    modal["isOpen"] = state
+
+    this.setState({modal: modal})
   }
 
   contactSubmit = (e) => {
@@ -80,14 +97,20 @@ class EditMonument extends React.Component {
       let {modal} = this.state
       let {inputs} = this.state
 
+      const imageURL = inputs.imageURL
+      const imagePublicID = imageURL.split('/')[7] + '/' + imageURL.split('/')[8].split('.')[0]
+
       inputs["token"] = Cookies.get('accessToken')
+      inputs["imagePublicID"] = imagePublicID
 
       MonumentService.updateMonument(inputs)
         .then((res) => {
           if (res.nModified === undefined) {
             modal["head"] = 'Something going wrong'
             modal["body"] = 'Update monument error'
+
             this.setState({modal: modal})
+            this.changeModalState(true)
           } else {
             window.location.href = '/monuments_sheet'
           }
@@ -95,22 +118,11 @@ class EditMonument extends React.Component {
         .catch((err) => {
           modal["body"] = 'Server error'
           modal["head"] = err.message
+
           this.setState({modal: modal})
+          this.changeModalState(true)
         })
     }
-  }
-
-  removeMonument = () => {
-    const id = this.state.inputs.id
-    let {modal} = this.state
-
-    MonumentService.deleteMonument({id: id, token: Cookies.get('accessToken')})
-      .then(() => window.location.href = '/monuments_sheet')
-      .catch((err) => {
-        modal["body"] = 'Server error'
-        modal["head"] = err.message
-        this.setState({modal: modal})
-      })
   }
 
   handleChange = (input, e) => {
@@ -157,6 +169,13 @@ class EditMonument extends React.Component {
 
   render() {
     const {classes} = this.props
+    const {isLoading, inputs, errors, modal} = this.state
+
+    if (isLoading) {
+      return (
+        <Loading/>
+      )
+    }
 
     return (
       <Container id="edit-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
@@ -166,12 +185,12 @@ class EditMonument extends React.Component {
             <AccountBalanceIcon/>
           </Avatar>
           <Typography component="h1" variant="h5">
-            {this.state.inputs.name || "Loading ..."}
+            {inputs["name"]}
           </Typography>
           <form className={classes.form} noValidate>
             <TextField
               onChange={this.handleChange.bind(this, "description")}
-              value={this.state.inputs["description"] || ""}
+              value={inputs["description"] || ""}
               variant="outlined"
               margin="normal"
               label="Description"
@@ -181,10 +200,10 @@ class EditMonument extends React.Component {
               fullWidth
               multiline
             />
-            <div className={classes.validation_name_error}>{this.state.errors.name}</div>
+            <div className={classes.validation_name_error}>{errors.name}</div>
             <TextField
               onChange={this.handleChange.bind(this, "address")}
-              value={this.state.inputs["address"]}
+              value={inputs["address"]}
               variant="outlined"
               margin="normal"
               label="Address"
@@ -196,7 +215,7 @@ class EditMonument extends React.Component {
             />
             <TextField
               onChange={this.handleChange.bind(this, "creator")}
-              value={this.state.inputs["creator"] || ""}
+              value={inputs["creator"] || ""}
               variant="outlined"
               margin="normal"
               label="Creator"
@@ -207,7 +226,7 @@ class EditMonument extends React.Component {
               multiline
             />
             <TextField
-              value={this.state.inputs["date"].split('T')[0] || ""}
+              value={inputs["buildDate"].split('T')[0] || ""}
               onChange={this.handleChange.bind(this, "date")}
               variant="outlined"
               margin="normal"
@@ -228,11 +247,11 @@ class EditMonument extends React.Component {
               />
             </Button>
             <img
-              src={this.state.inputs.base64 ? this.state.inputs.base64 : this.state.inputs.imageURL}
+              src={inputs.base64 ? inputs.base64 : inputs.imageURL}
               className={classes.image_preview}
               alt="monument_image"
             />
-            <div id='validError' className={classes.validation_image_error}>{this.state.errors.image}</div>
+            <div id='validError' className={classes.validation_image_error}>{errors.image}</div>
             <Button
               className={classes.edit_btn}
               variant="contained"
@@ -242,19 +261,18 @@ class EditMonument extends React.Component {
             >
               Edit Monument
             </Button>
-            <Button
-              className={classes.remove_btn}
-              onClick={this.removeMonument}
-              variant="contained"
-              color="secondary"
-              fullWidth
-            >
-              Remove Monument
-            </Button>
             <div id='validError' className={classes.errors}/>
           </form>
         </div>
-        {this.state.modal.head && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
+        {modal.isOpen ?
+          <ModalForm
+            head={modal.head}
+            body={modal.body}
+            redirect_url={modal.redirectURL}
+            redirect_btn_name={modal.redirectBtnName}
+            show={modal.isOpen}
+            onHide={() => this.changeModalState(false)}
+          /> : null}
       </Container>
     )
   }

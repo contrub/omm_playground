@@ -3,7 +3,7 @@ import React from "react";
 import {Link}  from "react-router-dom";
 
 // Custom components
-import ModalWindow from "../../components/modal";
+import ModalForm from "../../components/modal";
 
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -33,7 +33,7 @@ import Cookies from "js-cookie";
 import AuthService from "../../services/AuthService";
 
 // Custom styles
-import styles from "../../styles/js/signup";
+import styles from "../../styles/js/auth/signup";
 
 class SignUp extends React.Component {
   state = {
@@ -45,7 +45,8 @@ class SignUp extends React.Component {
     modal: {
       head: '',
       body: '',
-      redirectURL: ''
+      redirectURL: '',
+      redirectBtnName: ''
     },
     errors: {},
     isValid: false
@@ -75,8 +76,12 @@ class SignUp extends React.Component {
 
           if (accessToken === undefined) {
             modal["head"] = 'Registration error'
-            modal["body"] = res.message ? res.message : 'Something going wrong'
+            modal["body"] = res.message
+            modal["redirectURL"] = '/'
+            modal["redirectBtnName"] = 'Home'
+
             this.setState({modal: modal})
+            this.changeModalState(true)
           } else {
             Cookies.set('accessToken', res.accessToken)
             window.location.href = '/'
@@ -85,13 +90,23 @@ class SignUp extends React.Component {
         .catch((err) => {
           modal["head"] = 'Server error'
           modal["body"] = err.message
+          modal["redirectBtnName"] = 'Home'
           modal["redirectURL"] = '/'
+
           this.setState({modal: modal})
+          this.changeModalState(true)
         })
     } else {
       this.handleFieldValidation()
       document.getElementById('validError').innerText = "Validation error"
     }
+  }
+
+  changeModalState = (state) => {
+    let {modal} = this.state
+    modal["isOpen"] = state
+
+    this.setState({modal: modal})
   }
 
   handleChange = (input, e) => {
@@ -115,9 +130,12 @@ class SignUp extends React.Component {
 
   render() {
     const {classes} = this.props
+    const {inputs} = this.state
+    const {errors} = this.state
+    const {modal} = this.state
 
     return (
-      <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
+      <Container component="main" maxWidth="xs" onSubmit={this.contactSubmit.bind(this)}>
         <CssBaseline />
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
@@ -129,7 +147,7 @@ class SignUp extends React.Component {
           <form className={classes.form} noValidate>
             <TextField
               onChange={this.handleChange.bind(this, "email")}
-              value={this.state.inputs["email"]}
+              value={inputs["email"]}
               variant="outlined"
               margin="normal"
               required
@@ -140,10 +158,10 @@ class SignUp extends React.Component {
               autoComplete="email"
               autoFocus
             />
-            <div className={classes.errors}>{this.state.errors["email"]}</div>
+            <div className={classes.errors}>{errors["email"]}</div>
             <TextField
               onChange={this.handleChange.bind(this, "password")}
-              value={this.state.inputs["password"]}
+              value={inputs["password"]}
               variant="outlined"
               margin="normal"
               required
@@ -163,7 +181,7 @@ class SignUp extends React.Component {
             </ul>
             <TextField
               onChange={this.handleChange.bind(this, "passwordCopy")}
-              value={this.state.inputs["passwordCopy"]}
+              value={inputs["passwordCopy"]}
               InputProps={{
                 endAdornment: (
                   <Checkbox
@@ -182,7 +200,7 @@ class SignUp extends React.Component {
               id="passwordCopy"
               autoComplete="current-password"
             />
-            <div className={classes.errors}>{this.state.errors["passwordCopy"]}</div>
+            <div className={classes.errors}>{errors["passwordCopy"]}</div>
             <Button
               type="submit"
               fullWidth
@@ -207,7 +225,15 @@ class SignUp extends React.Component {
             </Grid>
           </Grid>
         </div>
-        {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
+        {modal.isOpen ?
+          <ModalForm
+            head={modal.head}
+            body={modal.body}
+            redirect_url={modal.redirectURL}
+            redirect_btn_name={modal.redirectBtnName}
+            show={modal.isOpen}
+            onHide={() => this.changeModalState(false)}
+          /> : null}
       </Container>
     )
   }

@@ -25,7 +25,7 @@ import Cookies from "js-cookie";
 import AuthService from "../../services/AuthService";
 
 // Custom styles
-import styles from "../../styles/js/login";
+import styles from "../../styles/js/auth/login";
 
 class SignIn extends React.Component {
 
@@ -33,6 +33,9 @@ class SignIn extends React.Component {
     inputs: {
       email: '',
       password: ''
+    },
+    errors: {
+      validation: ''
     },
     isValid: false,
     isLogged: false
@@ -46,12 +49,10 @@ class SignIn extends React.Component {
     e.preventDefault()
 
     let {inputs} = this.state
+    let {errors} = this.state
 
     if (!isEmpty(inputs.email) && !isEmpty(inputs.password)) {
-      AuthService.login({
-        email: inputs.email,
-        password: inputs.password
-      })
+      AuthService.login({email: inputs.email, password: inputs.password})
         .then((res) => {
           if (res.message) {
             document.getElementById('validError').innerText = res.message
@@ -61,15 +62,17 @@ class SignIn extends React.Component {
           }
         })
     } else {
-      document.getElementById('validError').innerText = "Form can't be empty!"
+      errors["validation"] = "Form can't be empty!"
+      this.setState({errors: errors})
     }
   }
 
   handleChange = (input, e) => {
-    document.getElementById('validError').innerText = ""
-    let inputs = this.state.inputs
+    let {inputs} = this.state
+
     inputs[input] = e.target.value
-    this.setState({input: inputs[input]});
+
+    this.setState({input: inputs[input], errors: {validation: ''}});
   }
 
   showPassword = () => {
@@ -77,12 +80,15 @@ class SignIn extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const {classes} = this.props
+    const {inputs} = this.state
+    const {errors} = this.state
 
     if (this.state.isLogged) {
       window.location.href = '/'
-    } else {
-      return (
+    }
+
+    return (
         <Container id="login-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
           <CssBaseline />
           <div className={classes.paper}>
@@ -93,7 +99,7 @@ class SignIn extends React.Component {
             <form className={classes.form} noValidate>
               <TextField
                 onChange={this.handleChange.bind(this, "email")}
-                value={this.state.inputs["email"]}
+                value={inputs["email"]}
                 variant="outlined"
                 margin="normal"
                 required
@@ -106,7 +112,7 @@ class SignIn extends React.Component {
               />
               <TextField
                 onChange={this.handleChange.bind(this, "password")}
-                value={this.state.inputs["password"]}
+                value={inputs["password"]}
                 InputProps={{
                   endAdornment: (
                     <Checkbox
@@ -135,7 +141,9 @@ class SignIn extends React.Component {
                 Sign In
               </Button>
             </form>
-            <div id='validError' className={classes.valid_error}/>
+            <div className={classes.valid_error}>
+              {errors.validation}
+            </div>
             <Grid container>
               <Grid item xs>
                 <Link to='/reset_request'>
@@ -150,8 +158,7 @@ class SignIn extends React.Component {
             </Grid>
           </div>
         </Container>
-      );
-    }
+      )
   }
 }
 

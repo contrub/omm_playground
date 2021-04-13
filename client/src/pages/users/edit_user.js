@@ -3,7 +3,8 @@ import React from "react";
 import {withRouter} from "react-router";
 
 // Custom components
-import ModalWindow from "../../components/modal";
+import ModalForm from "../../components/modal";
+import Loading from "../loading";
 
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -24,26 +25,29 @@ import Cookies from "js-cookie";
 import UserService from '../../services/UserService';
 
 // Custom styles
-import styles from "../../styles/js/edit_user";
+import styles from "../../styles/js/users/edit_user";
 
 class EditUser extends React.Component {
   state = {
     user: [],
+    isLoading: false,
     inputs: {
       userRole: '',
       status: ''
     },
     selects: {
-      userRole: 0,
-      status: 0
+      userRole: 10,
+      status: 10
     },
     selects_facilities: {
       role: {10: 'viewer', 20: 'admin', 30: 'superadmin'},
       status: {10: 'active', 20: 'disable'}
     },
     modal: {
+      isOpen: false,
       head: '',
       body: '',
+      redirectBtnName: 'Monuments-sheet',
       redirectURL: '/users_sheet'
     }
   }
@@ -56,26 +60,39 @@ class EditUser extends React.Component {
     const statusObjectKeys = Object.keys(this.state.selects_facilities.status)
     const statusObjectValues = Object.values(this.state.selects_facilities.status)
 
+    this.setState({isLoading: true})
+
     UserService.getUser({email: email, token: Cookies.get('accessToken')})
       .then((res) => {
         const email = res[0].email
 
         if (email === undefined) {
           modal["head"] = 'Something going wrong'
-          modal["body"] = 'Get user error'
+          modal["body"] = res.message
+
           this.setState({modal: modal})
+          this.changeModalState(true)
         } else {
           const roleValue =  rolesObjectKeys[rolesObjectValues.indexOf(res[0].userRole)]
           const statusValue = statusObjectKeys[statusObjectValues.indexOf(res[0].status)]
 
-          this.setState({user: res[0], inputs: {email: res[0].email}, selects: {userRole: roleValue, status: statusValue}})
+          this.setState({user: res[0], inputs: {email: res[0].email}, selects: {userRole: roleValue, status: statusValue}, isLoading: false})
         }
       })
       .catch((err) => {
         modal["head"] = 'Server error'
         modal["body"] = err.message
-        this.setState({modal: modal})
+
+        this.setState({modal: modal, isLoading: false})
+        this.changeModalState(true)
       })
+  }
+
+  changeModalState = (state) => {
+    let {modal} = this.state
+    modal["isOpen"] = state
+
+    this.setState({modal: modal})
   }
 
   contactSubmit = (e) => {
@@ -88,24 +105,23 @@ class EditUser extends React.Component {
 
     Object.keys(this.state.inputs).forEach((key) => (this.state.inputs[key] === "") && delete this.state.inputs[key]);
     UserService.updateUser(this.state.inputs)
-      .then(() => window.location.href = '/users_sheet')
-      .catch((err) => {
-        modal["body"] = 'Server error'
-        modal["head"] = err.message
-        this.setState({modal: modal})
+      .then((res) => {
+        if (res.nModified === undefined) {
+          modal["head"] = 'Update user error'
+          modal["body"] = res.message
+
+          this.setState({modal: modal})
+          this.changeModalState(true)
+        } else {
+          window.location.href = '/users_sheet'
+        }
       })
-  }
-
-  removeUser = () => {
-    const email = this.state.user.email
-    let {modal} = this.state
-
-    UserService.deleteUser({email: email, token: Cookies.get('accessToken')})
-      .then(() => window.location.href = '/users_sheet')
       .catch((err) => {
         modal["body"] = 'Server error'
         modal["head"] = err.message
+
         this.setState({modal: modal})
+        this.changeModalState(true)
       })
   }
 
@@ -125,7 +141,14 @@ class EditUser extends React.Component {
   }
 
   render() {
-    const { classes } = this.props
+    const {classes} = this.props
+    const {selects, isLoading, modal} = this.state
+
+    if (isLoading) {
+      return (
+        <Loading/>
+      )
+    }
 
     return (
       <Container id="edit-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
@@ -133,7 +156,7 @@ class EditUser extends React.Component {
         <div className={classes.paper}>
           <Avatar className={classes.avatar}/>
           <Typography component="h1" variant="h5">
-            {this.state.user.email || "Loading ..."}
+            {this.state.user.email}
           </Typography>
           <form className={classes.form} noValidate>
             <div>
@@ -143,8 +166,7 @@ class EditUser extends React.Component {
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="UserRole"
-                  value={this.state.selects.userRole ?? 10}
-                  defaultValue={10}
+                  value={selects.userRole}
                   onChange={this.handleChange.bind(this, "userRole")}
                 >
                   <MenuItem value={10}>viewer</MenuItem>
@@ -158,7 +180,7 @@ class EditUser extends React.Component {
                   labelId="demo-simple-select-outlined-label"
                   id="demo-simple-select-outlined"
                   label="Status"
-                  value={this.state.selects.status ?? ''}
+                  value={selects.status}
                   onChange={this.handleChange.bind(this, "status")}
                 >
                   <MenuItem value={10}>Active</MenuItem>
@@ -175,18 +197,17 @@ class EditUser extends React.Component {
             >
               Edit User
             </Button>
-            <Button
-              onClick={this.removeUser}
-              fullWidth
-              variant="contained"
-              color="secondary"
-              className={classes.remove_btn}
-            >
-              Remove User
-            </Button>
           </form>
         </div>
-        {this.state.modal.head && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
+        {modal.isOpen ?
+          <ModalForm
+            head={modal.head}
+            body={modal.body}
+            redirect_url={modal.redirectURL}
+            redirect_btn_name={modal.redirectBtnName}
+            show={modal.isOpen}
+            onHide={() => this.changeModalState(false)}
+          /> : null}
       </Container>
     )
   }

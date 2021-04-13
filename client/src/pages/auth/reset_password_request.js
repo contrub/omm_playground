@@ -2,7 +2,7 @@
 import React from "react";
 
 // Custom components
-import ModalWindow from "../../components/modal";
+import ModalForm from "../../components/modal";
 
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -26,7 +26,7 @@ import AuthService from '../../services/AuthService';
 import Cookies from "js-cookie";
 
 // Custom styles
-import styles from "../../styles/js/reset_password_request";
+import styles from "../../styles/js/auth/reset_password_request";
 
 class PasswordResetRequest extends React.Component {
   state = {
@@ -34,9 +34,11 @@ class PasswordResetRequest extends React.Component {
       email: ''
     },
     modal: {
+      isOpen: false,
       head: '',
       body: '',
-      redirectURL: ''
+      redirectURL: '',
+      redirectBtnName: ''
     },
     errors: {},
     isValid: false
@@ -46,16 +48,26 @@ class PasswordResetRequest extends React.Component {
     let {modal} = this.state
 
     if (Cookies.get('accessToken')) {
-      modal["head"] = 'Authorization Error'
+      modal["head"] = 'Already authorized'
       modal["body"] = 'You already logged!'
-      modal["redirectURL"] = '/'
+      modal["redirectBtnName"] = 'Logout'
+      modal["redirectURL"] = '/logout'
+
       this.setState({modal: modal})
+      this.changeModalState(true)
     }
   }
 
+  changeModalState = (state) => {
+    let {modal} = this.state
+    modal["isOpen"] = state
+
+    this.setState({modal: modal})
+  }
+
   handleFieldValidation = () => {
-    let inputs = this.state.inputs;
-    let errors = this.state.errors;
+    let inputs = this.state.inputs
+    let errors = this.state.errors
 
     this.setState({isValid: emailValidation(inputs, errors)})
   }
@@ -76,17 +88,23 @@ class PasswordResetRequest extends React.Component {
           if (res.message) {
             document.getElementById('validError').innerText = res.message
           } else {
-            modal["head"] = 'Recovery link has been sent successfully!'
-            modal["body"] = `Check your email - ${inputs.email}`
+            modal["head"] = 'Recovery link has been sent!'
+            modal["body"] = `Check your email - ${inputs.email} (will expire in 10 minutes)`
             modal["redirectURL"] = '/login'
+            modal["redirectBtnName"] = 'Login'
             this.setState({modal: modal})
+
+            this.changeModalState(true)
           }
         })
         .catch((err) => {
           modal["head"] = 'Server error'
           modal["body"] = err.message
           modal["redirectURL"] = '/'
+          modal["redirectBtnName"] = 'Home'
           this.setState({modal: modal})
+
+          this.changeModalState(true)
         })
     }
   }
@@ -102,6 +120,9 @@ class PasswordResetRequest extends React.Component {
 
   render() {
     const {classes} = this.props
+    const {inputs} = this.state
+    const {errors} = this.state
+    const {modal} = this.state
 
     return (
       <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
@@ -116,7 +137,7 @@ class PasswordResetRequest extends React.Component {
           <form className={classes.form} noValidate>
             <TextField
               onChange={this.handleChange.bind(this, "email")}
-              value={this.state.inputs["email"]}
+              value={inputs["email"]}
               variant="outlined"
               margin="normal"
               required
@@ -137,9 +158,17 @@ class PasswordResetRequest extends React.Component {
               Send reset link
             </Button>
           </form>
-          <div id='validError' className={classes.valid_error}>{this.state.errors["email"]}</div>
+          <div id='validError' className={classes.valid_error}>{errors["email"]}</div>
         </div>
-        {this.state.modal.body && <ModalWindow head={this.state.modal.head} body={this.state.modal.body} redirectURL={this.state.modal.redirectURL}/>}
+        {modal.isOpen ?
+          <ModalForm
+            head={modal.head}
+            body={modal.body}
+            redirect_url={modal.redirectURL}
+            redirect_btn_name={modal.redirectBtnName}
+            show={modal.isOpen}
+            onHide={() => this.changeModalState(false)}
+          /> : null}
       </Container>
     )
   }
