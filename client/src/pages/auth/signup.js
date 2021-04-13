@@ -165,7 +165,6 @@ class SignUp extends React.Component {
               margin="normal"
               label="Email"
               name="email"
-              id="email"
               fullWidth
               required
             />
