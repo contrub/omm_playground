@@ -89,23 +89,12 @@ class PasswordReset extends React.Component {
     this.handleFieldValidation()
   }
 
-  showPassword = () => {
-    if (document.getElementById('password').type === 'password') {
-      document.getElementById('password').type = 'text'
-      document.getElementById('passwordCopy').type = 'text'
-    } else {
-      document.getElementById('password').type = 'password'
-      document.getElementById('passwordCopy').type = 'password'
-    }
-  }
 
   contactSubmit = (e) => {
     e.preventDefault()
 
     if (this.state.isValid) {
-      const {inputs} = this.state
-      const {token} = this.state
-      let {modal} = this.state
+      const {inputs, token, modal} = this.state
 
       AuthService.updatePassword({token: token, password: inputs.password})
         .then((res) => {
@@ -138,17 +127,17 @@ class PasswordReset extends React.Component {
   }
 
   handleChange = (input, e) => {
-    let inputs = this.state.inputs;
-    inputs[input] = e.target.value;
-    this.setState({input: inputs[input]});
+    let {inputs} = this.state
+
+    inputs[input] = e.target.value
+
+    this.setState({input: inputs[input]})
     this.handleFieldValidation()
   }
 
   render() {
     const {classes} = this.props
-    const {inputs} = this.state
-    const {errors} = this.state
-    const {modal} = this.state
+    const {inputs, errors, modal} = this.state
 
     return (
       <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
