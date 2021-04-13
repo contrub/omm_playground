@@ -1,18 +1,16 @@
-import React from 'react';
+// React components
+import React from "react";
 
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
-import AppBar from '@material-ui/core/AppBar';
+// Material-UI components
+import {makeStyles} from '@material-ui/core/styles';
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import Toolbar from "@material-ui/core/Toolbar";
+import Button from "@material-ui/core/Button";
+import AppBar from "@material-ui/core/AppBar";
 
-import MenuIcon from '@material-ui/icons/Menu';
-
-import { makeStyles } from '@material-ui/core/styles';
-
-import Cookies from "js-cookie";
-
-// import Search from './search';
+// Material-UI icons
+import MenuIcon from "@material-ui/icons/Menu";
 
 const useStyles = makeStyles((theme) => ({
   root: {
