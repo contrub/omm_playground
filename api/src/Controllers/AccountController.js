@@ -15,17 +15,28 @@ const signIn = async (req, res, next) => {
   try {
     const email = req.body.email
 
-    await UserService.isUserActive(req, res)
+    await UserService.isUserExist(req)
+
+    if (!req.isUserExist) {
+      res.send({message: 'User undefined'})
+      return
+    }
+
     await UserService.isUserDataExist(req, res)
 
-    if (req.isUserDataExist && req.isUserActive) {
+    if (!req.isUserDataExist) {
+      res.send({message: 'Incorrect password'})
+      return
+    }
+
+    await UserService.isUserActive(req, res)
+
+    if (req.isUserActive) {
       await jwt.generateAccessToken(req, {email: email})
 
       res.send({accessToken: `Bearer ${req.accessToken}`})
     } else if (!req.isUserActive) {
       res.send({message: "User temporary disabled"})
-    } else {
-      res.send({message: "Login payload incorrect"})
     }
   } catch (err) {
     // console.log(err)

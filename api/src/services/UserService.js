@@ -7,7 +7,7 @@ const ApiError = require('../error/ApiError')
 // Third party modules
 const bcrypt = require('bcrypt')
 
-const isUserExist = async (req, res) => {
+const isUserExist = async (req) => {
   const email = req.body.email
 
   if (email === undefined) {
