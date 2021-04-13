@@ -138,7 +138,7 @@ class MonumentsSheet extends React.Component {
             </tr>
             </thead>
             <tbody>
-            {monuments.length && monuments.map((monument, index) => {
+            {monuments.map((monument, index) => {
               return (
                 <tr key={index} className={classes.table_row}>
                   <td>
