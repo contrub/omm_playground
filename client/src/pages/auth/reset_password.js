@@ -47,8 +47,7 @@ class PasswordReset extends React.Component {
     },
     errors: {},
     token: '',
-    isValid: false,
-    isLogged: false
+    isValid: false
   }
 
   componentDidMount = () => {
