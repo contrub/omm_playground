@@ -27,8 +27,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const logout = () => {
-  Cookies.remove('accessToken')
-  window.location.href = '/login'
+  window.location.href = '/logout'
 }
 
 const Header = (props) => {
