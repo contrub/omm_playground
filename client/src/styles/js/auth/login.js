@@ -16,10 +16,15 @@ const styles = theme => ({
   submit_btn: {
     margin: theme.spacing(3, 0, 2),
   },
-  valid_error: {
+  validError: {
+    margin: theme.spacing(1, 0, 2),
+    textAlign: 'center',
+    color: 'red'
+  },
+  emailRequirement: {
+    margin: theme.spacing(1, 0, 1),
     textAlign: 'center',
     color: 'red',
-    margin: '0 0 16px'
   },
 });
 
