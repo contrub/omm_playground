@@ -18,6 +18,7 @@ const styles = theme => ({
   },
   valid_error: {
     fontFamily: 'Gill Sans',
+    textAlign: 'center',
     fontSize: '17px',
     color: 'red'
   }

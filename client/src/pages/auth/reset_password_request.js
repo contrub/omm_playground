@@ -148,6 +148,7 @@ class PasswordResetRequest extends React.Component {
               autoComplete="email"
               autoFocus
             />
+            <div className={classes.valid_error}>{errors["email"]}</div>
             <Button
               type="submit"
               fullWidth
@@ -158,7 +159,6 @@ class PasswordResetRequest extends React.Component {
               Send reset link
             </Button>
           </form>
-          <div id='validError' className={classes.valid_error}>{errors["email"]}</div>
         </div>
         {modal.isOpen ?
           <ModalForm
