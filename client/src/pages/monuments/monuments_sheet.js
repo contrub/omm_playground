@@ -70,11 +70,18 @@ class MonumentsSheet extends React.Component {
       const imagePublicID = monument.imageURL.split('/')[7] + '/' + monument.imageURL.split('/')[8].split('.')[0]
 
       MonumentService.deleteMonument({token: Cookies.get('accessToken'), id: id, imagePublicID: imagePublicID})
-        .then(() => {
-          // Сервер возвращает 204 статус, но в res.status = error
-          monuments = monuments.filter((monument) => monument._id !== id)
+        .then((res) => {
+          if (res.message) {
+            modal["head"] = 'Delete monument error'
+            modal["body"] = 'Check your permissions'
 
-          this.setState({monuments: monuments})
+            this.setState({modal: modal})
+            this.changeModalState(true)
+          } else {
+            monuments = monuments.filter((monument) => monument._id !== id)
+
+            this.setState({monuments: monuments})
+          }
         })
         .catch((err) => {
           modal["head"] = 'Delete monument error'

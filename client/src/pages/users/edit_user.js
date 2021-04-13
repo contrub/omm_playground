@@ -128,17 +128,17 @@ class EditUser extends React.Component {
   }
 
   handleChange = (input, e) => {
-    let {selects, inputs} = this.state.selects
+    let {selects, selects_facilities, inputs} = this.state
 
     if (input === "userRole") {
       selects[input] = e.target.value
-      inputs[input] = this.state.selects_facilities.role[`${e.target.value}`]
-      this.setState({input: inputs[input], selects: selects})
+      inputs[input] = selects_facilities.role[`${e.target.value}`]
     } else if (input === "status") {
       selects[input] = e.target.value
-      inputs[input] = this.state.selects_facilities.status[`${e.target.value}`]
-      this.setState({input: inputs[input], selects: selects})
+      inputs[input] = selects_facilities.status[`${e.target.value}`]
     }
+
+    this.setState({input: inputs[input], selects: selects})
   }
 
   render() {

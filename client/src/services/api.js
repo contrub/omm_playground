@@ -23,7 +23,8 @@ async function request(url, params, method = "GET") {
 
   const response = await fetch(_apiHost + url, options);
 
-  if (response.status >= 400) {
+  // доработать
+  if (response.status !== 200 && response.status !== 204) {
     return generateErrorResponse(
       "The server responded with an unexpected status."
     );
