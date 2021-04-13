@@ -47,6 +47,7 @@ class SignIn extends React.Component {
     },
     errors: {
       email: '',
+      password: '',
       validation: ''
     },
     isValid: false,
@@ -108,8 +109,6 @@ class SignIn extends React.Component {
   render() {
     const {classes} = this.props
     const {inputs, errors, isPasswordHidden} = this.state
-
-    console.log(errors)
 
     return (
         <Container id="login-page" component="main" maxWidth="xs" onSubmit={this.contactSubmit.bind(this)}>
