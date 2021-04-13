@@ -90,17 +90,19 @@ class EditUser extends React.Component {
 
   changeModalState = (state) => {
     let {modal} = this.state
+
     modal["isOpen"] = state
 
     this.setState({modal: modal})
   }
 
   contactSubmit = (e) => {
-    let {modal} = this.state
+    let {inputs, modal} = this.state
+
     e.preventDefault()
 
-    const inputs = this.state.inputs
     inputs['token'] = Cookies.get('accessToken')
+
     this.setState({inputs: inputs})
 
     Object.keys(this.state.inputs).forEach((key) => (this.state.inputs[key] === "") && delete this.state.inputs[key]);
@@ -126,8 +128,7 @@ class EditUser extends React.Component {
   }
 
   handleChange = (input, e) => {
-    let selects = this.state.selects
-    let inputs = this.state.inputs
+    let {selects, inputs} = this.state.selects
 
     if (input === "userRole") {
       selects[input] = e.target.value
@@ -151,7 +152,7 @@ class EditUser extends React.Component {
     }
 
     return (
-      <Container id="edit-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
+      <Container id="edit-page" component="main" maxWidth="xs" onSubmit={this.contactSubmit.bind(this)}>
         <CssBaseline/>
         <div className={classes.paper}>
           <Avatar className={classes.avatar}/>
