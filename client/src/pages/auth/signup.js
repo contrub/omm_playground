@@ -65,15 +65,18 @@ class SignUp extends React.Component {
     isValid: false
   }
 
-  handleFieldValidation = () => {
+  handleFieldValidation = (name) => {
     let {inputs, errors} = this.state
 
     errors["validError"] = ""
 
-    this.setState({errors: errors})
-    this.setState({isValid: emailValidation(inputs, errors)})
-    this.setState({isValid: passwordValidation(inputs, errors)})
-    this.setState({isValid: passwordCopyValidation(inputs, errors)})
+    if (name === 'email') {
+      this.setState({isValid: emailValidation(inputs, errors)})
+    } else if (name === 'password') {
+      this.setState({isValid: passwordValidation(inputs, errors)})
+    } else if (name === 'passwordCopy') {
+      this.setState({isValid: passwordCopyValidation(inputs, errors)})
+    }
   }
 
   contactSubmit = (e) => {
@@ -111,7 +114,9 @@ class SignUp extends React.Component {
         })
     } else {
       this.handleFieldValidation()
+
       errors["validError"] = "Validation error"
+
       this.setState({errors: errors})
     }
   }
@@ -129,7 +134,7 @@ class SignUp extends React.Component {
     inputs[input] = e.target.value
 
     this.setState({input: inputs[input]})
-    this.handleFieldValidation()
+    this.handleFieldValidation(input)
   }
 
   showPassword = () => {
@@ -164,29 +169,11 @@ class SignUp extends React.Component {
               fullWidth
               required
             />
-            <div className={classes.errors}>{errors["email"]}</div>
+            <div className={classes.emailRequirement}>{errors["email"]}</div>
             <TextField
               onChange={this.handleChange.bind(this, "password")}
               type={isPasswordHidden ? 'password' : 'text'}
               value={inputs["password"]}
-              variant="outlined"
-              margin="normal"
-              label="Password"
-              name="password"
-              fullWidth
-              required
-            />
-            <ul id='passwordRequirements' hidden>
-              {!errors["quantityCheck"] && <li className={classes.passwordCheck}>At least 8 characters</li>}
-              {!errors["numberCheck"] && <li className={classes.passwordCheck}>Contains at least 1 number</li>}
-              {!errors["lowercaseCheck"] && <li className={classes.passwordCheck}>Contains at least lowercase letter</li>}
-              {!errors["uppercaseCheck"] && <li className={classes.passwordCheck}>Contains at least uppercase letter</li>}
-              {!errors["specialCharacterCheck"] && <li className={classes.passwordCheck}>Contains a special character (!@#%&)</li>}
-            </ul>
-            <TextField
-              onChange={this.handleChange.bind(this, "passwordCopy")}
-              type={isPasswordHidden ? 'password' : 'text'}
-              value={inputs["passwordCopy"]}
               InputProps={{
                 endAdornment: (
                   <Checkbox
@@ -197,12 +184,30 @@ class SignUp extends React.Component {
               }}
               variant="outlined"
               margin="normal"
+              label="Password"
+              name="password"
+              fullWidth
+              required
+            />
+            <ul className={classes.passwordRequirements}>
+              {!errors["quantityCheck"] && <li>At least 8 characters</li>}
+              {!errors["numberCheck"] && <li>Contains at least 1 number</li>}
+              {!errors["lowercaseCheck"] && <li>Contains at least lowercase letter</li>}
+              {!errors["uppercaseCheck"] && <li>Contains at least uppercase letter</li>}
+              {!errors["specialCharacterCheck"] && <li>Contains a special character (!@#%&)</li>}
+            </ul>
+            <TextField
+              onChange={this.handleChange.bind(this, "passwordCopy")}
+              type={isPasswordHidden ? 'password' : 'text'}
+              value={inputs["passwordCopy"]}
+              variant="outlined"
+              margin="normal"
               label="Repeat Password"
               name="passwordCopy"
               fullWidth
               required
             />
-            <div className={classes.errors}>{errors["passwordCopy"]}</div>
+            <div className={classes.passwordCopyRequirement}>{errors["passwordCopy"]}</div>
             <Button
               className={classes.submit}
               variant="contained"
@@ -213,7 +218,7 @@ class SignUp extends React.Component {
               Sign Up
             </Button>
           </form>
-          <div id='validError' className={classes.errors}/>
+          <div className={classes.errors}>{errors["validError"]}</div>
           <Grid container>
             <Grid item xs>
               <Link to='/reset_request'>
