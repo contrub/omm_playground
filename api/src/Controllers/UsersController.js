@@ -94,6 +94,10 @@ const deleteUser = async (req, res, next) => {
       throw ApiError.custom(403, 'Email payload undefined in JWT')
     }
 
+    if (req.decoded.email === req.params.email) {
+      throw ApiError.custom(403, "Can't delete yourself")
+    }
+
     await AuthController.verifyAction(req, 'users:delete-by-id', res)
 
     Users.deleteUser(req, res)
