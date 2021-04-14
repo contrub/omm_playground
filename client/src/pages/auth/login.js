@@ -23,9 +23,6 @@ import Cookies from "js-cookie";
 // Local modules
 import AuthService from "../../services/AuthService";
 
-// Local functions
-import {emailValidation} from "../../helpers/emailValidation";
-
 // Third party functions
 import isEmpty from "validator/lib/isEmpty";
 
@@ -83,21 +80,12 @@ class SignIn extends React.Component {
     }
   }
 
-  handleFieldValidation = (name) => {
-    let {inputs, errors} = this.state
-
-    if (name === 'email') {
-      this.setState({isValid: emailValidation(inputs, errors)})
-    }
-  }
-
   handleChange = (input, e) => {
     let {inputs} = this.state
 
     inputs[input] = e.target.value
 
     this.setState({input: inputs[input]});
-    this.handleFieldValidation(input)
   }
 
   showPassword = () => {
