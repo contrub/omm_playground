@@ -158,7 +158,7 @@ It should look something like this:
   
   - Now switch back to the http://localhost:3000 and refresh the page. You should see the Message at the bottom be updated!
   
-  ![omm_playground_react_success](https://github.com/EgorOnufreychuk/omm-images/blob/main/Backend%20%2B%20Frontend%20success.png)
+  ![omm_playground_react + nodejs_success](https://github.com/EgorOnufreychuk/omm-images/blob/main/1.jpg)
   
   We have two servers running, one for the React frontend and one for the Express backend. 
   
