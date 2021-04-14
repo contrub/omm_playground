@@ -103,7 +103,7 @@ To make this as easy as possible, we will be using *Docker Compose* to create ou
 Navigate to http://localhost:3000 to view the site on the local server.
 It should look something like this:
 
-![omm_playground_react_success](https://github.com/EgorOnufreychuk/omm-images/blob/main/Backend%20%2B%20Frontend%20success.png)
+![omm_playground_react_+ nodejs success](https://github.com/EgorOnufreychuk/omm-images/blob/main/1.jpg)
 
  ### Cleaning up the Container and Image
 
