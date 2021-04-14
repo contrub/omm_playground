@@ -46,7 +46,6 @@ $ git clone https://github.com/EgorOnufreychuk/omm_playground
 
 ```
 ACCESS_TOKEN_SECRET = 
-REFRESH_TOKEN_SECRET = 
 TOKEN_LIFE = 
 
 PORT = 8000
