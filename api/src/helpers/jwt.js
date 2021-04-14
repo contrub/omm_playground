@@ -10,7 +10,7 @@ generateAccessToken = (req, payload, options={}) => {
 
     req.accessToken = token
   } catch (err) {
-    console.log(err)
+    // console.log(err)
     throw ApiError.custom(403, 'AccessToken generate error')
   }
 }
@@ -25,7 +25,7 @@ decodeAccessToken = (req, res) => {
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
       if (err) {
-        console.log(err)
+        // console.log(err)
         throw ApiError.custom(403, 'AccessToken decode error')
       } else if (decoded) {
         req.decoded = decoded
@@ -44,7 +44,7 @@ verifyAccessToken = (req, res) => {
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
       if (err) {
-        console.log(err)
+        // console.log(err)
         throw ApiError.custom(403, 'AccessToken validation error')
       }
     })
