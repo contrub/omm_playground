@@ -100,24 +100,24 @@ class UsersSheet extends React.Component {
       <div>
         <table className="table">
           <thead>
-            <tr className={classes.table_row}>
+            <tr className={classes.tableRow}>
               <th scope="col">
-                <div className={classes.table_head}>
+                <div className={classes.tableHead}>
                   Email
                 </div>
               </th>
               <th scope="col">
-                <div className={classes.table_head}>
+                <div className={classes.tableHead}>
                   UserRole
                 </div>
               </th>
               <th scope="col">
-                <div className={classes.table_head}>
+                <div className={classes.tableHead}>
                   ID
                 </div>
               </th>
               <th scope="col">
-                <div className={classes.table_head}>
+                <div className={classes.tableHead}>
                   Status
                 </div>
               </th>
@@ -135,26 +135,26 @@ class UsersSheet extends React.Component {
           <tbody>
           {users.map((user, index) => {
             return (
-              <tr key={index} className={classes.table_row}>
+              <tr key={index} className={classes.tableRow}>
                 <td>
-                  <div className={classes.table_cell}>
+                  <div className={classes.tableCell}>
                     {user.email}
                   </div>
                 </td>
                 <td>
-                  <div className={classes.table_cell}>
+                  <div className={classes.tableCell}>
                     {user.userRole}
                   </div>
                 </td>
                 <td>
-                  <div className={classes.table_cell}>
+                  <div className={classes.tableCell}>
                     {user._id}
                   </div>
                 </td>
                 <td>
-                  <div className={classes.table_cell}>
+                  <div className={classes.tableCell}>
                     <Button
-                      className={user.status === 'active' ? classes.active_user_btn : classes.disable_user_btn}
+                      className={user.status === 'active' ? classes.activeBtn : classes.disableBtn}
                       variant="contained"
                       disabled
                     >
@@ -173,7 +173,7 @@ class UsersSheet extends React.Component {
                     </Button>
                     <Button
                       onClick={(e) => this.removeUser(e, user.email)}
-                      className={classes.edit_btn}
+                      className={classes.deleteBtn}
                       variant="contained"
                       color="secondary"
                     >

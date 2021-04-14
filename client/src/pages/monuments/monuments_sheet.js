@@ -107,29 +107,29 @@ class MonumentsSheet extends React.Component {
         <div id="users-sheet">
           <table className="table">
             <thead>
-            <tr className={classes.table_row}>
+            <tr className={classes.tableRow}>
               <th scope="col">
-                <div className={classes.table_head}>
+                <div className={classes.tableHead}>
                   Name
                 </div>
               </th>
               <th scope="col">
-                <div className={classes.table_head}>
+                <div className={classes.tableHead}>
                   Address
                 </div>
               </th>
               <th scope="col">
-                <div className={classes.table_head}>
+                <div className={classes.tableHead}>
                   Creator
                 </div>
               </th>
               <th scope="col">
-                <div className={classes.table_head}>
+                <div className={classes.tableHead}>
                   ID
                 </div>
               </th>
               <th scope="col">
-                <div className={classes.table_head}>
+                <div className={classes.tableHead}>
                   Image
                 </div>
               </th>
@@ -147,7 +147,7 @@ class MonumentsSheet extends React.Component {
             <tbody>
             {monuments.map((monument, index) => {
               return (
-                <tr key={index} className={classes.table_row}>
+                <tr key={index} className={classes.tableRow}>
                   <td>
                     <div>
                       {monument.name}
@@ -181,7 +181,7 @@ class MonumentsSheet extends React.Component {
                     <div>
                       <Button
                         href={`/edit_monument/${monument._id}`}
-                        className={classes.edit_btn}
+                        className={classes.editBtn}
                         variant="contained"
                         color="primary"
                       >
@@ -190,7 +190,7 @@ class MonumentsSheet extends React.Component {
                       {localStorage.getItem('userRole') === 'superadmin' &&
                         <Button
                           onClick={(e) => this.removeMonument(e, monument._id)}
-                          className={classes.edit_btn}
+                          className={classes.deleteBtn}
                           value={monument._id}
                           variant="contained"
                           color="secondary"
@@ -206,7 +206,7 @@ class MonumentsSheet extends React.Component {
             </tbody>
           </table>
           {!monuments.length &&
-            <div className={classes.monuments_state}>
+            <div className={classes.monumentsState}>
               <h2>MonumentsDB is empty!</h2>
               Let's create <a href={'/create_monument'}>new monument</a>!
             </div>

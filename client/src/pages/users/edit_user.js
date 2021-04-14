@@ -161,7 +161,7 @@ class EditUser extends React.Component {
           </Typography>
           <form className={classes.form} noValidate>
             <div>
-              <FormControl variant="outlined" className={classes.form_control}>
+              <FormControl variant="outlined" className={classes.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">UserRole</InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
@@ -175,7 +175,7 @@ class EditUser extends React.Component {
                   <MenuItem value={30}>superadmin</MenuItem>
                 </Select>
               </FormControl>
-              <FormControl variant="outlined" className={classes.form_control}>
+              <FormControl variant="outlined" className={classes.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">Status</InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
@@ -194,7 +194,7 @@ class EditUser extends React.Component {
               fullWidth
               variant="contained"
               color="primary"
-              className={classes.edit_btn}
+              className={classes.editBtn}
             >
               Edit User
             </Button>

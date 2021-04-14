@@ -235,7 +235,7 @@ class EditMonument extends React.Component {
             />
             <Button
               onChange={this.handleFileInputChange}
-              className={classes.upload_btn}
+              className={classes.uploadBtn}
               variant="contained"
               component="label"
             >
@@ -247,12 +247,12 @@ class EditMonument extends React.Component {
             </Button>
             <img
               src={inputs.base64 ? inputs.base64 : inputs.imageURL}
-              className={classes.image_preview}
+              className={classes.imagePreview}
               alt="monument_image"
             />
-            <div id='validError' className={classes.validation_image_error}>{errors.image}</div>
+            <div id='validError' className={classes.validationImageError}>{errors.image}</div>
             <Button
-              className={classes.edit_btn}
+              className={classes.editBtn}
               variant="contained"
               color="primary"
               type="submit"

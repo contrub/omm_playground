@@ -171,7 +171,7 @@ class CreateMonument extends React.Component {
               required
               fullWidth
             />
-            <div className={classes.validation_name_error}>{errors.name}</div>
+            <div className={classes.validationNameError}>{errors.name}</div>
             <TextField
               onChange={this.handleChange.bind(this, "description")}
               variant="outlined"
@@ -210,7 +210,7 @@ class CreateMonument extends React.Component {
             <div>
               <Button
                 onChange={this.handleFileInputChange}
-                className={classes.upload_btn}
+                className={classes.uploadBtn}
                 variant="contained"
                 component="label"
               >
@@ -223,12 +223,12 @@ class CreateMonument extends React.Component {
             </div>
             {inputs.base64 && (
               <img
-                className={classes.image_preview}
+                className={classes.imagePreview}
                 src={inputs.base64}
                 alt={inputs.name ? inputs.name : 'monument_image'}
               />
             )}
-            <div className={classes.validation_image_error}>{errors.image}</div>
+            <div className={classes.validationImageError}>{errors.image}</div>
             <Button
               variant="contained"
               color="primary"

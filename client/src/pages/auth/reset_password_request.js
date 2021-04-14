@@ -143,13 +143,13 @@ class PasswordResetRequest extends React.Component {
               autoComplete="email"
               autoFocus
             />
-            <div className={classes.valid_error}>{errors["email"]}</div>
+            <div className={classes.validError}>{errors["email"]}</div>
             <Button
               type="submit"
               fullWidth
               variant="contained"
               color="primary"
-              className={classes.submit_btn}
+              className={classes.submitBtn}
             >
               Send reset link
             </Button>
