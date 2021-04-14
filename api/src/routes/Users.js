@@ -1,8 +1,11 @@
 // Local schema
-const User = require('../models/User');
+const User = require('../models/User')
 
 // Third party functions
 const bcrypt = require('bcrypt')
+
+// Local class
+const ApiError = require('../error/ApiError')
 
 const getUsers = (req, res) => {
   User.find()
@@ -21,8 +24,8 @@ const getUsers = (req, res) => {
       res.json(filteredItems)
     })
     .catch((err) => {
-      res.status(500).json({message: 'MongoDB error'})
-      console.log(err)
+      // console.log(err)
+      throw new ApiError.internal('MongoDB error')
     });
 }
 
@@ -42,8 +45,8 @@ const getUser = (req, res) => {
       res.json(filteredItem)
     })
     .catch((err) => {
-      res.status(500).json({message: 'MongoDB error'})
-      console.log(err)
+      // console.log(err)
+      throw new ApiError.internal('MongoDB error')
     });
 }
 
@@ -70,8 +73,8 @@ const createUser = (req, res) => {
         accessToken: req.accessToken
       })})
     .catch((err) => {
-      res.status(500).json({message: 'MongoDB error'})
-      console.log(err)
+      // console.log(err)
+      throw new ApiError.internal('MongoDB error')
     })
 }
 
@@ -89,8 +92,8 @@ const updateUser = (req, res) => {
     .updateOne({email: email}, newData)
     .then((user) => res.json(user))
     .catch(err => {
-      res.status(500).json({message: 'MongoDB error'})
-      console.log(err)
+      // console.log(err)
+      throw new ApiError.internal('MongoDB error')
     })
 }
 
@@ -101,9 +104,9 @@ const deleteUser = (req, res) => {
     .deleteOne({ email: email })
     .then(() => res.sendStatus(200))
     .catch((err) => {
-      res.status(500).json({message: 'MongoDB error'})
-      console.log(err)
-    });
+      // console.log(err)
+      throw new ApiError.internal('MongoDB error')
+    })
 }
 
 module.exports = {
