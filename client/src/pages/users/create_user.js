@@ -38,7 +38,6 @@ class CreateUser extends React.Component {
       password: '',
     },
     modal: {
-      isOpen: false,
       body: '',
       head: '',
       redirectURL: '/users_sheet',
@@ -48,15 +47,14 @@ class CreateUser extends React.Component {
       validation: ''
     },
     isValid: false,
+    isModalOpen: false,
     isPasswordHidden: true
   }
 
-  changeModalState = (state) => {
-    let {modal} = this.state
+  changeModalState = () => {
+    let {isModalOpen} = this.state
 
-    modal["isOpen"] = state
-
-    this.setState({modal: modal})
+    this.setState({isModalOpen: !isModalOpen})
   }
 
   handleFieldValidation = (name) => {
@@ -122,7 +120,7 @@ class CreateUser extends React.Component {
 
   render() {
     const {classes} = this.props
-    const {inputs, errors, modal, isPasswordHidden} = this.state
+    const {inputs, errors, modal, isModalOpen, isPasswordHidden} = this.state
 
     return (
       <div>
@@ -190,13 +188,13 @@ class CreateUser extends React.Component {
             </form>
           </div>
         </Container>
-        {modal.isOpen ?
+        {isModalOpen ?
           <ModalForm
             head={modal.head}
             body={modal.body}
             redirect_url={modal.redirectURL}
             redirect_btn_name={modal.redirectBtnName}
-            show={modal.isOpen}
+            show={isModalOpen}
             onHide={() => this.changeModalState(false)}
           /> : null}
       </div>

@@ -61,6 +61,7 @@ class SignUp extends React.Component {
       passwordCopy: '',
       validError: ''
     },
+    isModalOpen: false,
     isPasswordHidden: true,
     isValid: false
   }
@@ -90,14 +91,14 @@ class SignUp extends React.Component {
         .then((res) => {
           const accessToken = res.accessToken
 
-          if (accessToken === undefined) {
+          if (!accessToken) {
             modal["head"] = 'Registration error'
             modal["body"] = res.message
             modal["redirectURL"] = '/'
             modal["redirectBtnName"] = 'Home'
 
             this.setState({modal: modal})
-            this.changeModalState(true)
+            this.changeModalState()
           } else {
             Cookies.set('accessToken', res.accessToken)
             window.location.href = '/'
@@ -110,7 +111,7 @@ class SignUp extends React.Component {
           modal["redirectURL"] = '/'
 
           this.setState({modal: modal})
-          this.changeModalState(true)
+          this.changeModalState()
         })
     } else {
       this.handleFieldValidation()
@@ -121,15 +122,14 @@ class SignUp extends React.Component {
     }
   }
 
-  changeModalState = (state) => {
-    let {modal} = this.state
-    modal["isOpen"] = state
+  changeModalState = () => {
+    let {isModalOpen} = this.state
 
-    this.setState({modal: modal})
+    this.setState({isModalOpen: !isModalOpen})
   }
 
   handleChange = (input, e) => {
-    let inputs = this.state.inputs
+    let {inputs} = this.state
 
     inputs[input] = e.target.value
 
@@ -145,7 +145,7 @@ class SignUp extends React.Component {
 
   render() {
     const {classes} = this.props
-    const {inputs, errors, modal, isPasswordHidden} = this.state
+    const {inputs, errors, modal, isModalOpen, isPasswordHidden} = this.state
 
     return (
       <Container component="main" maxWidth="xs" onSubmit={this.contactSubmit.bind(this)}>
@@ -231,13 +231,13 @@ class SignUp extends React.Component {
             </Grid>
           </Grid>
         </div>
-        {modal.isOpen ?
+        {isModalOpen ?
           <ModalForm
             head={modal.head}
             body={modal.body}
             redirect_url={modal.redirectURL}
             redirect_btn_name={modal.redirectBtnName}
-            show={modal.isOpen}
+            show={isModalOpen}
             onHide={() => this.changeModalState(false)}
           /> : null}
       </Container>

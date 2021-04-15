@@ -27,6 +27,7 @@ class UsersSheet extends React.Component {
   state = {
     users: [],
     isLoading: false,
+    isModalOpen: false,
     modal: {
       head: '',
       body: '',
@@ -45,7 +46,7 @@ class UsersSheet extends React.Component {
         this.setState({users: res, isLoading: false})
       })
       .catch((err) => {
-        modal["head"] = 'Server error'
+        modal["head"] = "Server error"
         modal["body"] = err.message
 
         this.setState({modal: modal})
@@ -53,21 +54,51 @@ class UsersSheet extends React.Component {
       })
   }
 
-  changeModalState = (state) => {
+  changeModalState = () => {
+    let {isModalOpen} = this.state
+
+    this.setState({isModalOpen: !isModalOpen})
+  }
+
+  resetModalInfo = () => {
     let {modal} = this.state
-    modal["isOpen"] = state
+
+    modal["head"] = ""
+    modal["body"] = ""
+    modal["redirectBtnName"] = ""
+    modal["redirectURL"] = ""
+    modal["closeBtnName"] = ""
+    modal["function"] = ""
 
     this.setState({modal: modal})
   }
 
-  removeUser = (e, email) => {
+  handleRemove = (e, email) => {
+    let {modal} = this.state
+
+    this.resetModalInfo()
+
+    modal["head"] = `Delete ${email}`
+    modal["body"] = "Are you sure about that ?"
+    modal["redirectBtnName"] = "Yes"
+    modal["closeBtnName"] = "No"
+    modal["function"] = () => this.removeUser(email)
+
+    this.changeModalState()
+  }
+
+  removeUser = (email) => {
     let {users, modal} = this.state
 
     UserService.deleteUser({token: Cookies.get('accessToken'), email: email})
       .then((res) => {
         if (res.message) {
-          modal["head"] = 'Delete user error'
-          modal["body"] = 'Check your permissions'
+          this.resetModalInfo()
+
+          modal["head"] = "Delete user error"
+          modal["body"] = "Check your permissions"
+          modal["redirectBtnName"] = "Home"
+          modal["redirectURL"] = "/"
 
           this.setState({modal: modal})
           this.changeModalState(true)
@@ -78,8 +109,12 @@ class UsersSheet extends React.Component {
         }
       })
       .catch((err) => {
-        modal["head"] = 'Delete user error'
+        this.resetModalInfo()
+
+        modal["head"] = "Delete user error"
         modal["body"] = err.message
+        modal["redirectBtnName"] = "Home"
+        modal["redirectURL"] = "/"
 
         this.setState({modal: modal})
         this.changeModalState(true)
@@ -88,7 +123,7 @@ class UsersSheet extends React.Component {
 
   render() {
     const {classes} = this.props
-    const {users, isLoading, modal} = this.state
+    const {users, isLoading, isModalOpen, modal} = this.state
 
     if (isLoading) {
       return (
@@ -172,7 +207,7 @@ class UsersSheet extends React.Component {
                       <EditIcon/>
                     </Button>
                     <Button
-                      onClick={(e) => this.removeUser(e, user.email)}
+                      onClick={(e) => this.handleRemove(e, user.email)}
                       className={classes.deleteBtn}
                       variant="contained"
                       color="secondary"
@@ -186,13 +221,15 @@ class UsersSheet extends React.Component {
           })}
           </tbody>
         </table>
-        {modal.isOpen ?
+        {isModalOpen ?
           <ModalForm
             head={modal.head}
             body={modal.body}
             redirect_url={modal.redirectURL}
             redirect_btn_name={modal.redirectBtnName}
-            show={modal.isOpen}
+            close_btn_name={modal.closeBtnName}
+            show={isModalOpen}
+            function={modal.function}
             onHide={() => this.changeModalState(false)}
           /> : null}
       </div>

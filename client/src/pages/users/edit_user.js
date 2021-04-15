@@ -43,8 +43,8 @@ class EditUser extends React.Component {
       role: {10: 'viewer', 20: 'admin', 30: 'superadmin'},
       status: {10: 'active', 20: 'disable'}
     },
+    isModalOpen: false,
     modal: {
-      isOpen: false,
       head: '',
       body: '',
       redirectBtnName: 'Monuments-sheet',
@@ -66,8 +66,8 @@ class EditUser extends React.Component {
       .then((res) => {
         const email = res[0].email
 
-        if (email === undefined) {
-          modal["head"] = 'Something going wrong'
+        if (!email) {
+          modal["head"] = "Something going wrong"
           modal["body"] = res.message
 
           this.setState({modal: modal})
@@ -80,20 +80,18 @@ class EditUser extends React.Component {
         }
       })
       .catch((err) => {
-        modal["head"] = 'Server error'
+        modal["head"] = "Server error"
         modal["body"] = err.message
 
         this.setState({modal: modal, isLoading: false})
-        this.changeModalState(true)
+        this.changeModalState()
       })
   }
 
-  changeModalState = (state) => {
-    let {modal} = this.state
+  changeModalState = () => {
+    let {isModalOpen} = this.state
 
-    modal["isOpen"] = state
-
-    this.setState({modal: modal})
+    this.setState({isModalOpen: !isModalOpen})
   }
 
   contactSubmit = (e) => {
@@ -106,24 +104,25 @@ class EditUser extends React.Component {
     this.setState({inputs: inputs})
 
     Object.keys(this.state.inputs).forEach((key) => (this.state.inputs[key] === "") && delete this.state.inputs[key]);
+
     UserService.updateUser(this.state.inputs)
       .then((res) => {
-        if (res.nModified === undefined) {
+        if (!res.nModified) {
           modal["head"] = 'Update user error'
           modal["body"] = res.message
 
           this.setState({modal: modal})
-          this.changeModalState(true)
+          this.changeModalState()
         } else {
           window.location.href = '/users_sheet'
         }
       })
       .catch((err) => {
-        modal["body"] = 'Server error'
+        modal["body"] = "Server error"
         modal["head"] = err.message
 
         this.setState({modal: modal})
-        this.changeModalState(true)
+        this.changeModalState()
       })
   }
 
@@ -143,7 +142,7 @@ class EditUser extends React.Component {
 
   render() {
     const {classes} = this.props
-    const {selects, isLoading, modal} = this.state
+    const {selects, isLoading, isModalOpen, modal} = this.state
 
     if (isLoading) {
       return (
@@ -200,13 +199,13 @@ class EditUser extends React.Component {
             </Button>
           </form>
         </div>
-        {modal.isOpen ?
+        {isModalOpen ?
           <ModalForm
             head={modal.head}
             body={modal.body}
             redirect_url={modal.redirectURL}
             redirect_btn_name={modal.redirectBtnName}
-            show={modal.isOpen}
+            show={isModalOpen}
             onHide={() => this.changeModalState(false)}
           /> : null}
       </Container>

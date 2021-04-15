@@ -34,14 +34,14 @@ class PasswordResetRequest extends React.Component {
       email: ''
     },
     modal: {
-      isOpen: false,
       head: '',
       body: '',
       redirectURL: '',
       redirectBtnName: ''
     },
     errors: {},
-    isValid: false
+    isValid: false,
+    isModalOpen: false
   }
 
   componentDidMount = () => {
@@ -58,26 +58,24 @@ class PasswordResetRequest extends React.Component {
     }
   }
 
-  changeModalState = (state) => {
-    let {modal} = this.state
-    modal["isOpen"] = state
+  changeModalState = () => {
+    let {isModalOpen} = this.state
 
-    this.setState({modal: modal})
+    this.setState({isModalOpen: isModalOpen})
   }
 
   handleFieldValidation = () => {
-    let inputs = this.state.inputs
-    let errors = this.state.errors
+    let {inputs, errors} = this.state
 
     this.setState({isValid: emailValidation(inputs, errors)})
   }
 
   contactSubmit = (e) => {
+    const {inputs, errors, modal} = this.state
+
     e.preventDefault()
 
     if (this.state.isValid) {
-      const {inputs, errors, modal} = this.state
-
       errors["email"] = ''
 
       AuthService.resetPassword({email: inputs.email})
@@ -91,7 +89,7 @@ class PasswordResetRequest extends React.Component {
             modal["redirectBtnName"] = 'Login'
             this.setState({modal: modal, errors: errors})
 
-            this.changeModalState(true)
+            this.changeModalState()
           }
         })
         .catch((err) => {
@@ -101,13 +99,13 @@ class PasswordResetRequest extends React.Component {
           modal["redirectBtnName"] = 'Home'
           this.setState({modal: modal, errors: errors})
 
-          this.changeModalState(true)
+          this.changeModalState()
         })
     }
   }
 
   handleChange = (input, e) => {
-    let inputs = this.state.inputs
+    let {inputs} = this.state
 
     inputs[input] = e.target.value
 
@@ -117,7 +115,7 @@ class PasswordResetRequest extends React.Component {
 
   render() {
     const {classes} = this.props
-    const {inputs, errors, modal} = this.state
+    const {isModalOpen, inputs, errors, modal} = this.state
 
     return (
       <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
@@ -155,13 +153,13 @@ class PasswordResetRequest extends React.Component {
             </Button>
           </form>
         </div>
-        {modal.isOpen ?
+        {isModalOpen ?
           <ModalForm
             head={modal.head}
             body={modal.body}
             redirect_url={modal.redirectURL}
             redirect_btn_name={modal.redirectBtnName}
-            show={modal.isOpen}
+            show={isModalOpen}
             onHide={() => this.changeModalState(false)}
           /> : null}
       </Container>

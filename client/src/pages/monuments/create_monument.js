@@ -30,7 +30,6 @@ class CreateMonument extends React.Component {
       name: ''
     },
     modal: {
-      isOpen: false,
       head: '',
       body: '',
       redirectURL: '',
@@ -40,15 +39,14 @@ class CreateMonument extends React.Component {
       name: '',
       image: ''
     },
+    isModalOpen: false,
     isValid: false
   }
 
-  changeModalState = (state) => {
-    let {modal} = this.state
+  changeModalState = () => {
+    let {isModalOpen} = this.state
 
-    modal["isOpen"] = state
-
-    this.setState({modal: modal})
+    this.setState({isModalOpen: !isModalOpen})
   }
 
 
@@ -125,12 +123,12 @@ class CreateMonument extends React.Component {
 
           if (name === undefined) {
             modal["head"] = 'Monument create error'
-            modal["body"] = 'Something going wrong'
+            modal["body"] = res.message
             modal["redirectURL"] = '/monuments_sheet'
             modal["redirectBtnName"] = 'Monuments-sheet'
 
             this.setState({modal: modal})
-            this.changeModalState(true)
+            this.changeModalState()
           } else {
             window.location.href = '/monuments_sheet'
           }
@@ -142,14 +140,14 @@ class CreateMonument extends React.Component {
           modal["redirectBtnName"] = 'Monuments-sheet'
 
           this.setState({modal: modal})
-          this.changeModalState(true)
+          this.changeModalState()
         })
     }
   }
 
   render() {
     const {classes} = this.props
-    const {inputs, errors, modal} = this.state
+    const {isModalOpen, inputs, errors, modal} = this.state
 
     return (
       <Container component="main" maxWidth="xs" onSubmit={this.contactSubmit.bind(this)}>
@@ -239,13 +237,13 @@ class CreateMonument extends React.Component {
             </Button>
           </form>
         </div>
-        {modal.isOpen ?
+        {isModalOpen ?
           <ModalForm
             head={modal.head}
             body={modal.body}
             redirect_url={modal.redirectURL}
             redirect_btn_name={modal.redirectBtnName}
-            show={modal.isOpen}
+            show={isModalOpen}
             onHide={() => this.changeModalState(false)}
           /> : null}
       </Container>

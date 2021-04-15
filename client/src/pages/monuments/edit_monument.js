@@ -43,8 +43,8 @@ class EditMonument extends React.Component {
     errors: {
       image: ''
     },
+    isModalOpen: false,
     modal: {
-      isOpen: false,
       head: '',
       body: '',
       redirectURL: '/monuments_sheet',
@@ -69,7 +69,7 @@ class EditMonument extends React.Component {
           modal["head"] = 'Something going wrong'
 
           this.setState({modal: modal, isLoading: false})
-          this.changeModalState(true)
+          this.changeModalState()
         } else {
           this.setState({inputs: {description: res.description, imageURL: res.imageURL, address: res.address, creator: res.creator, name: res.name, buildDate: res.buildDate, id: res._id}, isLoading: false})
         }
@@ -79,16 +79,14 @@ class EditMonument extends React.Component {
         modal["body"] = err.message
 
         this.setState({modal: modal, isLoading: false})
-        this.changeModalState(true)
+        this.changeModalState()
       })
   }
 
-  changeModalState = (state) => {
-    let {modal} = this.state
+  changeModalState = () => {
+    let {isModalOpen} = this.state
 
-    modal["isOpen"] = state
-
-    this.setState({modal: modal})
+    this.setState({isModalOpen: !isModalOpen})
   }
 
   contactSubmit = (e) => {
@@ -110,7 +108,7 @@ class EditMonument extends React.Component {
             modal["body"] = 'Update monument error'
 
             this.setState({modal: modal})
-            this.changeModalState(true)
+            this.changeModalState()
           } else {
             window.location.href = '/monuments_sheet'
           }
@@ -120,7 +118,7 @@ class EditMonument extends React.Component {
           modal["head"] = err.message
 
           this.setState({modal: modal})
-          this.changeModalState(true)
+          this.changeModalState()
         })
     }
   }
@@ -168,7 +166,7 @@ class EditMonument extends React.Component {
 
   render() {
     const {classes} = this.props
-    const {isLoading, inputs, errors, modal} = this.state
+    const {isLoading, isModalOpen, inputs, errors, modal} = this.state
 
     if (isLoading) {
       return (
@@ -263,13 +261,13 @@ class EditMonument extends React.Component {
             <div id='validError' className={classes.errors}/>
           </form>
         </div>
-        {modal.isOpen ?
+        {isModalOpen ?
           <ModalForm
             head={modal.head}
             body={modal.body}
             redirect_url={modal.redirectURL}
             redirect_btn_name={modal.redirectBtnName}
-            show={modal.isOpen}
+            show={isModalOpen}
             onHide={() => this.changeModalState(false)}
           /> : null}
       </Container>

@@ -39,7 +39,6 @@ class PasswordReset extends React.Component {
       passwordCopy: ''
     },
     modal: {
-      isOpen: '',
       head: '',
       body: '',
       redirectURL: '',
@@ -52,6 +51,7 @@ class PasswordReset extends React.Component {
     },
     token: '',
     isValid: false,
+    isModalOpen: false,
     isPasswordHidden: true
   }
 
@@ -65,17 +65,16 @@ class PasswordReset extends React.Component {
       modal["redirectURL"] = '/logout'
 
       this.setState({modal: modal})
-      this.changeModalState(true)
+      this.changeModalState()
     }
 
     this.setState({token: this.props.location.search.split('=')[1]})
   }
 
   changeModalState = (state) => {
-    let {modal} = this.state
-    modal["isOpen"] = state
+    let {isModalOpen} = this.state
 
-    this.setState({modal: modal})
+    this.setState({isModalOpen: !isModalOpen})
   }
 
   handleFieldValidation = (name) => {
@@ -123,16 +122,10 @@ class PasswordReset extends React.Component {
             modal["body"] = 'Please, try send new reset password link'
             modal["redirectURL"] = '/reset_request'
             modal["redirectBtnName"] = 'New-request'
+
             this.setState({modal: modal})
+            this.changeModalState()
           } else {
-            //*
-            // Хотелось бы использовать модальное окно, но нужно продумать переход на /login
-            // *//
-            // modal["head"] = 'Password successfully reset!'
-            // modal["body"] = 'From now on you can use a new password'
-            // modal["redirectURL"] = '/login'
-            // modal["redirectBtnName"] = 'Login'
-            // this.setState({modal: modal})
             window.location.href = '/login'
           }
         })
@@ -141,10 +134,9 @@ class PasswordReset extends React.Component {
           modal["body"] = err.message
           modal["redirectURL"] = '/'
           modal["redirectBtnName"] = 'Home'
+
           this.setState({modal: modal})
-        })
-        .finally(() => {
-          this.changeModalState(true)
+          this.changeModalState()
         })
     } else {
       errors["validError"] = 'ValidationError'
@@ -155,7 +147,7 @@ class PasswordReset extends React.Component {
 
   render() {
     const {classes} = this.props
-    const {inputs, errors, modal, isPasswordHidden} = this.state
+    const {inputs, errors, modal, isModalOpen, isPasswordHidden} = this.state
 
     return (
       <Container component="main" maxWidth="xs" onSubmit={this.contactSubmit.bind(this)}>
@@ -218,13 +210,13 @@ class PasswordReset extends React.Component {
           </form>
           <div className={classes.validError}>{errors["validError"]}</div>
         </div>
-        {modal.isOpen ?
+        {isModalOpen ?
           <ModalForm
             head={modal.head}
             body={modal.body}
             redirect_url={modal.redirectURL}
             redirect_btn_name={modal.redirectBtnName}
-            show={modal.isOpen}
+            show={isModalOpen}
             onHide={() => this.changeModalState(false)}
           /> : null}
       </Container>
