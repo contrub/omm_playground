@@ -13,7 +13,7 @@ const fetchUsers = async (req, res, next) => {
     await jwt.decodeAccessToken(req, res)
 
     if (req.decoded.email === undefined) {
-      throw ApiError.custom(403, 'Email payload undefined in JWT')
+      throw ApiError.custom(403, "JWT decoding error")
     }
 
     await AuthController.verifyAction(req, 'users:list', res)
@@ -31,7 +31,7 @@ const getUser = async (req, res, next) => {
     await jwt.decodeAccessToken(req, res)
 
     if (req.decoded.email === undefined) {
-      throw ApiError.custom(403, 'Email payload undefined in JWT')
+      throw ApiError.custom(403, "JWT decoding error")
     }
 
     await AuthController.verifyAction(req, 'users:get-by-id', res)
@@ -49,7 +49,7 @@ const createUser = async (req, res, next) => {
     await jwt.decodeAccessToken(req, res)
 
     if (req.decoded.email === undefined) {
-      throw ApiError.custom(403, 'Email payload undefined in JWT')
+      throw ApiError.custom(403, "JWT decoding error")
     }
 
     await AuthController.verifyAction(req, 'users:create-new', res)
@@ -67,7 +67,7 @@ const updateUser = async (req, res, next) => {
     await jwt.decodeAccessToken(req, res)
 
     if (req.decoded.email === undefined) {
-      throw ApiError.custom(403, 'Email payload undefined in JWT')
+      throw ApiError.custom(403, "JWT decoding error")
     }
 
     await AuthController.verifyAction(req, 'users:update-by-id', res)
@@ -75,7 +75,7 @@ const updateUser = async (req, res, next) => {
     await UserService.isUserExist(req, res)
 
     if (!req.isUserExist) {
-      throw ApiError.custom(404, 'Updated user undefined')
+      throw ApiError.custom(404, "User not found")
     }
 
     Users.updateUser(req, res)
@@ -91,11 +91,11 @@ const deleteUser = async (req, res, next) => {
     await jwt.decodeAccessToken(req, res)
 
     if (req.decoded.email === undefined) {
-      throw ApiError.custom(403, 'Email payload undefined in JWT')
+      throw ApiError.custom(403, "JWT decoding error")
     }
 
     if (req.decoded.email === req.params.email) {
-      throw ApiError.custom(403, "Can't delete yourself")
+      throw ApiError.custom(403, "Impossible delete yourself")
     }
 
     await AuthController.verifyAction(req, 'users:delete-by-id', res)

@@ -11,8 +11,8 @@ const isMonumentPayloadExist = async (req, payload) => {
       req.isMonumentExist = monument.length ? true : false
     })
     .catch((err) => {
-      console.log(err)
-      throw ApiError.internal('MongoDB error')
+      // console.log(err)
+      throw ApiError.internal("MongoDB error")
     })
 }
 

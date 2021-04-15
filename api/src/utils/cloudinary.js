@@ -23,8 +23,8 @@ uploadImage = async (req, res) => {
         req.body.imageURL = url
       })
       .catch((err) => {
-        console.log(err)
-        throw ApiError.internal('Cloudinary error')
+        // console.log(err)
+        throw ApiError.internal("Cloudinary error")
       })
   }
 }
@@ -35,8 +35,8 @@ deleteImage = async (req, res) => {
   if (imagePublicID !== undefined && !isEmpty(imagePublicID) && imagePublicID !== process.env.DEFAULT_MONUMENT_IMAGE_PUBLIC_ID) {
     await cloudinary.api.delete_resources([imagePublicID])
       .catch((err) => {
-        console.log(err)
-        throw ApiError.internal('Cloudinary error')
+        // console.log(err)
+        throw ApiError.internal("Cloudinary error")
       })
   }
 }

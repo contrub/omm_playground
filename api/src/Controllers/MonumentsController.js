@@ -25,14 +25,14 @@ const getMonument = async (req, res, next) => {
     await MongoService.isIDValid(req, res, next)
 
     if (!req.isIDValid) {
-      throw ApiError.custom(404, 'Monument id validation error')
+      throw ApiError.custom(404, "Monument id validation error")
     }
 
     await AuthController.verifyAction(req, 'monuments:get-by-id', res, next)
     await MonumentService.isMonumentPayloadExist(req, {_id: req.params.id})
 
     if (!req.isMonumentExist) {
-      throw ApiError.custom(404, 'Monument undefined')
+      throw ApiError.custom(404, "Monument not found")
     }
 
     Monuments.getMonument(req, res)
@@ -48,7 +48,7 @@ const createMonument = async (req, res, next) => {
     await jwt.decodeAccessToken(req, res, next)
 
     if (req.decoded.email === undefined) {
-      throw ApiError.custom(403, 'Email payload undefined in JWT')
+      throw ApiError.custom(403, "JWT decoding error")
     }
 
     await AuthController.verifyAction(req, 'monuments:create-new', res)
@@ -56,7 +56,7 @@ const createMonument = async (req, res, next) => {
     await MonumentService.isMonumentPayloadExist(req, {name: req.body.name})
 
     if (req.isMonumentExist) {
-      throw ApiError.custom(200, 'Monument already exist')
+      throw ApiError.custom(200, "Monument already exists")
     }
 
     await cloudinary.uploadImage(req, res)
@@ -74,20 +74,20 @@ const updateMonument = async (req, res, next) => {
     await jwt.decodeAccessToken(req, res)
 
     if (req.decoded.email === undefined) {
-      throw ApiError.custom(403, 'Email payload undefined in JWT')
+      throw ApiError.custom(403, "JWT decoding error")
     }
 
     await AuthController.verifyAction(req, 'monuments:update-by-id', res)
     await MongoService.isIDValid(req, res)
 
     if (!req.isIDValid) {
-      throw ApiError.custom(404, 'Monument id validation error')
+      throw ApiError.custom(404, "Monument id validation error")
     }
 
     await MonumentService.isMonumentPayloadExist(req, {_id: req.params.id})
 
     if (!req.isMonumentExist) {
-      throw ApiError.custom(404, 'Monument undefined')
+      throw ApiError.custom(404, "Monument not found")
     }
 
     await cloudinary.deleteImage(req, res)
@@ -106,20 +106,20 @@ const deleteMonument = async (req, res, next) => {
     await jwt.decodeAccessToken(req, res)
 
     if (req.decoded.email === undefined) {
-      throw ApiError.custom(403, 'Email payload undefined in JWT')
+      throw ApiError.custom(403, "JWT decoding error")
     }
 
     await AuthController.verifyAction(req, 'monuments:delete-by-id', res)
     await MongoService.isIDValid(req, res)
 
     if (!req.isIDValid) {
-      throw ApiError.custom(404, 'Monument id validation error')
+      throw ApiError.custom(404, "Monument id validation error")
     }
 
     await MonumentService.isMonumentPayloadExist(req, {_id: req.params.id})
 
     if (!req.isMonumentExist) {
-      throw ApiError.custom(404, 'Monument undefined')
+      throw ApiError.custom(404, "Monument not found")
     }
 
     await cloudinary.deleteImage(req, res)

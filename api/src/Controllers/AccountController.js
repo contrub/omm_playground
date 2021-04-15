@@ -18,7 +18,7 @@ const signIn = async (req, res, next) => {
     await UserService.isUserExist(req)
 
     if (!req.isUserExist) {
-      res.send({message: 'User undefined'})
+      res.send({message: "Couldn't find user"})
       return
     }
 
@@ -54,7 +54,7 @@ const signUp = async (req, res, next) => {
     await jwt.generateAccessToken(req, {email: email})
 
     if (req.isUserExist) {
-      res.send({message: "User already exist!"})
+      res.send({message: "User already exists!"})
     } else {
       Users.createUser(req, res)
     }
@@ -98,7 +98,7 @@ const updatePasswordRequest = async (req, res, next) => {
     await jwt.generateAccessToken(req, {email: email}, {expiresIn: '60s'})
 
     if (!req.isUserExist) {
-      throw ApiError.custom(200, 'User undefined')
+      throw ApiError.custom(200, "Couldn't find user")
     }
 
     const token = req.accessToken
@@ -153,7 +153,7 @@ const updatePassword = async (req, res, next) => {
     await jwt.decodeAccessToken(req, res, next)
 
     if (req.decoded.email === undefined) {
-      res.send({message: "User undefined"})
+      res.send({message: "Couldn't find user"})
     } else {
       req.params.email = req.decoded.email
       req.body.email = req.decoded.email
