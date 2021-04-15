@@ -36,7 +36,7 @@ const ModalForm = (props) => {
           </Modal.Header>
           <Modal.Body>{props.body}</Modal.Body>
           <Modal.Footer>
-            {(props.redirect_url || props.function)
+            {(props.redirect_btn_name)
               ?
               <Button variant="contained" color="inherit" onClick={() => handleClick()}>
                 {props.redirect_btn_name}
