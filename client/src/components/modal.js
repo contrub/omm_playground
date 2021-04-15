@@ -6,8 +6,21 @@ import { Modal } from "react-bootstrap";
 import Button from "@material-ui/core/Button";
 
 const ModalForm = (props) => {
+  const handleClick = () => {
+    if (props.function) {
+      performFunction()
+    } else {
+      redirect()
+    }
+  }
+
   const redirect = () => {
     window.location.href = props.redirect_url
+  }
+
+  const performFunction = () => {
+    props.function()
+    props.onHide()
   }
 
   return (
@@ -25,14 +38,14 @@ const ModalForm = (props) => {
           <Modal.Footer>
             {props.redirect_url
               ?
-              <Button variant="contained" color="inherit" onClick={() => redirect()}>
+              <Button variant="contained" color="inherit" onClick={() => handleClick()}>
                 {props.redirect_btn_name}
               </Button>
             :
               null
             }
             <Button variant="contained" color="primary" onClick={props.onHide}>
-              Close
+              {props.close_btn_name ? props.close_btn_name : 'Close'}
             </Button>
           </Modal.Footer>
         </Modal>
