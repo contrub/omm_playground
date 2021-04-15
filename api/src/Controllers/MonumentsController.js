@@ -90,7 +90,7 @@ const updateMonument = async (req, res, next) => {
       throw ApiError.custom(404, "Monument not found")
     }
 
-    await cloudinary.deleteImage(req, res)
+    // await cloudinary.deleteImage(req, res)
     await cloudinary.uploadImage(req, res)
 
     Monuments.updateMonument(req, res)
@@ -122,7 +122,7 @@ const deleteMonument = async (req, res, next) => {
       throw ApiError.custom(404, "Monument not found")
     }
 
-    await cloudinary.deleteImage(req, res)
+    // await cloudinary.deleteImage(req, res)
 
     Monuments.deleteMonument(req, res)
   } catch (err) {
