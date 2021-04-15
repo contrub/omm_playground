@@ -8,9 +8,8 @@ async function request(url, params, method = "GET") {
     }
   };
 
-  if (params !== undefined && params.token !== undefined) {
+  if (params && params.token) {
     options.headers["authorization"] = `Bearer ${params.token}`
-    delete params.token
   }
 
   if (params) {
