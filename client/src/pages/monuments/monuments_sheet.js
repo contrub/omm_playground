@@ -77,11 +77,13 @@ class MonumentsSheet extends React.Component {
     }
 
     handleRemove = (e, id) => {
-      let {modal} = this.state
+      let {modal, monuments} = this.state
 
       this.resetModalInfo()
 
-      modal["head"] = `Delete ${id}`
+      const monumentName = monuments.find((monument) => monument._id === id).name
+
+      modal["head"] = `Delete ${monumentName}`
       modal["body"] = "Are you sure about that ?"
       modal["redirectBtnName"] = "Yes"
       modal["closeBtnName"] = "No"
@@ -248,6 +250,7 @@ class MonumentsSheet extends React.Component {
               body={modal.body}
               redirect_url={modal.redirectURL}
               redirect_btn_name={modal.redirectBtnName}
+              close_btn_name={modal.closeBtnName}
               show={isModalOpen}
               function={modal.function}
               onHide={() => this.changeModalState(false)}
