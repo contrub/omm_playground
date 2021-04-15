@@ -1,3 +1,8 @@
+#main{
+    /* display: grid; */
+    padding : 1%;
+}
+
 .title {
     font-family: cursive;
     text-align: center;
@@ -8,11 +13,11 @@
     font-size: 50px;
 }
 
-#imgs {
+/* #imgs {
     height: 50%;
     width: 50%;
     margin: 2%;
-}
+} */
 
 #Description, #Address, #Creator {
     font-family: 'Times New Roman', Times, serif;

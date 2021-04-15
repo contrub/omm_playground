@@ -48,10 +48,10 @@ class MonumentById extends React.Component {
     }
 
     return (
-      <div>
+      <div id="main">
         <h1 id="name"> {this.state.monumentInfo.name} </h1>
         <img
-          id="imgs"
+          // id="imgs"
           alt="monument_image"
           src={this.state.monumentInfo.imageURL}
         />
