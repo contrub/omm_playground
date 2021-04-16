@@ -19,7 +19,7 @@
     margin: 2%;
 } */
 
-#Description, #Address, #Creator {
+#Description, #Address, #Creator, #Date {
     font-family: 'Times New Roman', Times, serif;
     font-size: 20px;
     margin: 2%;
