@@ -80,11 +80,8 @@ class PasswordReset extends React.Component {
   handleFieldValidation = (name) => {
     let {inputs, errors, isValid} = this.state
 
-    if (name === 'password') {
-      this.setState({isValid: passwordValidation(inputs, errors)})
-    } else if (name === 'passwordCopy') {
-      this.setState({isValid: passwordCopyValidation(inputs, errors)})
-    }
+    this.setState({isValid: passwordValidation(inputs, errors)})
+    this.setState({isValid: passwordCopyValidation(inputs, errors)})
 
     if (isValid) {
       errors["validError"] = ""
@@ -110,7 +107,7 @@ class PasswordReset extends React.Component {
   }
 
   contactSubmit = (e) => {
-    let {inputs, errors, token, modal} = this.state
+    let {inputs, token, modal} = this.state
 
     e.preventDefault()
 
@@ -138,10 +135,6 @@ class PasswordReset extends React.Component {
           this.setState({modal: modal})
           this.changeModalState()
         })
-    } else {
-      errors["validError"] = 'ValidationError'
-
-      this.setState({errors: errors})
     }
   }
 
@@ -208,7 +201,6 @@ class PasswordReset extends React.Component {
               Change Password
             </Button>
           </form>
-          <div className={classes.validError}>{errors["validError"]}</div>
         </div>
         {isModalOpen ?
           <ModalForm

@@ -94,8 +94,8 @@ class SignUp extends React.Component {
           if (!accessToken) {
             modal["head"] = 'Registration error'
             modal["body"] = res.message
-            modal["redirectURL"] = '/'
-            modal["redirectBtnName"] = 'Home'
+            modal["redirectURL"] = '/login'
+            modal["redirectBtnName"] = 'Login'
 
             this.setState({modal: modal})
             this.changeModalState()
