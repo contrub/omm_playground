@@ -35,7 +35,6 @@ import EditUser from "./pages/users/edit_user";
 
 // Third party functions
 import AuthService from "./services/AuthService";
-import isEmpty from "validator/es/lib/isEmpty";
 import Cookies from 'js-cookie';
 
 class App extends Component {
@@ -75,7 +74,7 @@ class App extends Component {
   }
 
   isLogged = () => {
-    if (Cookies.get('accessToken') !== undefined && !isEmpty(Cookies.get('accessToken'))) {
+    if (localStorage.getItem("userRole") !== "guest") {
       return true
     } else {
       return false
