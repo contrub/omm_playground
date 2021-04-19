@@ -42,7 +42,7 @@ const Header = (props) => {
         </Typography>
         {/*<Search submitSearch={props.submitSearch}/>*/}
         {props.isLogged && <Button color="inherit" onClick={logout}>Logout</Button>}
-        {!props.isLogged && <Button color="inherit" href='/login'>Login</Button>}
+        {!props.isLogged && <Button color="inherit" onClick={() => window.location.href = '/login'}>Login</Button>}
       </Toolbar>
     </AppBar>
   )
