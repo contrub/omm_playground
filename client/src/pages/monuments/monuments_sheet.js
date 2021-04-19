@@ -96,22 +96,10 @@ class MonumentsSheet extends React.Component {
       let {monuments, modal} = this.state
 
       MonumentService.deleteMonument({token: Cookies.get('accessToken'), id: id})
-        .then((res) => {
-          if (res.message) {
-            this.resetModalInfo()
+        .then(() => {
+          monuments = monuments.filter((monument) => monument._id !== id)
 
-            modal["head"] = "Delete monument error"
-            modal["body"] = "Check your permissions"
-            modal["redirectBtnName"] = "Home"
-            modal["redirectURL"] = "/"
-
-            this.setState({modal: modal})
-            this.changeModalState()
-          } else {
-            monuments = monuments.filter((monument) => monument._id !== id)
-
-            this.setState({monuments: monuments})
-          }
+          this.setState({monuments: monuments})
         })
         .catch((err) => {
           this.resetModalInfo()
