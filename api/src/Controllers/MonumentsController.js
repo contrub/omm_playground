@@ -56,7 +56,7 @@ const createMonument = async (req, res, next) => {
     await MonumentService.isMonumentPayloadExist(req, {name: req.body.name})
 
     if (req.isMonumentExist) {
-      throw ApiError.custom(200, "Monument already exists")
+      throw ApiError.custom(409, "Monument already exists")
     }
 
     await cloudinary.uploadImage(req, res)
