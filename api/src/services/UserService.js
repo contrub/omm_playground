@@ -30,9 +30,9 @@ const isUserDataExist = async (req, res) => {
   const password = req.body.password
 
   if (email === undefined) {
-    res.send({message: "Email not found"})
+    throw ApiError.custom(401, "Email not found")
   } else if (password === undefined) {
-    res.send({message: "Password not found"})
+    throw ApiError.custom(401, "Password not found")
   } else {
     await User
       .find({email: req.body.email})
@@ -47,7 +47,6 @@ const isUserDataExist = async (req, res) => {
         }
       })
       .catch((err) => {
-        // console.log(err)
         throw ApiError.internal("MongoDB error")
       })
   }
@@ -69,8 +68,11 @@ const isUserActive = async (req, res) => {
         }
       })
       .catch((err) => {
-        // console.log(err)
-        throw ApiError.internal( "MongoDB error")
+        if (err instanceof ApiError) {
+          throw ApiError.custom(err.statusCode, err.message)
+        } else {
+          throw ApiError.internal("MongoDB error")
+        }
       })
   }
 }
