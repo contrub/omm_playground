@@ -22,18 +22,16 @@ async function request(url, params, method = "GET") {
 
   const response = await fetch(_apiHost + url, options);
 
-  // доработать
-  if (response.status !== 200 && response.status !== 204) {
-    return generateErrorResponse(
-      "The server responded with an unexpected status."
-    );
-  }
-
-  try {
-    return await response.json();
-  } catch (e) {
-    return response;
-  }
+  return new Promise((resolve, reject) => {
+    if (response.ok) {
+      return resolve(response.json())
+    } else {
+      response.text()
+        .then((errorMessage) => {
+          return reject(new Error(errorMessage))
+        })
+    }
+  })
 }
 
 function objectToQueryString(obj) {
