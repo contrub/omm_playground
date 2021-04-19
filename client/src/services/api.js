@@ -24,11 +24,15 @@ async function request(url, params, method = "GET") {
 
   return new Promise((resolve, reject) => {
     if (response.ok) {
-      return resolve(response.json())
+      if (response.status !== 204) {
+        resolve(response.json())
+      } else {
+        resolve()
+      }
     } else {
       response.text()
         .then((errorMessage) => {
-          return reject(new Error(errorMessage))
+          reject(new Error(errorMessage))
         })
     }
   })
@@ -40,12 +44,12 @@ function objectToQueryString(obj) {
     .join("&");
 }
 
-function generateErrorResponse(message) {
-  return {
-    status: "error",
-    message
-  };
-}
+// function generateErrorResponse(message) {
+//   return {
+//     status: "error",
+//     message
+//   };
+// }
 
 function get(url, params) {
   return request(url, params);
