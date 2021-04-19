@@ -107,15 +107,7 @@ class EditUser extends React.Component {
 
     UserService.updateUser(this.state.inputs)
       .then((res) => {
-        if (!res.nModified) {
-          modal["head"] = 'Update user error'
-          modal["body"] = res.message
-
-          this.setState({modal: modal})
-          this.changeModalState()
-        } else {
-          window.location.href = '/users_sheet'
-        }
+        window.location.href = '/users_sheet'
       })
       .catch((err) => {
         modal["body"] = "Server error"

@@ -76,18 +76,8 @@ class CreateUser extends React.Component {
 
       inputs["token"] = Cookies.get('accessToken')
       UserService.createUser(inputs)
-        .then((res) => {
-          const email = res.data.email
-
-          if (email === undefined) {
-            modal["head"] = 'Something going wrong'
-            modal["body"] = 'Create user error'
-
-            this.setState({modal: modal})
-            this.changeModalState(true)
-          } else {
-            window.location.href = '/users_sheet'
-          }
+        .then(() => {
+          window.location.href = '/users_sheet'
         })
         .catch((err) => {
           modal["head"] = 'Server error'

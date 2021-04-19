@@ -35,13 +35,6 @@ class SignIn extends React.Component {
       email: '',
       password: ''
     },
-    modal: {
-      isOpen: '',
-      head: '',
-      body: '',
-      redirectURL: '',
-      redirectBtnName: ''
-    },
     errors: {
       email: '',
       password: '',
@@ -65,6 +58,7 @@ class SignIn extends React.Component {
     if (!isEmpty(inputs.email) && !isEmpty(inputs.password)) {
       AuthService.login({email: inputs.email, password: inputs.password})
         .then((res) => {
+          console.log(res)
           if (res.message) {
             errors["validation"] = res.message
 
@@ -73,6 +67,11 @@ class SignIn extends React.Component {
             Cookies.set('accessToken', res.accessToken.split(' ')[1])
             window.location.href = '/'
           }
+        })
+        .catch((err) => {
+          errors["validation"] = err.message
+
+          this.setState({errors: errors})
         })
     } else {
       errors["validation"] = "Form can't be empty!"

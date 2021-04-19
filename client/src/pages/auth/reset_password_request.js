@@ -78,21 +78,16 @@ class PasswordResetRequest extends React.Component {
     if (isValid) {
       AuthService.resetPassword({email: inputs.email})
         .then((res) => {
-          if (res.ok) {
-            modal["head"] = 'Recovery link has been sent!'
-            modal["body"] = `Check your email - ${inputs.email} (will expire in 10 minutes)`
-            modal["redirectURL"] = '/login'
-            modal["redirectBtnName"] = 'Login'
-            this.setState({modal: modal, errors: errors})
+          modal["head"] = 'Recovery link has been sent!'
+          modal["body"] = res.message
+          modal["redirectURL"] = '/login'
+          modal["redirectBtnName"] = 'Login'
+          this.setState({modal: modal, errors: errors})
 
-            this.changeModalState()
-          } else if (res.message) {
-            errors["email"] = res.message
-
-            this.setState({errors: errors})
-          }
+          this.changeModalState()
         })
         .catch((err) => {
+          console.log(err)
           modal["head"] = 'Server error'
           modal["body"] = err.message
           modal["redirectURL"] = '/'

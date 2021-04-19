@@ -119,19 +119,7 @@ class CreateMonument extends React.Component {
       inputs["token"] = Cookies.get('accessToken')
       MonumentService.createMonument(inputs)
         .then((res) => {
-          const name = res.name
-
-          if (name === undefined) {
-            modal["head"] = 'Monument create error'
-            modal["body"] = res.message
-            modal["redirectURL"] = '/monuments_sheet'
-            modal["redirectBtnName"] = 'Monuments-sheet'
-
-            this.setState({modal: modal})
-            this.changeModalState()
-          } else {
-            window.location.href = '/monuments_sheet'
-          }
+          window.location.href = '/monuments_sheet'
         })
         .catch((err) => {
           modal["head"] = 'Server error'

@@ -113,24 +113,14 @@ class PasswordReset extends React.Component {
 
     if (this.state.isValid) {
       AuthService.updatePassword({token: token, password: inputs.password})
-        .then((res) => {
-          if (res.message) {
-            modal["head"] = 'Link time expired!'
-            modal["body"] = 'Please, try send new reset password link'
-            modal["redirectURL"] = '/reset_request'
-            modal["redirectBtnName"] = 'New-request'
-
-            this.setState({modal: modal})
-            this.changeModalState()
-          } else {
-            window.location.href = '/login'
-          }
+        .then(() => {
+          window.location.href = '/login'
         })
         .catch((err) => {
           modal["head"] = 'Server error'
-          modal["body"] = err.message
-          modal["redirectURL"] = '/'
-          modal["redirectBtnName"] = 'Home'
+          modal["body"] = err.message === 'JWT validation error' ? 'Token lifetime expires (10 minutes)' : err.message
+          modal["redirectURL"] = '/reset_request'
+          modal["redirectBtnName"] = 'NEW-REQUEST'
 
           this.setState({modal: modal})
           this.changeModalState()

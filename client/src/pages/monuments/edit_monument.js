@@ -102,16 +102,8 @@ class EditMonument extends React.Component {
       inputs["imagePublicID"] = imagePublicID
 
       MonumentService.updateMonument(inputs)
-        .then((res) => {
-          if (res.nModified === undefined) {
-            modal["head"] = 'Something going wrong'
-            modal["body"] = 'Update monument error'
-
-            this.setState({modal: modal})
-            this.changeModalState()
-          } else {
-            window.location.href = '/monuments_sheet'
-          }
+        .then(() => {
+          window.location.href = '/monuments_sheet'
         })
         .catch((err) => {
           modal["body"] = 'Server error'
