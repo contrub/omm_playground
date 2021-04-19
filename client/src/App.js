@@ -48,6 +48,9 @@ class App extends Component {
       .then((res) => {
         localStorage.setItem("userRole", res.userRole)
       })
+      .catch((err) => {
+        localStorage.setItem("userRole", "guest")
+      })
   }
 
   submitSearch = (data) => {
