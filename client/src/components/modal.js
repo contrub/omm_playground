@@ -26,7 +26,8 @@ const ModalForm = (props) => {
   return (
       <>
         <Modal
-          {...props}
+          onHide={props.onHide}
+          show={props.show}
           centered
           backdrop="static"
           keyboard={false}
