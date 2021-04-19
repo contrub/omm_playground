@@ -21,8 +21,11 @@ const verifyAction = async (req, action) => {
       }
     })
     .catch((err) => {
-      // console.log(err)
-      throw ApiError.internal("MongoDB error")
+      if (err instanceof ApiError) {
+        throw ApiError.custom(err.statusCode, err.message)
+      } else {
+        throw ApiError.internal("MongoDB error")
+      }
     })
 }
 
