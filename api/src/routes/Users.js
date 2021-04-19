@@ -102,7 +102,7 @@ const deleteUser = (req, res) => {
 
   User
     .deleteOne({ email: email })
-    .then(() => res.sendStatus(200))
+    .then(() => res.sendStatus(204))
     .catch((err) => {
       // console.log(err)
       throw new ApiError.internal('MongoDB error')
