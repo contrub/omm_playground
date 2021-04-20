@@ -5,6 +5,8 @@
   "main": "server.js",
   "scripts": {
     "serve": "nodemon ./server.js",
+    "build": "ng build",
+    "heroku-postbuild": "ng build --prod",
     "seed-users": "npm run users-db:clean && npm run users-db:seed",
     "users-db:clean": "node -e require('./console.js').clean_users()",
     "users-db:clear": "node -e require('./console.js').clear_users()",
