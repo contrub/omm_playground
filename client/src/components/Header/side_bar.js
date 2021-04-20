@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {Link} from "react-router-dom";
 
 // Material-UI components
-import ListSubheader from '@material-ui/core/ListSubheader';
+// import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItem from '@material-ui/core/ListItem';
@@ -39,11 +39,11 @@ class Sidebar extends Component {
             <List
               component="nav"
               aria-labelledby="nested-list-subheader"
-              subheader={
-                <ListSubheader component="div" id="nested-list-subheader">
-                  UserRole: {this.props.userRole}
-                </ListSubheader>
-              }
+              // subheader={
+              //   <ListSubheader component="div" id="nested-list-subheader">
+              //     UserRole: {this.props.userRole}
+              //   </ListSubheader>
+              // }
               className={classes.root}
             >
               <ListItem button component={Link} to="/" onClick={this.props.closeDrawer}>

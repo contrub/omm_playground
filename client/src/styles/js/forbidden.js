@@ -1,9 +1,9 @@
 const styles = theme => ({
-  btn_support: {
+  supportBtn: {
     margin: theme.spacing(1)
   },
 
-  btn_home: {
+  homeBtn: {
     margin: theme.spacing(1)
   }
 })

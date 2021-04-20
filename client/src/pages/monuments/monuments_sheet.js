@@ -28,8 +28,8 @@ class MonumentsSheet extends React.Component {
     state = {
       monuments: [],
       isLoading: false,
+      isModalOpen: false,
       modal: {
-        isOpen: false,
         head: '',
         body: '',
         redirectURL: '/',
@@ -49,46 +49,74 @@ class MonumentsSheet extends React.Component {
         .catch((err) => {
           modal["head"] = 'Server error'
           modal["body"] = err.message
+          modal["redirectBtnName"] = "Home"
+          modal["redirectURL"] = "/"
 
           this.setState({modal: modal, isLoading: false})
-          this.changeModalState(true)
+          this.changeModalState()
         })
     }
 
-    changeModalState = (state) => {
+    changeModalState = () => {
+      let {isModalOpen} = this.state
+
+      this.setState({isModalOpen: !isModalOpen})
+    }
+
+    resetModalInfo = () => {
       let {modal} = this.state
-      modal["isOpen"] = state
+
+      modal["head"] = ""
+      modal["body"] = ""
+      modal["redirectBtnName"] = ""
+      modal["redirectURL"] = ""
+      modal["closeBtnName"] = ""
+      modal["function"] = ""
 
       this.setState({modal: modal})
     }
 
-    removeMonument = (e, id) => {
-      let {monuments} = this.state
-      let {modal} = this.state
+    handleRemove = (e, id) => {
+      let {modal, monuments} = this.state
 
-      const monument = monuments.find(monument => monument._id === id)
-      const imagePublicID = monument.imageURL.split('/')[7] + '/' + monument.imageURL.split('/')[8].split('.')[0]
+      this.resetModalInfo()
 
-      MonumentService.deleteMonument({token: Cookies.get('accessToken'), id: id, imagePublicID: imagePublicID})
+      const monumentName = monuments.find((monument) => monument._id === id).name
+
+      modal["head"] = `Delete ${monumentName}`
+      modal["body"] = "Are you sure about that ?"
+      modal["redirectBtnName"] = "Yes"
+      modal["closeBtnName"] = "No"
+      modal["function"] = () => this.removeMonument(id)
+
+      this.changeModalState()
+    }
+
+    removeMonument = (id) => {
+      let {monuments, modal} = this.state
+
+      MonumentService.deleteMonument({token: Cookies.get('accessToken'), id: id})
         .then(() => {
-          // Сервер возвращает 204 статус, но в res.status = error
           monuments = monuments.filter((monument) => monument._id !== id)
 
           this.setState({monuments: monuments})
         })
         .catch((err) => {
-          modal["head"] = 'Delete monument error'
+          this.resetModalInfo()
+
+          modal["head"] = "Delete monument error"
           modal["body"] = err.message
+          modal["redirectBtnName"] = "Home"
+          modal["redirectURL"] = "/"
 
           this.setState({modal: modal})
-          this.changeModalState(true)
+          this.changeModalState()
         })
     }
 
     render() {
       const {classes} = this.props
-      const {isLoading, monuments,  modal} = this.state
-
+      const {monuments, isLoading, isModalOpen, modal} = this.state
 
       if (isLoading) {
         return (
@@ -100,29 +128,29 @@ class MonumentsSheet extends React.Component {
         <div id="users-sheet">
           <table className="table">
             <thead>
-            <tr className={classes.table_row}>
+            <tr className={classes.tableRow}>
               <th scope="col">
-                <div className={classes.table_head}>
+                <div className={classes.tableHead}>
                   Name
                 </div>
               </th>
               <th scope="col">
-                <div className={classes.table_head}>
+                <div className={classes.tableHead}>
                   Address
                 </div>
               </th>
               <th scope="col">
-                <div className={classes.table_head}>
+                <div className={classes.tableHead}>
                   Creator
                 </div>
               </th>
               <th scope="col">
-                <div className={classes.table_head}>
+                <div className={classes.tableHead}>
                   ID
                 </div>
               </th>
               <th scope="col">
-                <div className={classes.table_head}>
+                <div className={classes.tableHead}>
                   Image
                 </div>
               </th>
@@ -140,7 +168,7 @@ class MonumentsSheet extends React.Component {
             <tbody>
             {monuments.map((monument, index) => {
               return (
-                <tr key={index} className={classes.table_row}>
+                <tr key={index} className={classes.tableRow}>
                   <td>
                     <div>
                       {monument.name}
@@ -174,7 +202,7 @@ class MonumentsSheet extends React.Component {
                     <div>
                       <Button
                         href={`/edit_monument/${monument._id}`}
-                        className={classes.edit_btn}
+                        className={classes.editBtn}
                         variant="contained"
                         color="primary"
                       >
@@ -182,8 +210,8 @@ class MonumentsSheet extends React.Component {
                       </Button>
                       {localStorage.getItem('userRole') === 'superadmin' &&
                         <Button
-                          onClick={(e) => this.removeMonument(e, monument._id)}
-                          className={classes.edit_btn}
+                          onClick={(e) => this.handleRemove(e, monument._id)}
+                          className={classes.deleteBtn}
                           value={monument._id}
                           variant="contained"
                           color="secondary"
@@ -199,20 +227,23 @@ class MonumentsSheet extends React.Component {
             </tbody>
           </table>
           {!monuments.length &&
-            <div className={classes.monuments_state}>
+            <div className={classes.monumentsState}>
               <h2>MonumentsDB is empty!</h2>
               Let's create <a href={'/create_monument'}>new monument</a>!
             </div>
           }
-          {modal.isOpen ?
+          {isModalOpen ?
             <ModalForm
               head={modal.head}
               body={modal.body}
               redirect_url={modal.redirectURL}
               redirect_btn_name={modal.redirectBtnName}
-              show={modal.isOpen}
+              close_btn_name={modal.closeBtnName}
+              show={isModalOpen}
+              function={modal.function}
               onHide={() => this.changeModalState(false)}
-            /> : null}        </div>
+            /> : null}
+        </div>
       )
     }
 }

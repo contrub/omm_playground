@@ -1,15 +1,15 @@
 const styles = theme => ({
-  edit_btn: {
+  editBtn: {
     margin: theme.spacing(1),
     maxWidth: '50px',
     width: '50px'
   },
-  delete_btn: {
+  deleteBtn: {
     margin: theme.spacing(1),
-    maxWidth: '80px',
-    width: '80px'
+    maxWidth: '50px',
+    width: '50px'
   },
-  active_user_btn: {
+  activeBtn: {
     "&:disabled": {
       fontFamily: 'Verdana, Geneva, sans-serif',
       backgroundColor: "#28a745",
@@ -17,7 +17,7 @@ const styles = theme => ({
       width: '95px'
     }
   },
-  disable_user_btn: {
+  disableBtn: {
     "&:disabled": {
       fontFamily: 'Verdana, Geneva, sans-serif',
       backgroundColor: '#dc3545',
@@ -28,10 +28,10 @@ const styles = theme => ({
   table_head: {
     margin: theme.spacing(1)
   },
-  table_cell: {
+  tableCell: {
     margin: theme.spacing(1)
   },
-  table_row: {
+  tableRow: {
     textAlign: 'center'
   }
 })

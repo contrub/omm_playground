@@ -17,12 +17,15 @@ const verifyAction = async (req, action) => {
       const currentPermissions = Object.values(permissions)[Object.keys(permissions).indexOf(userRole)]
 
       if (!currentPermissions.includes(action)) {
-        throw ApiError.custom(403, 'Access denied')
+        throw ApiError.custom(403, "Access denied")
       }
     })
     .catch((err) => {
-      // console.log(err)
-      throw ApiError.internal('MongoDB error')
+      if (err instanceof ApiError) {
+        throw ApiError.custom(err.statusCode, err.message)
+      } else {
+        throw ApiError.internal("MongoDB error")
+      }
     })
 }
 

@@ -38,7 +38,6 @@ class CreateUser extends React.Component {
       password: '',
     },
     modal: {
-      isOpen: false,
       body: '',
       head: '',
       redirectURL: '/users_sheet',
@@ -47,21 +46,25 @@ class CreateUser extends React.Component {
     errors: {
       validation: ''
     },
-    isValid: false
+    isValid: false,
+    isModalOpen: false,
+    isPasswordHidden: true
   }
 
-  changeModalState = (state) => {
-    let {modal} = this.state
-    modal["isOpen"] = state
+  changeModalState = () => {
+    let {isModalOpen} = this.state
 
-    this.setState({modal: modal})
+    this.setState({isModalOpen: !isModalOpen})
   }
 
-  handleFieldValidation = () => {
-    this.setState({isValid: emailValidation(this.state.inputs, this.state.errors)})
-    this.setState({isValid: passwordValidation(this.state.inputs)})
+  handleFieldValidation = (name) => {
+    let {inputs, errors} = this.state
 
-    document.getElementById('passwordRequirements').hidden = false
+    if (name === 'email') {
+      this.setState({isValid: emailValidation(inputs, errors)})
+    } else if (name === 'password') {
+      this.setState({isValid: passwordValidation(inputs, errors)})
+    }
   }
 
   contactSubmit = (e) => {
@@ -73,18 +76,8 @@ class CreateUser extends React.Component {
 
       inputs["token"] = Cookies.get('accessToken')
       UserService.createUser(inputs)
-        .then((res) => {
-          const email = res.data.email
-
-          if (email === undefined) {
-            modal["head"] = 'Something going wrong'
-            modal["body"] = 'Create user error'
-
-            this.setState({modal: modal})
-            this.changeModalState(true)
-          } else {
-            window.location.href = '/users_sheet'
-          }
+        .then(() => {
+          window.location.href = '/users_sheet'
         })
         .catch((err) => {
           modal["head"] = 'Server error'
@@ -96,7 +89,6 @@ class CreateUser extends React.Component {
     } else {
       errors["validation"] = "ValidationError"
 
-      this.handleFieldValidation()
       this.setState({errors: errors})
     }
   }
@@ -105,17 +97,20 @@ class CreateUser extends React.Component {
     let inputs = this.state.inputs
 
     inputs[input] = e.target.value
+
     this.setState({input: inputs[input]})
-    this.handleFieldValidation()
+    this.handleFieldValidation(input)
   }
 
   showPassword = () => {
-    document.getElementById('password').type === 'password' ? document.getElementById('password').type = 'text' : document.getElementById('password').type = 'password'
+    let {isPasswordHidden} = this.state
+
+    this.setState({isPasswordHidden: !isPasswordHidden})
   }
 
   render() {
     const {classes} = this.props
-    const {inputs, errors, modal} = this.state
+    const {inputs, errors, modal, isModalOpen, isPasswordHidden} = this.state
 
     return (
       <div>
@@ -141,7 +136,7 @@ class CreateUser extends React.Component {
                 autoComplete="email"
                 autoFocus
               />
-              <div className={classes.errors}>{errors["email"]}</div>
+              <div className={classes.emailRequirement}>{errors["email"]}</div>
               <TextField
                 onChange={this.handleChange.bind(this, "password")}
                 value={inputs["password"]}
@@ -159,39 +154,37 @@ class CreateUser extends React.Component {
                 fullWidth
                 name="password"
                 label="Password"
-                type="password"
+                type={isPasswordHidden ? 'password' : 'text'}
                 id="password"
                 autoComplete="current-password"
               />
-              <ul id='passwordRequirements' hidden>
-                <li className={classes.pass_requirement} id='quantityCheck'>At least 8 characters</li>
-                <li className={classes.pass_requirement} id='numberCheck'>Contains at least 1 number</li>
-                <li className={classes.pass_requirement} id='lowercaseCheck'>Contains at least lowercase letter</li>
-                <li className={classes.pass_requirement} id='uppercaseCheck'>Contains at least uppercase letter</li>
-                <li className={classes.pass_requirement} id='specialCharacterCheck'>Contains a special character (!@#%&)</li>
+              <ul className={classes.passwordRequirements}>
+                {!errors["quantityCheck"] && <li>At least 8 characters</li>}
+                {!errors["numberCheck"] && <li>Contains at least 1 number</li>}
+                {!errors["lowercaseCheck"] && <li>Contains at least lowercase letter</li>}
+                {!errors["uppercaseCheck"] && <li>Contains at least uppercase letter</li>}
+                {!errors["specialCharacterCheck"] && <li>Contains a special character (!@#%&)</li>}
               </ul>
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 color="primary"
-                className={classes.submit_btn}
+                className={classes.submitBtn}
               >
                 Create
               </Button>
-              <div className={classes.errors}>
-                {errors.validation}
-              </div>
+              <div className={classes.validError}>{errors.validation}</div>
             </form>
           </div>
         </Container>
-        {modal.isOpen ?
+        {isModalOpen ?
           <ModalForm
             head={modal.head}
             body={modal.body}
             redirect_url={modal.redirectURL}
             redirect_btn_name={modal.redirectBtnName}
-            show={modal.isOpen}
+            show={isModalOpen}
             onHide={() => this.changeModalState(false)}
           /> : null}
       </div>

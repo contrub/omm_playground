@@ -6,14 +6,28 @@ import { Modal } from "react-bootstrap";
 import Button from "@material-ui/core/Button";
 
 const ModalForm = (props) => {
+  const handleClick = () => {
+    if (props.function) {
+      performFunction()
+    } else {
+      redirect()
+    }
+  }
+
   const redirect = () => {
     window.location.href = props.redirect_url
+  }
+
+  const performFunction = () => {
+    props.function()
+    props.onHide()
   }
 
   return (
       <>
         <Modal
-          {...props}
+          onHide={props.onHide}
+          show={props.show}
           centered
           backdrop="static"
           keyboard={false}
@@ -23,16 +37,16 @@ const ModalForm = (props) => {
           </Modal.Header>
           <Modal.Body>{props.body}</Modal.Body>
           <Modal.Footer>
-            {props.redirect_url
+            {(props.redirect_btn_name)
               ?
-              <Button variant="contained" color="inherit" onClick={() => redirect()}>
+              <Button variant="contained" color="inherit" onClick={() => handleClick()}>
                 {props.redirect_btn_name}
               </Button>
             :
               null
             }
             <Button variant="contained" color="primary" onClick={props.onHide}>
-              Close
+              {props.close_btn_name ? props.close_btn_name : 'Close'}
             </Button>
           </Modal.Footer>
         </Modal>

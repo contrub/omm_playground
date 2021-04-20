@@ -8,9 +8,8 @@ async function request(url, params, method = "GET") {
     }
   };
 
-  if (params !== undefined && params.token !== undefined) {
+  if (params && params.token) {
     options.headers["authorization"] = `Bearer ${params.token}`
-    delete params.token
   }
 
   if (params) {
@@ -23,17 +22,20 @@ async function request(url, params, method = "GET") {
 
   const response = await fetch(_apiHost + url, options);
 
-  if (response.status !== 200) {
-    return generateErrorResponse(
-      "The server responded with an unexpected status."
-    );
-  }
-
-  try {
-    return await response.json();
-  } catch (e) {
-    return response;
-  }
+  return new Promise((resolve, reject) => {
+    if (response.ok) {
+      if (response.status !== 204) {
+        resolve(response.json())
+      } else {
+        resolve()
+      }
+    } else {
+      response.text()
+        .then((errorMessage) => {
+          reject(new Error(errorMessage))
+        })
+    }
+  })
 }
 
 function objectToQueryString(obj) {
@@ -42,12 +44,12 @@ function objectToQueryString(obj) {
     .join("&");
 }
 
-function generateErrorResponse(message) {
-  return {
-    status: "error",
-    message
-  };
-}
+// function generateErrorResponse(message) {
+//   return {
+//     status: "error",
+//     message
+//   };
+// }
 
 function get(url, params) {
   return request(url, params);
