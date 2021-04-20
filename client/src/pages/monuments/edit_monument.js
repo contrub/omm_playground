@@ -96,7 +96,6 @@ class EditMonument extends React.Component {
 
     if (this.state.isValid) {
       inputs["token"] = Cookies.get('accessToken')
-      inputs["imagePublicID"] = imagePublicID
 
       MonumentService.updateMonument(inputs)
         .then(() => {
