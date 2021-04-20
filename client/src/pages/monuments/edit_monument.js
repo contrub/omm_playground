@@ -95,9 +95,6 @@ class EditMonument extends React.Component {
     e.preventDefault()
 
     if (this.state.isValid) {
-      const imageURL = inputs.imageURL
-      const imagePublicID = imageURL.split('/')[7] + '/' + imageURL.split('/')[8].split('.')[0]
-
       inputs["token"] = Cookies.get('accessToken')
       inputs["imagePublicID"] = imagePublicID
 
@@ -189,9 +186,7 @@ class EditMonument extends React.Component {
               fullWidth
               multiline
             />
-            <div className={classes.validation_name_error}>{errors.name}</div>
             <TextField
-              onChange={this.handleChange.bind(this, "address")}
               value={inputs["address"]}
               variant="outlined"
               margin="normal"
@@ -201,6 +196,7 @@ class EditMonument extends React.Component {
               rows={1}
               fullWidth
               multiline
+              disabled
             />
             <TextField
               onChange={this.handleChange.bind(this, "creator")}
