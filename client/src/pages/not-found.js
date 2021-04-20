@@ -36,7 +36,7 @@ class NotFoundPage extends React.Component {
               <div className="error-actions">
                 <Button
                   onClick={() => redirect('/')}
-                  className={classes.btn_home}
+                  className={classes.homeBtn}
                   startIcon={<HomeIcon/>}
                   variant="contained"
                   color="primary"
@@ -45,7 +45,7 @@ class NotFoundPage extends React.Component {
                 </Button>
                 <Button
                   onClick={() => redirect('mailto:omm.helper@gmail.com')}
-                  className={classes.btn_support}
+                  className={classes.supportBtn}
                   startIcon={<HelpOutlineIcon/>}
                   variant="outlined"
                   color="primary"

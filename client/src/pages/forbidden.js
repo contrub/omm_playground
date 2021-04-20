@@ -36,7 +36,7 @@ class ForbiddenPage extends React.Component {
               <div className="error-actions">
                 <Button
                   startIcon={<HomeIcon/>}
-                  className={classes.btn_home}
+                  className={classes.homeBtn}
                   variant="contained"
                   color="primary"
                 >
@@ -45,7 +45,7 @@ class ForbiddenPage extends React.Component {
                 <Button
                   onClick={contactSupport}
                   startIcon={<HelpOutlineIcon/>}
-                  className={classes.btn_support}
+                  className={classes.supportBtn}
                   variant="outlined"
                   color="primary"
                 >

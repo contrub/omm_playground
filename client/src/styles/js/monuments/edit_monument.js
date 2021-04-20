@@ -13,27 +13,20 @@ const styles = theme => ({
     marginTop: theme.spacing(1),
     width: '100%'
   },
-  remove_btn: {
-    margin: theme.spacing(0, 0, 2)
-  },
-  edit_btn: {
+  editBtn: {
     margin: theme.spacing(1, 0, 2)
   },
-  form_control: {
-    margin: theme.spacing(1),
-    // minWidth: '180px'
-  },
-  validation_image_error: {
+  validationImageError: {
     margin: theme.spacing(1, 0, 1),
     textAlign: 'center',
     color: 'red'
   },
-  upload_btn: {
+  uploadBtn: {
     margin: theme.spacing(1, 0, 2),
     textAlign: 'center',
     display: 'block'
   },
-  image_preview: {
+  imagePreview: {
     margin: theme.spacing(0, 'auto'),
     borderRadius: '10px',
     maxHeight: '200px',

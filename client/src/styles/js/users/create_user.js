@@ -13,20 +13,25 @@ const styles = theme => ({
     marginTop: theme.spacing(1),
     width: '100%',
   },
-  submit_btn: {
+  submitBtn: {
     margin: theme.spacing(1, 0, 2),
   },
-  errors: {
-    fontFamily: 'Gill Sans',
+  emailRequirement: {
+    margin: theme.spacing(1, 0, 1),
     textAlign: 'center',
+    color: 'red',
+  },
+  passwordRequirements: {
+    margin: theme.spacing(1),
+    fontFamily: 'Gill Sans',
     fontSize: '18px',
     color: 'red'
   },
-  pass_requirement: {
-    fontFamily: 'Gill Sans',
-    fontSize: '18px',
-    color: 'red'
-  }
+  validError: {
+    textAlign: 'center',
+    color: 'red',
+    margin: '0 0 16px'
+  },
 });
 
 export default styles

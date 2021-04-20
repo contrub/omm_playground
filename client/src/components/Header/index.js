@@ -1,18 +1,16 @@
-import React from 'react';
+// React components
+import React from "react";
 
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
-import AppBar from '@material-ui/core/AppBar';
+// Material-UI components
+import {makeStyles} from '@material-ui/core/styles';
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import Toolbar from "@material-ui/core/Toolbar";
+import Button from "@material-ui/core/Button";
+import AppBar from "@material-ui/core/AppBar";
 
-import MenuIcon from '@material-ui/icons/Menu';
-
-import { makeStyles } from '@material-ui/core/styles';
-
-import Cookies from "js-cookie";
-
-// import Search from './search';
+// Material-UI icons
+import MenuIcon from "@material-ui/icons/Menu";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,8 +25,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const logout = () => {
-  Cookies.remove('accessToken')
-  window.location.href = '/login'
+  window.location.href = '/logout'
 }
 
 const Header = (props) => {
@@ -45,7 +42,7 @@ const Header = (props) => {
         </Typography>
         {/*<Search submitSearch={props.submitSearch}/>*/}
         {props.isLogged && <Button color="inherit" onClick={logout}>Logout</Button>}
-        {!props.isLogged && <Button color="inherit" href='/login'>Login</Button>}
+        {!props.isLogged && <Button color="inherit" onClick={() => window.location.href = '/login'}>Login</Button>}
       </Toolbar>
     </AppBar>
   )

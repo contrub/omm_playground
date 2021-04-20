@@ -10,15 +10,15 @@ const MonumentSchema = new Schema({
   },
   description: {
     type: String,
-    default: 'Неизвестно'
+    default: 'Unknown'
   },
   creator: {
     type: String,
-    default: 'Неизвестно'
+    default: 'Unknown'
   },
   address: {
     type: String,
-    default: 'Неизвестно'
+    default: 'Unknown'
   },
   buildDate: {
     type: Date,

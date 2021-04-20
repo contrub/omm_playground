@@ -13,13 +13,10 @@ const styles = theme => ({
     width: '100%',
     marginTop: theme.spacing(1)
   },
-  remove_btn: {
-    margin: theme.spacing(0, 0, 2)
-  },
-  edit_btn: {
+  editBtn: {
     margin: theme.spacing(1, 0, 2)
   },
-  form_control: {
+  formControl: {
     margin: theme.spacing(1),
     minWidth: 180
   }

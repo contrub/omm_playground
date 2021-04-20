@@ -15,17 +15,26 @@ const signIn = async (req, res, next) => {
   try {
     const email = req.body.email
 
-    await UserService.isUserActive(req, res)
+    await UserService.isUserExist(req)
+
+    if (!req.isUserExist) {
+      throw ApiError.custom(404, "Couldn't find user")
+    }
+
     await UserService.isUserDataExist(req, res)
 
-    if (req.isUserDataExist && req.isUserActive) {
+    if (!req.isUserDataExist) {
+      throw ApiError.custom(401, "Incorrect password")
+    }
+
+    await UserService.isUserActive(req, res)
+
+    if (!req.isUserActive) {
+      throw ApiError.custom(403, "User temporary disabled")
+    } else {
       await jwt.generateAccessToken(req, {email: email})
 
       res.send({accessToken: `Bearer ${req.accessToken}`})
-    } else if (!req.isUserActive) {
-      res.send({message: "User temporary disabled"})
-    } else {
-      res.send({message: "Login payload incorrect"})
     }
   } catch (err) {
     // console.log(err)
@@ -43,7 +52,7 @@ const signUp = async (req, res, next) => {
     await jwt.generateAccessToken(req, {email: email})
 
     if (req.isUserExist) {
-      res.send({message: "User already exist!"})
+      throw ApiError.custom(401, "User already exists!")
     } else {
       Users.createUser(req, res)
     }
@@ -69,13 +78,17 @@ const userRole = async (req, res, next) => {
           res.send({userRole: user[0] === undefined ? 'guest' : user[0].userRole})
         })
         .catch((err) => {
-          res.send({userRole: 'viewer'})
-          console.log(err)
+          // console.log(err)
+          throw ApiError.internal("MongoDB error")
         })
     }
   } catch (err) {
     // console.log(err)
-    res.send({userRole: 'guest'})
+    if (err instanceof ApiError) {
+      throw ApiError.custom(err.statusCode, err.message)
+    } else {
+      throw ApiError.internal("MongoDB error")
+    }
   }
 }
 
@@ -84,11 +97,14 @@ const updatePasswordRequest = async (req, res, next) => {
     const email = req.body.email
 
     await UserService.isUserExist(req, res)
-    await jwt.generateAccessToken(req, {email: email}, {expiresIn: '60s'})
+
+    console.log(req.isUserExist)
 
     if (!req.isUserExist) {
-      throw ApiError.custom(200, 'User undefined')
+      throw ApiError.custom(401, "Couldn't find user")
     }
+
+    await jwt.generateAccessToken(req, {email: email}, {expiresIn: '1s'})
 
     const token = req.accessToken
     const output =
@@ -121,16 +137,16 @@ const updatePasswordRequest = async (req, res, next) => {
       html: output
     }
 
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        throw ApiError.internal(`${process.env.TRANSPORTER_SERVICE} error`)
-        console.log(err)
-      } else {
-        // console.log('Message sent: %s', info.messageId)
-        res.sendStatus(200)
-      }
-    })
+    const transporterResult = await transporter.sendMail(mailOptions)
+
+    if (!transporterResult instanceof Error) {
+      throw ApiError.internal(`${process.env.TRANSPORTER_SERVICE} service error`)
+    }
+
+    res.status(200).send({message: `Check your email - ${email} (will expire in 10 minutes)`})
+
   } catch (err) {
+    console.log(err)
     // console.log(err)
     next(err)
   }
@@ -142,7 +158,7 @@ const updatePassword = async (req, res, next) => {
     await jwt.decodeAccessToken(req, res, next)
 
     if (req.decoded.email === undefined) {
-      res.send({message: "User undefined"})
+      throw ApiError.custom(404, "Couldn't find user")
     } else {
       req.params.email = req.decoded.email
       req.body.email = req.decoded.email

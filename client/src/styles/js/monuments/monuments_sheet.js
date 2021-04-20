@@ -4,24 +4,25 @@ const styles = theme => ({
     maxHeight: '300px',
     maxWidth: '200px'
   },
-  edit_btn: {
+  editBtn: {
     margin: theme.spacing(1, 'auto'),
     display: 'block',
     maxWidth: '50px',
     width: '50px'
   },
-  delete_btn: {
+  deleteBtn: {
     margin: theme.spacing(1, 'auto'),
-    maxWidth: '80px',
-    width: '80px'
+    display: 'block',
+    maxWidth: '50px',
+    width: '50px'
   },
-  table_head: {
+  tableHead: {
     margin: theme.spacing(1)
   },
-  table_row: {
+  tableRow: {
     textAlign: 'center'
   },
-  monuments_state: {
+  monumentsState: {
     textAlign: 'center'
   }
 })
