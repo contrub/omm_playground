@@ -30,8 +30,7 @@ class Monuments extends React.Component{
 
     MonumentService.fetchMonuments()
       .then((res) => {
-        console.log(res)
-        //this.setState({monuments: res, isLoading: false})
+        this.setState({monuments: res, isLoading: false})
       })
       .catch((err) => {
         console.log(err.message)
