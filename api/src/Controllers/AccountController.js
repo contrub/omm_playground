@@ -98,13 +98,11 @@ const updatePasswordRequest = async (req, res, next) => {
 
     await UserService.isUserExist(req, res)
 
-    console.log(req.isUserExist)
-
     if (!req.isUserExist) {
       throw ApiError.custom(401, "Couldn't find user")
     }
 
-    await jwt.generateAccessToken(req, {email: email}, {expiresIn: '1s'})
+    await jwt.generateAccessToken(req, {email: email}, {expiresIn: '600s'})
 
     const token = req.accessToken
     const output =
@@ -146,7 +144,6 @@ const updatePasswordRequest = async (req, res, next) => {
     res.status(200).send({message: `Check your email - ${email} (will expire in 10 minutes)`})
 
   } catch (err) {
-    console.log(err)
     // console.log(err)
     next(err)
   }

@@ -36,7 +36,7 @@ decodeAccessToken = (req, res) => {
 
 verifyAccessToken = (req, res) => {
   const authHeader = req.headers['authorization']
-  
+
   if (authHeader === undefined) {
     throw ApiError.custom(401, "AccessToken undefined")
   } else {

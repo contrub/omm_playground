@@ -50,23 +50,28 @@ class SignIn extends React.Component {
     }
   }
 
-  contactSubmit = (e) => {
-    e.preventDefault()
-
-    let {inputs, errors} = this.state
+  handleFieldValidation = () => {
+    const {inputs} = this.state
 
     if (!isEmpty(inputs.email) && !isEmpty(inputs.password)) {
+      this.setState({isValid: true})
+    } else {
+      this.setState({isValid: false})
+    }
+  }
+
+  contactSubmit = async (e) => {
+    let {inputs, errors} = this.state
+
+    e.preventDefault()
+
+    await this.handleFieldValidation()
+
+    if (this.state.isValid) {
       AuthService.login({email: inputs.email, password: inputs.password})
         .then((res) => {
-          console.log(res)
-          if (res.message) {
-            errors["validation"] = res.message
-
-            this.setState({errors: errors})
-          } else if (res.accessToken) {
-            Cookies.set('accessToken', res.accessToken.split(' ')[1])
-            window.location.href = '/'
-          }
+          Cookies.set('accessToken', res.accessToken.split(' ')[1])
+          window.location.href = '/'
         })
         .catch((err) => {
           errors["validation"] = err.message

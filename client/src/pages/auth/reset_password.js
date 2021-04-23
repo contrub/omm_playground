@@ -45,9 +45,12 @@ class PasswordReset extends React.Component {
       redirectBtnName: ''
     },
     errors: {
-      pass: '',
-      pass1: '',
-      validError: ''
+      specialCharacterCheck: false,
+      uppercaseCheck: false,
+      lowercaseCheck: false,
+      quantityCheck: false,
+      numberCheck: false,
+      passwordCopy: ""
     },
     token: '',
     isValid: false,
@@ -80,12 +83,12 @@ class PasswordReset extends React.Component {
   handleFieldValidation = () => {
     let {inputs, errors} = this.state
 
-    errors["validError"] = ""
+    const isPasswordValid = passwordValidation(inputs, errors)
+    const isPasswordCopyValid = passwordCopyValidation(inputs, errors)
 
-    this.setState({isValid: passwordValidation(inputs, errors)})
-    this.setState({isValid: passwordCopyValidation(inputs, errors)})
+    this.setState({isValid: isPasswordValid})
+    this.setState({isValid: isPasswordCopyValid})
 
-    this.setState({errors: errors})
   }
 
   handleChange = (input, e) => {
@@ -104,12 +107,12 @@ class PasswordReset extends React.Component {
     this.setState({isPasswordHidden: !isPasswordHidden})
   }
 
-  contactSubmit = (e) => {
+  contactSubmit = async (e) => {
     let {inputs, token, modal} = this.state
 
-    this.handleFieldValidation()
-
     e.preventDefault()
+
+    await this.handleFieldValidation()
 
     if (this.state.isValid) {
       AuthService.updatePassword({token: token, password: inputs.password})
