@@ -117,11 +117,12 @@ class SignUp extends React.Component {
   }
 
   handleChange = (input, e) => {
-    let {inputs} = this.state
+    let {inputs, errors} = this.state
 
     inputs[input] = e.target.value
 
     this.setState({input: inputs[input]})
+    passwordValidation(inputs, errors)
   }
 
   showPassword = () => {
