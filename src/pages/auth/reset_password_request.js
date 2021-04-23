@@ -71,7 +71,7 @@ class PasswordResetRequest extends React.Component {
   }
 
   contactSubmit = async (e) => {
-    const {inputs, errors, isValid, modal} = this.state
+    let {inputs, errors, isValid, modal} = this.state
 
     e.preventDefault()
 
