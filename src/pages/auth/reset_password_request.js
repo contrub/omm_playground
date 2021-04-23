@@ -70,12 +70,12 @@ class PasswordResetRequest extends React.Component {
     this.setState({isValid: emailValidation(inputs, errors)})
   }
 
-  contactSubmit = (e) => {
+  contactSubmit = async (e) => {
     const {inputs, errors, isValid, modal} = this.state
 
     e.preventDefault()
 
-    this.handleFieldValidation()
+    await this.handleFieldValidation()
 
     if (isValid) {
       AuthService.resetPassword({email: inputs.email})

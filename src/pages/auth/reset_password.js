@@ -83,11 +83,8 @@ class PasswordReset extends React.Component {
   handleFieldValidation = () => {
     let {inputs, errors} = this.state
 
-    const isPasswordValid = passwordValidation(inputs, errors)
-    const isPasswordCopyValid = passwordCopyValidation(inputs, errors)
-
-    this.setState({isValid: isPasswordValid})
-    this.setState({isValid: isPasswordCopyValid})
+    this.setState({isValid: passwordValidation(inputs, errors)})
+    this.setState({isValid: passwordCopyValidation(inputs, errors)})
 
   }
 
