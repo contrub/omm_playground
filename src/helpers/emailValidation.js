@@ -7,7 +7,7 @@ function emailValidation(inputs, errors) {
     return false
   } else {
     if (!isEmail(inputs["email"])) {
-      errors["email"] = "Email is not valid";
+      errors["email"] = "Email isn't valid";
       return false
     } else {
       errors["email"] = ""
