@@ -119,8 +119,8 @@ const updatePasswordRequest = async (req, res, next) => {
     `
     let transporter = nodemailer.createTransport({
       service: "gmail",
-      port: 587,
-      secure: false, // true for 465, false for other ports
+      port: 465, // or 587
+      secure: true, // true for 465, false for other ports
       auth: {
         user: process.env.SMTP_EMAIL,
         pass: process.env.SMTP_PASSWORD
