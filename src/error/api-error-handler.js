@@ -6,7 +6,7 @@ function apiErrorHandler(err, req, res, next) {
   if (err instanceof ApiError) {
     res.status(err.statusCode).send(err.message)
   } else {
-    res.status(500).send()
+    res.status(500).send(err.message)
   }
 }
 
