@@ -73,12 +73,12 @@ class SignUp extends React.Component {
     this.setState({isValid: passwordCopyValidation(inputs, errors)})
   }
 
-  contactSubmit = (e) => {
+  contactSubmit = async (e) => {
     e.preventDefault()
 
     let {inputs, modal} = this.state
 
-    this.handleFieldValidation()
+    await this.handleFieldValidation()
 
     if (this.state.isValid) {
       AuthService.signup({email: inputs.email, password: inputs.password})
