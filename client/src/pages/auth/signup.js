@@ -59,34 +59,28 @@ class SignUp extends React.Component {
         numberCheck: false
       },
       passwordCopy: '',
-      validError: ''
     },
     isModalOpen: false,
     isPasswordHidden: true,
     isValid: false
   }
 
-  handleFieldValidation = (name) => {
+  handleFieldValidation = () => {
     let {inputs, errors} = this.state
 
-    errors["validError"] = ""
-
-    if (name === 'email') {
-      this.setState({isValid: emailValidation(inputs, errors)})
-    } else if (name === 'password') {
-      this.setState({isValid: passwordValidation(inputs, errors)})
-    } else if (name === 'passwordCopy') {
-      this.setState({isValid: passwordCopyValidation(inputs, errors)})
-    }
+    this.setState({isValid: emailValidation(inputs, errors)})
+    this.setState({isValid: passwordValidation(inputs, errors)})
+    this.setState({isValid: passwordCopyValidation(inputs, errors)})
   }
 
   contactSubmit = (e) => {
     e.preventDefault()
 
-    let {inputs, errors, modal} = this.state
+    let {inputs, modal} = this.state
+
+    this.handleFieldValidation()
 
     if (this.state.isValid) {
-
       AuthService.signup({email: inputs.email, password: inputs.password})
         .then((res) => {
           const accessToken = res.accessToken
@@ -113,12 +107,6 @@ class SignUp extends React.Component {
           this.setState({modal: modal})
           this.changeModalState()
         })
-    } else {
-      this.handleFieldValidation()
-
-      errors["validError"] = "Validation error"
-
-      this.setState({errors: errors})
     }
   }
 
@@ -134,7 +122,6 @@ class SignUp extends React.Component {
     inputs[input] = e.target.value
 
     this.setState({input: inputs[input]})
-    this.handleFieldValidation(input)
   }
 
   showPassword = () => {
@@ -217,7 +204,6 @@ class SignUp extends React.Component {
               Sign Up
             </Button>
           </form>
-          <div className={classes.errors}>{errors["validError"]}</div>
           <Grid container>
             <Grid item xs>
               <Link to='/reset_request'>

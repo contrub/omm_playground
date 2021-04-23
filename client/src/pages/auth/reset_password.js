@@ -71,32 +71,30 @@ class PasswordReset extends React.Component {
     this.setState({token: this.props.location.search.split('=')[1]})
   }
 
-  changeModalState = (state) => {
+  changeModalState = () => {
     let {isModalOpen} = this.state
 
     this.setState({isModalOpen: !isModalOpen})
   }
 
-  handleFieldValidation = (name) => {
-    let {inputs, errors, isValid} = this.state
+  handleFieldValidation = () => {
+    let {inputs, errors} = this.state
+
+    errors["validError"] = ""
 
     this.setState({isValid: passwordValidation(inputs, errors)})
     this.setState({isValid: passwordCopyValidation(inputs, errors)})
 
-    if (isValid) {
-      errors["validError"] = ""
-
-      this.setState({errors: errors})
-    }
+    this.setState({errors: errors})
   }
 
   handleChange = (input, e) => {
-    let {inputs} = this.state
+    let {inputs, errors} = this.state
 
     inputs[input] = e.target.value
 
     this.setState({input: inputs[input]})
-    this.handleFieldValidation(input)
+    passwordValidation(inputs, errors)
   }
 
 
@@ -109,6 +107,8 @@ class PasswordReset extends React.Component {
   contactSubmit = (e) => {
     let {inputs, token, modal} = this.state
 
+    this.handleFieldValidation()
+
     e.preventDefault()
 
     if (this.state.isValid) {
@@ -118,7 +118,7 @@ class PasswordReset extends React.Component {
         })
         .catch((err) => {
           modal["head"] = 'Server error'
-          modal["body"] = err.message === 'JWT validation error' ? 'Token lifetime expires (10 minutes)' : err.message
+          modal["body"] = err.message
           modal["redirectURL"] = '/reset_request'
           modal["redirectBtnName"] = 'NEW-REQUEST'
 

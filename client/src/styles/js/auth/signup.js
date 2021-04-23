@@ -23,6 +23,7 @@ const styles = theme => ({
   },
   emailRequirement: {
     margin: theme.spacing(1, 0, 1),
+    fontFamily: 'Gill Sans',
     textAlign: 'center',
     color: 'red',
   },

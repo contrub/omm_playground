@@ -75,6 +75,8 @@ class PasswordResetRequest extends React.Component {
 
     e.preventDefault()
 
+    this.handleFieldValidation()
+
     if (isValid) {
       AuthService.resetPassword({email: inputs.email})
         .then((res) => {
@@ -87,7 +89,6 @@ class PasswordResetRequest extends React.Component {
           this.changeModalState()
         })
         .catch((err) => {
-          console.log(err)
           modal["head"] = 'Server error'
           modal["body"] = err.message
           modal["redirectURL"] = '/'
@@ -109,7 +110,6 @@ class PasswordResetRequest extends React.Component {
     inputs[input] = e.target.value
 
     this.setState({input: inputs[input]})
-    this.handleFieldValidation()
   }
 
   render() {

@@ -147,9 +147,7 @@ class SignIn extends React.Component {
                 Sign In
               </Button>
             </form>
-            <div className={classes.validError}>
-              {errors.validation}
-            </div>
+            <div className={classes.validError}>{errors.validation}</div>
             <Grid container>
               <Grid item xs>
                 <Link to='/reset_request'>
