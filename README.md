@@ -1,173 +1,68 @@
-![MERN Logo](https://www.3ritechnologies.com/wp-content/uploads/2019/11/MERN-Stack-Training-in-Pune-e1575022427244.png)
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-# OpenMonumentMap App
-This repository contains a simple MERN app as part of the education project, associated with monuments
-# Table of Contents
+## Available Scripts
 
----
+In the project directory, you can run:
 
-# Project Layout
+### `yarn start`
 
-   Here is the project layout:
-   ```
-   omm_playground
-   |__ api/ (Express Backend)
-       |__ src/
-       |__ package.json
-       |__ package-lock.json
-       |__ Dockerfile
-       |__ yarn.lock
-   |__ client/ (React App Frontend)
-       |__ public/
-       |__ src/
-       |__ package.json
-       |__ package-lock.json
-       |__ Dockerfile
-       |__ yarn.lock
-   |__ docker-compose.yml
-   ```
-## Third party services
+Runs the app in the development mode.<br />
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-[Cloudinary](https://cloudinary.com/) - cloud service that offers a solution to a web application's entire image management
+The page will reload if you make edits.<br />
+You will also see any lint errors in the console.
 
-[MongoDB Atlas Database](https://www.mongodb.com/cloud/atlas) - cloud database service, built-in automation for resource and workload optimization
+### `yarn test`
 
----
+Launches the test runner in the interactive watch mode.<br />
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-## Setting up the `omm_playground` project
+### `yarn build`
 
-1. Start by cloning the project with the command:
+Builds the app for production to the `build` folder.<br />
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-```
-$ git clone https://github.com/EgorOnufreychuk/omm_playground
-```
+The build is minified and the filenames include the hashes.<br />
+Your app is ready to be deployed!
 
-2. Create .env in /api directory
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-```
-ACCESS_TOKEN_SECRET = 
-TOKEN_LIFE = 
+### `yarn eject`
 
-PORT = 8000
-WHITELIST = ['http://localhost:3000']
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-TRANSPORTER_SERVICE = 
-RESET_PASSWORD_TEMPLATE_LINK = 
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-NODE_ENV = development
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-CLOUDINARY_API_SECRET = 
-CLOUDINARY_API_KEY = 
-CLOUDINARY_NAME = 
-CLOUDINATY_FOLDER = 
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-DEFAULT_MONUMENT_IMAGE_URL = 
-DEFAULT_MONUMENT_IMAGE_PUBLIC_ID = 
+## Learn More
 
-MONGODB_URL = 
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-SMTP_EMAIL = 
-SMTP_PASSWORD = 
-```
+To learn React, check out the [React documentation](https://reactjs.org/).
 
-## Setting up the `omm_playground` project with Docker
+### Code Splitting
 
-For those that are not interested in setting up the project manually or would simply not have to worry about downloading node.js and its dependencies, were created a Dockerfile and docker-compose.yml file to help create a container with everything you would need to run the **omm_playground**.
+This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
 
-### Install Docker
+### Analyzing the Bundle Size
 
-To make this as easy as possible, we will be using *Docker Compose* to create our container.
+This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
 
-- If you do not have Docker yet, start by downloading it if you are on a Mac or Windows:
-  https://www.docker.com/products/docker-desktop
+### Making a Progressive Web App
 
-- Or if you are on a Linux Distribution follow the directions here:
-  https://docs.docker.com/compose/install/
-  
-- To confirm you have Docker Compose, open up your terminal and run the command below:
+This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
 
-  ```
-  $ docker-compose --version
-  docker-compose version 1.27.4, build 40524192
-  ```
-  
-- Go into the project directory to build and run the container with:
+### Advanced Configuration
 
-  ```
-  $ cd omm_playground/
-  $ docker-compose up --build
-  ```
+This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
 
-**This may take a few moments**
+### Deployment
 
-Navigate to http://localhost:3000 to view the site on the local server.
-It should look something like this:
+This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
 
-![omm_playground_react_+ nodejs success](https://github.com/EgorOnufreychuk/omm-images/blob/main/1.jpg)
+### `yarn build` fails to minify
 
- ### Cleaning up the Container and Image
-
-  - To stop the container from running, use `<Ctrl-C>` twice.
-  - To close down the container use the command:
-
-  ```
-  $ docker-compose down
-  ```
-  - Then to clean up the container and image which we are no longer using use the command:
-
-  ```
-  $ docker system prune -fa
-  ```
-
-  - Confirm that the container and image is no longer there with:
-
-  ```
-  $ docker system df -v
-  ```
-## Setting up the `omm_playground` project manually
-  
-  - If you either did not want to use Docker or was curious to build the mern-app manually follow the directions below.
-  
-  - Start by installing the dependencies for both Express and React:
-  ```
-  $ cd omm_playground/
-  $ cd api/
-  $ npm install
-  $ cd ../client/
-  $ npm install
-  ```
-  
-  Let's first check to see what our React frontend looks like.
-  - To run the React server use the command in client directory:
-  ```
-  $ npm start
-  ```
-  - Now if you go to http://localhost:3000, you should see something like this:
-  
-  ![omm-playground_react](https://github.com/EgorOnufreychuk/omm-images/blob/main/Frontend%20success.png)
-  
-  The API is not working because well, we are not running our backend yet!
-  Let's do that now.
-  
-  - In another terminal session run the command `npm run serve` at the root directory of the project as we did with the frontend.
-  It should look something like this:
-  
-  ![mern-app_run_server](https://github.com/EgorOnufreychuk/omm-images/blob/main/Backend%20success.png)
-  
-  You can see that we have the express server running on port `8000`.
-  
-  - Now switch back to the http://localhost:3000 and refresh the page. You should see the Message at the bottom be updated!
-  
-  ![omm_playground_react + nodejs_success](https://github.com/EgorOnufreychuk/omm-images/blob/main/1.jpg)
-  
-  We have two servers running, one for the React frontend and one for the Express backend. 
-  
-## Authors
-
-Created by:
-
-- [Naumenko Hennadii](https://github.com/hnaumenko) (expirenced developer from [Lohika](https://www.lohika.com.ua/))
-- [Yehor Onufreychuk](https://github.com/EgorOnufreychuk) (Backend + Frontend)
-- [Daniil Polishchuk](https://github.com/DaniilPolishchuk) (Monuments + MonumentById pages)
-- [Yaroslav Stoliarchuk](https://github.com/StoliarchukYaroslav) (About page)
-  
+This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
