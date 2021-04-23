@@ -1,4 +1,6 @@
-const _apiHost = "http://localhost:8000";
+require('dotenv').config()
+
+const _apiHost = process.env.REACT_APP_API_HOST
 
 async function request(url, params, method = "GET") {
   const options = {
