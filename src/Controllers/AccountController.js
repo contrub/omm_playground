@@ -137,7 +137,7 @@ const updatePasswordRequest = async (req, res, next) => {
 
     const transporterResult = await transporter.sendMail(mailOptions)
 
-    if (!transporterResult instanceof Error) {
+    if (transporterResult instanceof Error) {
       throw ApiError.internal(`${process.env.TRANSPORTER_SERVICE} service error`)
     }
 
