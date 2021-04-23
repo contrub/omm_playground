@@ -71,13 +71,13 @@ class PasswordResetRequest extends React.Component {
   }
 
   contactSubmit = async (e) => {
-    let {inputs, errors, isValid, modal} = this.state
+    let {inputs, errors, modal} = this.state
 
     e.preventDefault()
 
     await this.handleFieldValidation()
 
-    if (isValid) {
+    if (this.state.isValid) {
       AuthService.resetPassword({email: inputs.email})
         .then((res) => {
           modal["head"] = 'Recovery link has been sent!'
