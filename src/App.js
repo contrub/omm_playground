@@ -40,12 +40,17 @@ import Cookies from 'js-cookie';
 class App extends Component {
   state = {
     isDrawerOpen: false,
-    isListOpen: false
+    isListOpen: false,
+    isLogged: false
   }
 
   componentDidMount = () => {
     AuthService.getRole({token: Cookies.get('accessToken')})
       .then((res) => {
+        if (res.userRole !== "guest") {
+          this.setState({isLogged: true})
+        }
+
         localStorage.setItem("userRole", res.userRole)
       })
       .catch((err) => {
@@ -76,15 +81,9 @@ class App extends Component {
     })
   }
 
-  isLogged = () => {
-    if (localStorage.getItem("userRole") !== "guest") {
-      return true
-    } else {
-      return false
-    }
-  }
-
   render() {
+    let {isLogged, isDrawerOpen, isListOpen} = this.state
+
     return (
       <BrowserRouter>
         <div className="App">
@@ -93,13 +92,13 @@ class App extends Component {
             name="Open Monument Map"
             btntext="login"
             openDrawer={this.openDrawer}
-            isLogged={this.isLogged()}
+            isLogged={isLogged}
           />
           <Sidebar
             userRole={localStorage.getItem('userRole')}
             closeDrawer={this.closeDrawer}
-            isDrawerOpen={this.state.isDrawerOpen}
-            isListOpen={this.state.isListOpen}
+            isDrawerOpen={isDrawerOpen}
+            isListOpen={isListOpen}
             handleListClick={this.handleListClick}
             onLinkClick={this.closeDrawer}
           />
