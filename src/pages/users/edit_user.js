@@ -143,7 +143,7 @@ class EditUser extends React.Component {
       )
     }
 
-    if (inputs.email === this.props.userInfo.email) {
+    if (inputs.email && inputs.email === this.props.userInfo.email) {
       return <Redirect to="/users_sheet"/>
     }
 
