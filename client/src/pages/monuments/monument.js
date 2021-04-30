@@ -54,7 +54,7 @@ class MonumentById extends React.Component {
       <div id="main">
         <h1 id="name"> {monumentInfo.name} </h1>
         <img
-          // id="imgs"
+          id="imgs"
           alt="monument_image"
           src={monumentInfo.imageURL}
         />

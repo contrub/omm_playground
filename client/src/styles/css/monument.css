@@ -1,6 +1,6 @@
 #main{
-    /* display: grid; */
-    padding : 1%;
+    display: grid; 
+     padding : 1%;
 }
 
 .title {
@@ -13,11 +13,12 @@
     font-size: 50px;
 }
 
-/* #imgs {
-    height: 50%;
-    width: 50%;
+#imgs {
+    
     margin: 2%;
-} */
+    
+    width: 50%;
+}
 
 #Description, #Address, #Creator, #Date {
     font-family: 'Times New Roman', Times, serif;
