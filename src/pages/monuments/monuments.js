@@ -61,7 +61,7 @@ class Monuments extends React.Component{
                       <CardMedia
                         component="img"
                         image={entry.imageURL}
-                        title="Learn more"
+                        title={entry.name}
                         id="img"
                       />
                       <CardContent>
