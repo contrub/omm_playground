@@ -67,7 +67,7 @@ const userRole = async (req, res, next) => {
     const authHeader = req.headers['authorization']
 
     if (authHeader === undefined) {
-      res.send({userRole: 'guest'})
+      res.send({userRole: 'guest', email: undefined})
     } else {
       await jwt.verifyAccessToken(req, res)
       await jwt.decodeAccessToken(req, res)
@@ -75,7 +75,11 @@ const userRole = async (req, res, next) => {
       User
         .find({email: req.decoded.email})
         .then((user) => {
-          res.send({userRole: user[0] === undefined ? 'guest' : user[0].userRole})
+          if (user[0]) {
+            res.send({userRole: user[0].userRole, email: user[0].email})
+          } else {
+            res.send({userRole: 'guest', email: req.decoded.email})
+          }
         })
         .catch((err) => {
           // console.log(err)
@@ -85,9 +89,9 @@ const userRole = async (req, res, next) => {
   } catch (err) {
     // console.log(err)
     if (err instanceof ApiError) {
-      throw ApiError.custom(err.statusCode, err.message)
+      next(err)
     } else {
-      throw ApiError.internal("MongoDB error")
+      next(ApiError.internal("MongoDB error"))
     }
   }
 }
@@ -119,8 +123,8 @@ const updatePasswordRequest = async (req, res, next) => {
     `
     let transporter = nodemailer.createTransport({
       service: "gmail",
-      port: 465, // or 587
-      secure: true, // true for 465, false for other ports
+      port: 587,
+      secure: false, // true for 465, false for other ports
       auth: {
         user: process.env.SMTP_EMAIL,
         pass: process.env.SMTP_PASSWORD
@@ -137,7 +141,7 @@ const updatePasswordRequest = async (req, res, next) => {
 
     const transporterResult = await transporter.sendMail(mailOptions)
 
-    if (transporterResult instanceof Error) {
+    if (!transporterResult instanceof Error) {
       throw ApiError.internal(`${process.env.TRANSPORTER_SERVICE} service error`)
     }
 
