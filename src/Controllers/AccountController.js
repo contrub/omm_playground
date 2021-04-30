@@ -78,7 +78,7 @@ const userRole = async (req, res, next) => {
           if (user[0]) {
             res.send({userRole: user[0].userRole, email: user[0].email})
           } else {
-            res.send({userRole: 'guest', email: req.decoded.email})
+            res.send({userRole: 'guest', email: undefined})
           }
         })
         .catch((err) => {
