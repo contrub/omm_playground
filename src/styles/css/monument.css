@@ -1,5 +1,5 @@
 #main{
-    /* display: grid; */
+    display: grid;
     padding : 1%;
 }
 
@@ -13,11 +13,10 @@
     font-size: 50px;
 }
 
-/* #imgs {
-    height: 50%;
-    width: 50%;
+#imgs {
     margin: 2%;
-} */
+    width: 50%;
+}
 
 #Description, #Address, #Creator, #Date {
     font-family: 'Times New Roman', Times, serif;
