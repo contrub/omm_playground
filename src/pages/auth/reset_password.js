@@ -83,8 +83,11 @@ class PasswordReset extends React.Component {
   handleFieldValidation = () => {
     let {inputs, errors} = this.state
 
-    this.setState({isValid: passwordValidation(inputs, errors)})
-    this.setState({isValid: passwordCopyValidation(inputs, errors)})
+    const isPasswordValid = passwordValidation(inputs, errors)
+    const isPasswordCopyValid = passwordCopyValidation(inputs, errors)
+
+    this.setState({isValid: isPasswordValid})
+    this.setState({isValid: isPasswordCopyValid})
 
   }
 
@@ -140,7 +143,7 @@ class PasswordReset extends React.Component {
             <EmailIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Reset Password
+            Enter a new password
           </Typography>
           <form className={classes.form} noValidate>
             <TextField

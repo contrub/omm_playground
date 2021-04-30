@@ -70,14 +70,14 @@ class PasswordResetRequest extends React.Component {
     this.setState({isValid: emailValidation(inputs, errors)})
   }
 
-  contactSubmit = async (e) => {
-    let {inputs, errors, modal} = this.state
+  contactSubmit = (e) => {
+    const {inputs, errors, isValid, modal} = this.state
 
     e.preventDefault()
 
-    await this.handleFieldValidation()
+    this.handleFieldValidation()
 
-    if (this.state.isValid) {
+    if (isValid) {
       AuthService.resetPassword({email: inputs.email})
         .then((res) => {
           modal["head"] = 'Recovery link has been sent!'
@@ -130,22 +130,20 @@ class PasswordResetRequest extends React.Component {
             <TextField
               onChange={this.handleChange.bind(this, "email")}
               value={inputs["email"]}
+              label="Email Address"
               variant="outlined"
               margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
               name="email"
-              autoComplete="email"
-              autoFocus
+              id="email"
+              fullWidth
+              required
             />
             <Button
               type="submit"
-              fullWidth
+              className={classes.submitBtn}
               variant="contained"
               color="primary"
-              className={classes.submitBtn}
+              fullWidth
             >
               Send reset link
             </Button>

@@ -49,19 +49,22 @@ class CreateMonument extends React.Component {
     this.setState({isModalOpen: !isModalOpen})
   }
 
+  isBlank = (str) => {
+    return (!str || /^\s*$/.test(str))
+  }
 
   handleFormValidation = () => {
-    let {inputs, errors, isValid} = this.state
+    let {inputs, errors} = this.state
 
-    if (isEmpty(inputs.name)) {
+    if (isEmpty(inputs.name) || this.isBlank(inputs.name)) {
       errors["name"] = 'Cannot be empty!'
-      isValid = false
+      this.setState({isValid: false})
     } else {
       errors["name"] = ''
-      isValid = true
+      this.setState({isValid: true})
     }
 
-    this.setState({isValid: isValid, errors: errors})
+    this.setState({errors: errors})
   }
 
   handleChange = (input, e) => {
@@ -70,10 +73,6 @@ class CreateMonument extends React.Component {
     inputs[input] = e.target.value
 
     this.setState({input: inputs[input]})
-
-    if (input === "name") {
-      this.handleFormValidation()
-    }
   }
 
   handleFileInputChange = (e) => {
@@ -107,14 +106,13 @@ class CreateMonument extends React.Component {
     }
   }
 
-  contactSubmit = (e) => {
+  contactSubmit = async (e) => {
     e.preventDefault()
 
-    this.handleFormValidation()
+    await this.handleFormValidation()
 
     if (this.state.isValid) {
-      let {inputs} = this.state
-      let {modal} = this.state
+      let {inputs, modal} = this.state
 
       inputs["token"] = Cookies.get('accessToken')
       MonumentService.createMonument(inputs)

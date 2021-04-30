@@ -13,14 +13,25 @@ import HomeIcon from "@material-ui/icons/Home";
 // Custom styles
 import styles from "../styles/js/forbidden";
 import "../styles/css/forbidden.css";
+import {Redirect} from "react-router-dom";
 
 class ForbiddenPage extends React.Component {
+  state = {
+    isHomeRedirect: false,
+    isContactRedirect: false
+  }
+
   render() {
     const pathname = this.props.location.state.from.pathname
     const {classes} = this.props
+    const {isContactRedirect, isHomeRedirect} = this.state
 
-    const contactSupport = () => {
-      window.location.href = "mailto:omm.helper@gmail.com"
+    if (isContactRedirect) {
+      window.location.href = 'mailto:omm.helper@gmail.com'
+    }
+
+    if (isHomeRedirect) {
+      return (<Redirect to="/"/>)
     }
 
     return (
@@ -35,6 +46,7 @@ class ForbiddenPage extends React.Component {
               </div>
               <div className="error-actions">
                 <Button
+                  onClick={() => {this.setState({isHomeRedirect: true})}}
                   startIcon={<HomeIcon/>}
                   className={classes.homeBtn}
                   variant="contained"
@@ -43,7 +55,7 @@ class ForbiddenPage extends React.Component {
                   Take Me Home
                 </Button>
                 <Button
-                  onClick={contactSupport}
+                  onClick={() => {this.setState({isContactRedirect: true})}}
                   startIcon={<HelpOutlineIcon/>}
                   className={classes.supportBtn}
                   variant="outlined"

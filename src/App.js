@@ -12,6 +12,7 @@ import Header from './components/Header/';
 
 // General pages
 import ForbiddenPage from "./pages/forbidden";
+import NotFoundPage from "./pages/not-found";
 import About from "./pages/about";
 
 // Auth pages
@@ -48,6 +49,8 @@ class App extends Component {
     AuthService.getRole({token: Cookies.get('accessToken')})
       .then((res) => {
         if (res.userRole !== "guest") {
+          localStorage.setItem("email", res.email)
+
           this.setState({isLogged: true})
         }
 
@@ -82,7 +85,7 @@ class App extends Component {
   }
 
   render() {
-    let {isLogged, isDrawerOpen, isListOpen} = this.state
+    const {isLogged, isDrawerOpen, isListOpen} = this.state
 
     return (
       <BrowserRouter>
@@ -93,6 +96,7 @@ class App extends Component {
             btntext="login"
             openDrawer={this.openDrawer}
             isLogged={isLogged}
+            email={localStorage.getItem('email')}
           />
           <Sidebar
             userRole={localStorage.getItem('userRole')}
@@ -104,8 +108,6 @@ class App extends Component {
           />
         </div>
         <Switch>
-          {/*<Route exact path="/" component={Monuments}/>*/}
-          {/*<Route path="/monuments/:id" component={MonumentById}/>*/}
           <Route path="/forbidden" component={ForbiddenPage}/>
           <Route path="/about" component={About}/>
           <Route path="/reset_request" component={PasswordResetRequest}/>
@@ -115,12 +117,13 @@ class App extends Component {
           <Route path="/logout" component={Logout}/>
           <Route exact path="/" component={Monuments}/>
           <Route path="/monuments/:id" component={MonumentById}/>
-          <ProtectedRoute path="/users_sheet" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={UsersSheet}/>
-          <ProtectedRoute path="/edit_user/:email" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={EditUser}/>
+          <ProtectedRoute path="/users_sheet" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={UsersSheet} email={localStorage.getItem('email')}/>
+          <ProtectedRoute path="/edit_user/:email" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={EditUser} email={localStorage.getItem('email')}/>
           <ProtectedRoute path="/create_user" requiredRole={"superadmin"} userRole={localStorage.getItem('userRole')} component={CreateUser}/>
           <ProtectedRoute path="/monuments_sheet" requiredRole={"admin"} userRole={localStorage.getItem('userRole')}  component={MonumentsSheet}/>
           <ProtectedRoute path="/edit_monument/:id" requiredRole={"admin"} userRole={localStorage.getItem('userRole')} component={EditMonument}/>
           <ProtectedRoute path="/create_monument" requiredRole={"admin"} userRole={localStorage.getItem('userRole')} component={CreateMonument}/>
+          <Route path='*' exact={true} component={NotFoundPage} />
         </Switch>
       </BrowserRouter>
     )
