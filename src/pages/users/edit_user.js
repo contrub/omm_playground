@@ -1,6 +1,5 @@
 // React components
 import React from "react";
-import {Redirect} from "react-router-dom";
 import {withRouter} from "react-router";
 
 // Custom components
@@ -141,10 +140,6 @@ class EditUser extends React.Component {
       return (
         <Loading/>
       )
-    }
-
-    if (inputs.email && inputs.email === this.props.userInfo.email) {
-      return <Redirect to="/users_sheet"/>
     }
 
     return (
