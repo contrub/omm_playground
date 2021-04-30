@@ -1,106 +1,172 @@
 // Local modules
 const UserService = require('../services/UserService')
-const AuthController = require('./AuthController')
+const validator = require('../helpers/validator')
+const User = require('../models/User')
 const Users = require('../routes/Users')
 const jwt = require('../helpers/jwt')
 
 // Local class
 const ApiError = require('../error/ApiError')
 
-const fetchUsers = async (req, res, next) => {
-  try {
-    await jwt.verifyAccessToken(req, res)
-    await jwt.decodeAccessToken(req, res)
+// Third party modules
+const nodemailer = require('nodemailer')
 
-    if (req.decoded.email === undefined) {
-      throw ApiError.custom(403, "JWT decoding error")
+const signIn = async (req, res, next) => {
+  try {
+    const email = req.body.email
+
+    await UserService.isUserExist(req)
+
+    if (!req.isUserExist) {
+      throw ApiError.custom(404, "Couldn't find user")
     }
 
-    await AuthController.verifyAction(req, 'users:list', res)
+    await UserService.isUserDataExist(req, res)
 
-    Users.getUsers(req, res)
+    if (!req.isUserDataExist) {
+      throw ApiError.custom(401, "Incorrect password")
+    }
+
+    await UserService.isUserActive(req, res)
+
+    if (!req.isUserActive) {
+      throw ApiError.custom(403, "User temporary disabled")
+    } else {
+      await jwt.generateAccessToken(req, {email: email})
+
+      res.send({accessToken: `Bearer ${req.accessToken}`})
+    }
   } catch (err) {
     // console.log(err)
     next(err)
   }
 }
 
-const getUser = async (req, res, next) => {
+const signUp = async (req, res, next) => {
   try {
-    await jwt.verifyAccessToken(req, res)
-    await jwt.decodeAccessToken(req, res)
+    const email = req.body.email
 
-    if (req.decoded.email === undefined) {
-      throw ApiError.custom(403, "JWT decoding error")
+    await UserService.isUserExist(req, res)
+    await validator.isEmailCompliance(req, res)
+    await validator.isPasswordCompliance(req, res)
+    await jwt.generateAccessToken(req, {email: email})
+
+    if (req.isUserExist) {
+      throw ApiError.custom(401, "User already exists!")
+    } else {
+      Users.createUser(req, res)
     }
-
-    await AuthController.verifyAction(req, 'users:get-by-id', res)
-
-    Users.getUser(req, res)
   } catch (err) {
     // console.log(err)
     next(err)
   }
 }
 
-const createUser = async (req, res, next) => {
+const userRole = async (req, res, next) => {
   try {
-    await jwt.verifyAccessToken(req, res)
-    await jwt.decodeAccessToken(req, res)
+    const authHeader = req.headers['authorization']
 
-    if (req.decoded.email === undefined) {
-      throw ApiError.custom(403, "JWT decoding error")
+    if (authHeader === undefined) {
+      res.send({userRole: 'guest', email: undefined})
+    } else {
+      await jwt.verifyAccessToken(req, res)
+      await jwt.decodeAccessToken(req, res)
+
+      User
+        .find({email: req.decoded.email})
+        .then((user) => {
+          if (user[0]) {
+            res.send({userRole: user[0].userRole, email: user[0].email})
+          } else {
+            res.send({userRole: 'guest', email: req.decoded.email})
+          }
+        })
+        .catch((err) => {
+          // console.log(err)
+          throw ApiError.internal("MongoDB error")
+        })
     }
-
-    await AuthController.verifyAction(req, 'users:create-new', res)
-
-    Users.createUser(req, res)
   } catch (err) {
     // console.log(err)
-    next(err)
+    if (err instanceof ApiError) {
+      next(err)
+    } else {
+      next(ApiError.internal("MongoDB error"))
+    }
   }
 }
 
-const updateUser = async (req, res, next) => {
+const updatePasswordRequest = async (req, res, next) => {
   try {
-    await jwt.verifyAccessToken(req, res)
-    await jwt.decodeAccessToken(req, res)
-
-    if (req.decoded.email === undefined) {
-      throw ApiError.custom(403, "JWT decoding error")
-    }
-
-    await AuthController.verifyAction(req, 'users:update-by-id', res)
+    const email = req.body.email
 
     await UserService.isUserExist(req, res)
 
     if (!req.isUserExist) {
-      throw ApiError.custom(404, "User not found")
+      throw ApiError.custom(401, "Couldn't find user")
     }
 
-    Users.updateUser(req, res)
+    await jwt.generateAccessToken(req, {email: email}, {expiresIn: '600s'})
+
+    const token = req.accessToken
+    const output =
+      `
+        <p>
+            A request to reset your password has been made (valid for 10 minutes). If you did not make this request, simply ignore this email. If you did make this request just click the link below:
+        </p>
+        <p>
+            ${process.env.RESET_PASSWORD_TEMPLATE_LINK + token}
+        </p>
+        <p>
+            If the above URL does not work, try copying and pasting it into your browser. If you continue to experience problems please feel free to contact us.
+        </p>
+    `
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: process.env.SMTP_EMAIL,
+        pass: process.env.SMTP_PASSWORD
+      }
+    })
+
+    let mailOptions = {
+      from: `"OMM" <${process.env.SMTP_EMAIL}>`,
+      to: `${email}`,
+      subject: 'OMM - Password Reset Instructions',
+      text: 'Password Reset',
+      html: output
+    }
+
+    const transporterResult = await transporter.sendMail(mailOptions)
+
+    if (!transporterResult instanceof Error) {
+      throw ApiError.internal(`${process.env.TRANSPORTER_SERVICE} service error`)
+    }
+
+    res.status(200).send({message: `Check your email - ${email} (will expire in 10 minutes)`})
+
   } catch (err) {
     // console.log(err)
     next(err)
   }
 }
 
-const deleteUser = async (req, res, next) => {
+const updatePassword = async (req, res, next) => {
   try {
-    await jwt.verifyAccessToken(req, res)
-    await jwt.decodeAccessToken(req, res)
+    await jwt.verifyAccessToken(req, res, next)
+    await jwt.decodeAccessToken(req, res, next)
 
     if (req.decoded.email === undefined) {
-      throw ApiError.custom(403, "JWT decoding error")
+      throw ApiError.custom(404, "Couldn't find user")
+    } else {
+      req.params.email = req.decoded.email
+      req.body.email = req.decoded.email
     }
 
-    if (req.decoded.email === req.params.email) {
-      throw ApiError.custom(403, "Impossible delete yourself")
-    }
-
-    await AuthController.verifyAction(req, 'users:delete-by-id', res)
-
-    Users.deleteUser(req, res)
+    await UserService.isUserExist(req, res, next)
+    await Users.updateUser(req, res)
   } catch (err) {
     // console.log(err)
     next(err)
@@ -108,9 +174,9 @@ const deleteUser = async (req, res, next) => {
 }
 
 module.exports = {
-  fetchUsers: fetchUsers,
-  getUser: getUser,
-  createUser: createUser,
-  updateUser: updateUser,
-  deleteUser: deleteUser
+  SignIn: signIn,
+  SignUp: signUp,
+  UpdatePasswordRequest: updatePasswordRequest,
+  UpdatePassword: updatePassword,
+  UserRole: userRole
 }
