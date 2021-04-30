@@ -130,22 +130,20 @@ class PasswordResetRequest extends React.Component {
             <TextField
               onChange={this.handleChange.bind(this, "email")}
               value={inputs["email"]}
+              label="Email Address"
               variant="outlined"
               margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
               name="email"
-              autoComplete="email"
-              autoFocus
+              id="email"
+              fullWidth
+              required
             />
             <Button
               type="submit"
-              fullWidth
+              className={classes.submitBtn}
               variant="contained"
               color="primary"
-              className={classes.submitBtn}
+              fullWidth
             >
               Send reset link
             </Button>

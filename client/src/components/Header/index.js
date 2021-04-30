@@ -1,10 +1,12 @@
 // React components
 import React from "react";
+import {Link} from "react-router-dom";
 
 // Material-UI components
-import {makeStyles} from '@material-ui/core/styles';
-import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import {makeStyles} from '@material-ui/core/styles';
+import ListItem from '@material-ui/core/ListItem';
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
 import AppBar from "@material-ui/core/AppBar";
@@ -20,8 +22,19 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    flexGrow: 1,
+    flexGrow: 1
   },
+  titleLink: {
+    color: 'white',
+    '&:hover': {
+      color: '#A9A9A9',
+      textDecoration: 'none'
+    },
+  },
+  email: {
+    color: '#B0C4DE',
+    margin: theme.spacing(1)
+  }
 }));
 
 const logout = () => {
@@ -38,9 +51,11 @@ const Header = (props) => {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" className={classes.title}>
-          Open Monument Map
+          <ListItem component={Link} to="/" className={classes.titleLink}>
+            Open Monument Map
+          </ListItem>
         </Typography>
-        {/*<Search submitSearch={props.submitSearch}/>*/}
+        {props.email && <Typography className={classes.email}>({props.email})</Typography>}
         {props.isLogged && <Button color="inherit" onClick={logout}>Logout</Button>}
         {!props.isLogged && <Button color="inherit" onClick={() => window.location.href = '/login'}>Login</Button>}
       </Toolbar>

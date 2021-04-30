@@ -26,6 +26,11 @@ const styles = theme => ({
     textAlign: 'center',
     display: 'block'
   },
+  removeBtn: {
+    margin: theme.spacing(1, 0, 2),
+    textAlign: 'center',
+    display: 'block'
+  },
   imagePreview: {
     margin: theme.spacing(0, 'auto'),
     borderRadius: '10px',

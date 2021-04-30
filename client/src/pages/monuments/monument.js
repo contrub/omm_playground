@@ -12,12 +12,11 @@ import MonumentService from "../../services/MonumentService";
 // Custom styles
 import "../../styles/css/monument.css";
 
-// import ""
-
 class MonumentById extends React.Component {
   state = {
     monumentInfo: {},
-    isLoading: false
+    isLoading: false,
+    isError: false
   }
 
   componentDidMount = () => {
@@ -27,12 +26,17 @@ class MonumentById extends React.Component {
 
     MonumentService.getMonument({id: id})
       .then((res) => {
+        res["buildDate"] = res.buildDate.split('-')[0]
+
         this.setState({monumentInfo: res, isLoading: false})
+      })
+      .catch((err) => {
+        this.setState({isError: true, isLoading: false})
       })
   }
 
   render() {
-    const {monumentInfo, isLoading} = this.state
+    const {monumentInfo, isLoading, isError} = this.state
 
     if (isLoading) {
       return (
@@ -40,7 +44,7 @@ class MonumentById extends React.Component {
       )
     }
 
-    if (!isLoading && monumentInfo.name === undefined) {
+    if (isError) {
       return (
         <NotFoundPage/>
       )
@@ -58,7 +62,7 @@ class MonumentById extends React.Component {
         <ul>
           <li><p id="Address">Адрес - {monumentInfo.address}</p></li>
           <li><p id="Creator">Архитектор/скульптор - {monumentInfo.creator} </p></li>
-          <li><p id="Date">Дата постройки - {monumentInfo.buildDate.split('-')[0]} </p></li>
+          <li><p id="Date">Дата постройки - {monumentInfo.buildDate} </p></li>
         </ul>
        
       </div>

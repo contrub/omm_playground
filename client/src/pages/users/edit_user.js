@@ -1,5 +1,6 @@
 // React components
 import React from "react";
+import {Redirect} from "react-router-dom";
 import {withRouter} from "react-router";
 
 // Custom components
@@ -134,12 +135,16 @@ class EditUser extends React.Component {
 
   render() {
     const {classes} = this.props
-    const {selects, isLoading, isModalOpen, modal} = this.state
+    const {selects, inputs, isLoading, isModalOpen, modal} = this.state
 
     if (isLoading) {
       return (
         <Loading/>
       )
+    }
+
+    if (inputs.email === this.props.userInfo.email) {
+      return <Redirect to="/users_sheet"/>
     }
 
     return (

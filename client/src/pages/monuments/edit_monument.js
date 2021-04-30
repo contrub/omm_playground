@@ -30,6 +30,16 @@ import styles from "../../styles/js/monuments/edit_monument";
 class EditMonument extends React.Component {
   state = {
     user: [],
+    defaultInputs: {
+      description: '',
+      buildDate: '',
+      imageURL: '',
+      address: '',
+      creator: '',
+      base64: '',
+      name: '',
+      id: ''
+    },
     inputs: {
       description: '',
       buildDate: '',
@@ -50,8 +60,7 @@ class EditMonument extends React.Component {
       redirectURL: '/monuments_sheet',
       redirectBtnName: 'Monuments-sheet'
     },
-    isLoading: false,
-    isValid: true
+    isLoading: false
   }
 
   componentDidMount = async () => {
@@ -71,7 +80,7 @@ class EditMonument extends React.Component {
           this.setState({modal: modal, isLoading: false})
           this.changeModalState()
         } else {
-          this.setState({inputs: {description: res.description, imageURL: res.imageURL, address: res.address, creator: res.creator, name: res.name, buildDate: res.buildDate, id: res._id}, isLoading: false})
+          this.setState({inputs: {description: res.description, imageURL: res.imageURL, address: res.address, creator: res.creator, name: res.name, buildDate: res.buildDate, id: res._id}, defaultInputs: {description: res.description, imageURL: res.imageURL, address: res.address, creator: res.creator, name: res.name, buildDate: res.buildDate, id: res._id},isLoading: false})
         }
       })
       .catch((err) => {
@@ -90,11 +99,13 @@ class EditMonument extends React.Component {
   }
 
   contactSubmit = (e) => {
-    let {inputs, modal} = this.state
+    let {inputs, defaultInputs, modal} = this.state
 
     e.preventDefault()
 
-    if (this.state.isValid) {
+    if (JSON.stringify(inputs)===JSON.stringify(defaultInputs)) {
+      window.location.href = '/monuments_sheet'
+    } else {
       inputs["token"] = Cookies.get('accessToken')
 
       MonumentService.updateMonument(inputs)
@@ -211,7 +222,7 @@ class EditMonument extends React.Component {
             />
             <TextField
               value={inputs["buildDate"].split('T')[0] || ""}
-              onChange={this.handleChange.bind(this, "date")}
+              onChange={this.handleChange.bind(this, "buildDate")}
               variant="outlined"
               margin="normal"
               label="Date"

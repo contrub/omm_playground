@@ -143,7 +143,7 @@ class PasswordReset extends React.Component {
             <EmailIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Reset Password
+            Enter a new password
           </Typography>
           <form className={classes.form} noValidate>
             <TextField

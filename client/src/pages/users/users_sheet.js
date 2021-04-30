@@ -186,23 +186,45 @@ class UsersSheet extends React.Component {
                   </div>
                 </td>
                 <td>
-                  <div>
-                    <Button
-                      href={`/edit_user/${user.email}`}
-                      variant="contained"
-                      color="primary"
-                    >
-                      <EditIcon/>
-                    </Button>
-                    <Button
-                      onClick={(e) => this.handleRemove(e, user.email)}
-                      className={classes.deleteBtn}
-                      variant="contained"
-                      color="secondary"
-                    >
-                      <DeleteIcon/>
-                    </Button>
-                  </div>
+                  {user.email === localStorage.getItem('email') ?
+                    <div>
+                      <Button
+                        href={`/edit_user/${user.email}`}
+                        variant="contained"
+                        color="primary"
+                        disabled
+                      >
+                        <EditIcon/>
+                      </Button>
+                      <Button
+                        onClick={(e) => this.handleRemove(e, user.email)}
+                        className={classes.deleteBtn}
+                        variant="contained"
+                        color="secondary"
+                        disabled
+                      >
+                        <DeleteIcon/>
+                      </Button>
+                    </div>
+                    :
+                    <div>
+                      <Button
+                        href={`/edit_user/${user.email}`}
+                        variant="contained"
+                        color="primary"
+                      >
+                        <EditIcon/>
+                      </Button>
+                      <Button
+                        onClick={(e) => this.handleRemove(e, user.email)}
+                        className={classes.deleteBtn}
+                        variant="contained"
+                        color="secondary"
+                      >
+                        <DeleteIcon/>
+                      </Button>
+                    </div>
+                  }
                 </td>
               </tr>
             )

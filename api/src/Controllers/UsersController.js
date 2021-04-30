@@ -54,6 +54,12 @@ const createUser = async (req, res, next) => {
 
     await AuthController.verifyAction(req, 'users:create-new', res)
 
+    await UserService.isUserExist(req)
+
+    if (req.isUserExist) {
+      throw ApiError.custom(409, "User already exist")
+    }
+
     Users.createUser(req, res)
   } catch (err) {
     // console.log(err)
