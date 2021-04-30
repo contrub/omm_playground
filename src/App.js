@@ -52,8 +52,10 @@ class App extends Component {
           localStorage.setItem("email", res.email)
 
           this.setState({isLogged: true})
+        } else {
+          localStorage.setItem("email", undefined)
         }
-
+        
         localStorage.setItem("userRole", res.userRole)
       })
       .catch((err) => {
