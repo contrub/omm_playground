@@ -55,7 +55,7 @@ const Header = (props) => {
             Open Monument Map
           </ListItem>
         </Typography>
-        {props.email && <Typography className={classes.email}>({props.email})</Typography>}
+        {props.email !== undefined && <Typography className={classes.email}>({props.email})</Typography>}
         {props.isLogged && <Button color="inherit" onClick={logout}>Logout</Button>}
         {!props.isLogged && <Button color="inherit" onClick={() => window.location.href = '/login'}>Login</Button>}
       </Toolbar>
