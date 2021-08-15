@@ -103,7 +103,7 @@ To make this as easy as possible, we will be using *Docker Compose* to create ou
 Navigate to http://localhost:3000 to view the site on the local server.
 It should look something like this:
 
-![omm_playground_react_+ nodejs success](https://github.com/EgorOnufreychuk/omm-images/blob/main/1.jpg)
+![omm_playground_react_+ nodejs success](images/Final result.jpg)
 
  ### Cleaning up the Container and Image
 
@@ -144,7 +144,7 @@ It should look something like this:
   ```
   - Now if you go to http://localhost:3000, you should see something like this:
   
-  ![omm-playground_react](https://github.com/EgorOnufreychuk/omm-images/blob/main/Frontend%20success.png)
+  ![omm-playground_react](https://github.com/EgorOnufreychuk/omm_playground/blob/master/images/Frontend%20success.png)
   
   The API is not working because well, we are not running our backend yet!
   Let's do that now.
@@ -152,13 +152,13 @@ It should look something like this:
   - In another terminal session run the command `npm run serve` at the root directory of the project as we did with the frontend.
   It should look something like this:
   
-  ![mern-app_run_server](https://github.com/EgorOnufreychuk/omm-images/blob/main/Backend%20success.png)
+  ![mern-app_run_server](https://github.com/EgorOnufreychuk/omm_playground/blob/master/images/Backend%20success.png)
   
   You can see that we have the express server running on port `8000`.
   
   - Now switch back to the http://localhost:3000 and refresh the page. You should see the Message at the bottom be updated!
   
-  ![omm_playground_react + nodejs_success](https://github.com/EgorOnufreychuk/omm-images/blob/main/1.jpg)
+  ![omm_playground_react + nodejs_success](https://github.com/EgorOnufreychuk/omm_playground/blob/master/images/Final%20result.jpg)
   
   We have two servers running, one for the React frontend and one for the Express backend. 
   
