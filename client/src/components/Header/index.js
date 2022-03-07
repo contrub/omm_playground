@@ -1,18 +1,18 @@
-import React from 'react';
+// React components
+import React from "react";
+import {Link} from "react-router-dom";
 
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Toolbar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
-import AppBar from '@material-ui/core/AppBar';
+// Material-UI components
+import IconButton from "@material-ui/core/IconButton";
+import Typography from "@material-ui/core/Typography";
+import {makeStyles} from '@material-ui/core/styles';
+import ListItem from '@material-ui/core/ListItem';
+import Toolbar from "@material-ui/core/Toolbar";
+import Button from "@material-ui/core/Button";
+import AppBar from "@material-ui/core/AppBar";
 
-import MenuIcon from '@material-ui/icons/Menu';
-
-import { makeStyles } from '@material-ui/core/styles';
-
-import Cookies from "js-cookie";
-
-// import Search from './search';
+// Material-UI icons
+import MenuIcon from "@material-ui/icons/Menu";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,13 +22,23 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    flexGrow: 1,
+    flexGrow: 1
   },
+  titleLink: {
+    color: 'white',
+    '&:hover': {
+      color: '#A9A9A9',
+      textDecoration: 'none'
+    },
+  },
+  email: {
+    color: '#B0C4DE',
+    margin: theme.spacing(1)
+  }
 }));
 
 const logout = () => {
-  Cookies.remove('accessToken')
-  window.location.href = '/login'
+  window.location.href = '/logout'
 }
 
 const Header = (props) => {
@@ -41,11 +51,13 @@ const Header = (props) => {
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" className={classes.title}>
-          Open Monument Map
+          <ListItem component={Link} to="/" className={classes.titleLink}>
+            Open Monument Map
+          </ListItem>
         </Typography>
-        {/*<Search submitSearch={props.submitSearch}/>*/}
+        {props.email && <Typography className={classes.email}>({props.email})</Typography>}
         {props.isLogged && <Button color="inherit" onClick={logout}>Logout</Button>}
-        {!props.isLogged && <Button color="inherit" href='/login'>Login</Button>}
+        {!props.isLogged && <Button color="inherit" onClick={() => window.location.href = '/login'}>Login</Button>}
       </Toolbar>
     </AppBar>
   )

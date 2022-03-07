@@ -4,43 +4,41 @@ const lowercaseCheckRegex = new RegExp("^(?=.*[a-z])")
 const uppercaseCheckRegex = new RegExp("^(?=.*[A-Z])")
 const specialCheckRegex = new RegExp("^(?=.*[!@#%&])")
 
-function passwordValidation(inputs) {
+function passwordValidation(inputs, errors) {
   if (inputs["password"] !== undefined) {
     if (minCharactersRegex.test(inputs["password"])) {
-      document.getElementById('quantityCheck').hidden = true
+      errors["quantityCheck"] = true
     } else {
-      document.getElementById('quantityCheck').hidden = false
+      errors["quantityCheck"] = false
     }
 
     if (numberCheckRegex.test(inputs["password"])) {
-      document.getElementById('numberCheck').hidden = true
+      errors["numberCheck"] = true
     } else {
-      document.getElementById('numberCheck').hidden = false
+      errors["numberCheck"] = false
     }
 
     if (lowercaseCheckRegex.test(inputs["password"])) {
-      document.getElementById('lowercaseCheck').hidden = true
+      errors["lowercaseCheck"] = true
     } else {
-      document.getElementById('lowercaseCheck').hidden = false
+      errors["lowercaseCheck"] = false
     }
 
     if (uppercaseCheckRegex.test(inputs["password"])) {
-      document.getElementById('uppercaseCheck').hidden = true
+      errors["uppercaseCheck"] = true
     } else {
-      document.getElementById('uppercaseCheck').hidden = false
+      errors["uppercaseCheck"] = false
     }
 
     if (specialCheckRegex.test(inputs["password"])) {
-      document.getElementById('specialCharacterCheck').hidden = true
+      errors["specialCharacterCheck"] = true
     } else {
-      document.getElementById('specialCharacterCheck').hidden = false
+      errors["specialCharacterCheck"] = false
     }
 
     if (minCharactersRegex.test(inputs["password"]) && numberCheckRegex.test(inputs["password"]) && numberCheckRegex.test(inputs["password"]) && lowercaseCheckRegex.test(inputs["password"]) && uppercaseCheckRegex.test(inputs["password"]) && specialCheckRegex.test(inputs["password"])) {
-      document.getElementById('passwordRequirements').hidden = true
       return true
     } else {
-      document.getElementById('passwordRequirements').hidden = true
       return false
     }
   }

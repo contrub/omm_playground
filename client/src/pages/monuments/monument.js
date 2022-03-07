@@ -12,12 +12,11 @@ import MonumentService from "../../services/MonumentService";
 // Custom styles
 import "../../styles/css/monument.css";
 
-// import ""
-
 class MonumentById extends React.Component {
   state = {
     monumentInfo: {},
-    isLoading: false
+    isLoading: false,
+    isError: false
   }
 
   componentDidMount = () => {
@@ -27,13 +26,17 @@ class MonumentById extends React.Component {
 
     MonumentService.getMonument({id: id})
       .then((res) => {
+        res["buildDate"] = res.buildDate.split('-')[0]
+
         this.setState({monumentInfo: res, isLoading: false})
+      })
+      .catch((err) => {
+        this.setState({isError: true, isLoading: false})
       })
   }
 
   render() {
-    const {isLoading} = this.state
-    const {monumentInfo} = this.state
+    const {monumentInfo, isLoading, isError} = this.state
 
     if (isLoading) {
       return (
@@ -41,25 +44,25 @@ class MonumentById extends React.Component {
       )
     }
 
-    if (!isLoading && monumentInfo.name === undefined) {
+    if (isError) {
       return (
         <NotFoundPage/>
       )
     }
 
     return (
-      <div>
-        <h1 id="name"> {this.state.monumentInfo.name} </h1>
+      <div id="main">
+        <h1 id="name"> {monumentInfo.name} </h1>
         <img
           id="imgs"
           alt="monument_image"
-          src={this.state.monumentInfo.imageURL}
+          src={monumentInfo.imageURL}
         />
-        <p id="Description"> {this.state.monumentInfo.description} </p>
+        <p id="Description"> {monumentInfo.description} </p>
         <ul>
-          <li><p id="Address">Адрес - {this.state.monumentInfo.address}</p></li>
-          <li><p id="Creator">Архитектор/скульптор - {this.state.monumentInfo.creator} </p></li>
-          {/* <li><p id="Date">Дата постройки - {this.state.monumentInfo.date.getFullYear()} </p></li> */}
+          <li><p id="Address">Адрес - {monumentInfo.address}</p></li>
+          <li><p id="Creator">Архитектор/скульптор - {monumentInfo.creator} </p></li>
+          <li><p id="Date">Дата постройки - {monumentInfo.buildDate} </p></li>
         </ul>
        
       </div>
@@ -68,3 +71,4 @@ class MonumentById extends React.Component {
 }
 
 export default withRouter(MonumentById)
+

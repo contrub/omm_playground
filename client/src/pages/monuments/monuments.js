@@ -32,6 +32,9 @@ class Monuments extends React.Component{
       .then((res) => {
         this.setState({monuments: res, isLoading: false})
       })
+      .catch((err) => {
+        console.log(err.message)
+      })
   }
 
   openMonument = (id) => {
@@ -39,8 +42,7 @@ class Monuments extends React.Component{
   }
 
   render() {
-    const {monuments} = this.state
-    const {isLoading} = this.state
+    const {monuments, isLoading} = this.state
 
     if (isLoading) {
       return (
@@ -63,7 +65,7 @@ class Monuments extends React.Component{
                         id="img"
                       />
                       <CardContent>
-                        <Typography gutterBottom   align="center"  id="text">   
+                        <Typography gutterBottom   align="center"  id="text">
                         {/*   color="textPrimary" variant="h5"*/}
                           {entry.name}
                         </Typography>

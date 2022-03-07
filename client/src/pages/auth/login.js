@@ -18,48 +18,65 @@ import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 
 // Third party functions
-import isEmpty from "validator/lib/isEmpty";
 import Cookies from "js-cookie";
 
 // Local modules
 import AuthService from "../../services/AuthService";
 
+// Third party functions
+import isEmpty from "validator/lib/isEmpty";
+
 // Custom styles
 import styles from "../../styles/js/auth/login";
 
 class SignIn extends React.Component {
-
   state = {
     inputs: {
       email: '',
       password: ''
     },
     errors: {
+      email: '',
+      password: '',
       validation: ''
     },
     isValid: false,
-    isLogged: false
+    isPasswordHidden: true
   }
 
   componentDidMount = () => {
-    Cookies.get('accessToken') !== undefined && !isEmpty(Cookies.get('accessToken')) ? this.setState({isLogged: true}) : this.setState({isLogged: false})
+    if (Cookies.get('accessToken')) {
+      window.location.href = '/logout'
+    }
   }
 
-  contactSubmit = (e) => {
-    e.preventDefault()
-
-    let {inputs} = this.state
-    let {errors} = this.state
+  handleFieldValidation = () => {
+    const {inputs} = this.state
 
     if (!isEmpty(inputs.email) && !isEmpty(inputs.password)) {
+      this.setState({isValid: true})
+    } else {
+      this.setState({isValid: false})
+    }
+  }
+
+  contactSubmit = async (e) => {
+    let {inputs, errors} = this.state
+
+    e.preventDefault()
+
+    await this.handleFieldValidation()
+
+    if (this.state.isValid) {
       AuthService.login({email: inputs.email, password: inputs.password})
         .then((res) => {
-          if (res.message) {
-            document.getElementById('validError').innerText = res.message
-          } else if (res.accessToken) {
-            Cookies.set('accessToken', res.accessToken.split(' ')[1])
-            window.location.href = '/'
-          }
+          Cookies.set('accessToken', res.accessToken.split(' ')[1])
+          window.location.href = '/'
+        })
+        .catch((err) => {
+          errors["validation"] = err.message
+
+          this.setState({errors: errors})
         })
     } else {
       errors["validation"] = "Form can't be empty!"
@@ -72,24 +89,21 @@ class SignIn extends React.Component {
 
     inputs[input] = e.target.value
 
-    this.setState({input: inputs[input], errors: {validation: ''}});
+    this.setState({input: inputs[input]});
   }
 
   showPassword = () => {
-    document.getElementById('password').type === 'password' ? document.getElementById('password').type = 'text' : document.getElementById('password').type = 'password'
+    let {isPasswordHidden} = this.state
+
+    this.setState({isPasswordHidden: !isPasswordHidden})
   }
 
   render() {
     const {classes} = this.props
-    const {inputs} = this.state
-    const {errors} = this.state
-
-    if (this.state.isLogged) {
-      window.location.href = '/'
-    }
+    const {inputs, errors, isPasswordHidden} = this.state
 
     return (
-        <Container id="login-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
+        <Container id="login-page" component="main" maxWidth="xs" onSubmit={this.contactSubmit.bind(this)}>
           <CssBaseline />
           <div className={classes.paper}>
             <Avatar className={classes.avatar}/>
@@ -102,16 +116,16 @@ class SignIn extends React.Component {
                 value={inputs["email"]}
                 variant="outlined"
                 margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
+                label="Email"
                 name="email"
-                autoComplete="email"
-                autoFocus
+                id="email"
+                fullWidth
+                required
               />
+              <div className={classes.emailRequirement}>{errors["email"]}</div>
               <TextField
                 onChange={this.handleChange.bind(this, "password")}
+                type={isPasswordHidden ? 'password' : 'text'}
                 value={inputs["password"]}
                 InputProps={{
                   endAdornment: (
@@ -123,27 +137,22 @@ class SignIn extends React.Component {
                 }}
                 variant="outlined"
                 margin="normal"
-                required
-                fullWidth
-                name="password"
                 label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
+                name="password"
+                fullWidth
+                required
               />
               <Button
-                type="submit"
-                fullWidth
+                className={classes.submit_btn}
                 variant="contained"
                 color="primary"
-                className={classes.submit_btn}
+                type="submit"
+                fullWidth
               >
                 Sign In
               </Button>
             </form>
-            <div className={classes.valid_error}>
-              {errors.validation}
-            </div>
+            <div className={classes.validError}>{errors.validation}</div>
             <Grid container>
               <Grid item xs>
                 <Link to='/reset_request'>

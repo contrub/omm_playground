@@ -1,6 +1,7 @@
 // React components
 import React from "react";
 import {withRouter} from "react-router";
+import {Redirect} from "react-router-dom";
 
 // Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
@@ -15,12 +16,22 @@ import styles from "../styles/js/not-found";
 import "../styles/css/not-found.css";
 
 class NotFoundPage extends React.Component {
+  state = {
+    isHomeRedirect: false,
+    isContactRedirect: false
+  }
+
   render() {
     const pathname = this.props.location.pathname
     const {classes} = this.props
+    const {isContactRedirect, isHomeRedirect} = this.state
 
-    const redirect = (url) => {
-      window.location.href = url
+    if (isContactRedirect) {
+      window.location.href = 'mailto:omm.helper@gmail.com'
+    }
+
+    if (isHomeRedirect) {
+      return (<Redirect to="/"/>)
     }
 
     return (
@@ -35,8 +46,8 @@ class NotFoundPage extends React.Component {
               </div>
               <div className="error-actions">
                 <Button
-                  onClick={() => redirect('/')}
-                  className={classes.btn_home}
+                  onClick={() => {this.setState({isHomeRedirect: true})}}
+                  className={classes.homeBtn}
                   startIcon={<HomeIcon/>}
                   variant="contained"
                   color="primary"
@@ -44,8 +55,8 @@ class NotFoundPage extends React.Component {
                   Take Me Home
                 </Button>
                 <Button
-                  onClick={() => redirect('mailto:omm.helper@gmail.com')}
-                  className={classes.btn_support}
+                  onClick={() => {this.setState({isContactRedirect: true})}}
+                  className={classes.supportBtn}
                   startIcon={<HelpOutlineIcon/>}
                   variant="outlined"
                   color="primary"

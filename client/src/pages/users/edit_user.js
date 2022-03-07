@@ -1,5 +1,6 @@
 // React components
 import React from "react";
+import {Redirect} from "react-router-dom";
 import {withRouter} from "react-router";
 
 // Custom components
@@ -43,8 +44,8 @@ class EditUser extends React.Component {
       role: {10: 'viewer', 20: 'admin', 30: 'superadmin'},
       status: {10: 'active', 20: 'disable'}
     },
+    isModalOpen: false,
     modal: {
-      isOpen: false,
       head: '',
       body: '',
       redirectBtnName: 'Monuments-sheet',
@@ -66,8 +67,8 @@ class EditUser extends React.Component {
       .then((res) => {
         const email = res[0].email
 
-        if (email === undefined) {
-          modal["head"] = 'Something going wrong'
+        if (!email) {
+          modal["head"] = "Something going wrong"
           modal["body"] = res.message
 
           this.setState({modal: modal})
@@ -80,69 +81,61 @@ class EditUser extends React.Component {
         }
       })
       .catch((err) => {
-        modal["head"] = 'Server error'
+        modal["head"] = "Server error"
         modal["body"] = err.message
 
         this.setState({modal: modal, isLoading: false})
-        this.changeModalState(true)
+        this.changeModalState()
       })
   }
 
-  changeModalState = (state) => {
-    let {modal} = this.state
-    modal["isOpen"] = state
+  changeModalState = () => {
+    let {isModalOpen} = this.state
 
-    this.setState({modal: modal})
+    this.setState({isModalOpen: !isModalOpen})
   }
 
   contactSubmit = (e) => {
-    let {modal} = this.state
+    let {inputs, modal} = this.state
+
     e.preventDefault()
 
-    const inputs = this.state.inputs
     inputs['token'] = Cookies.get('accessToken')
+
     this.setState({inputs: inputs})
 
     Object.keys(this.state.inputs).forEach((key) => (this.state.inputs[key] === "") && delete this.state.inputs[key]);
+
     UserService.updateUser(this.state.inputs)
       .then((res) => {
-        if (res.nModified === undefined) {
-          modal["head"] = 'Update user error'
-          modal["body"] = res.message
-
-          this.setState({modal: modal})
-          this.changeModalState(true)
-        } else {
-          window.location.href = '/users_sheet'
-        }
+        window.location.href = '/users_sheet'
       })
       .catch((err) => {
-        modal["body"] = 'Server error'
+        modal["body"] = "Server error"
         modal["head"] = err.message
 
         this.setState({modal: modal})
-        this.changeModalState(true)
+        this.changeModalState()
       })
   }
 
   handleChange = (input, e) => {
-    let selects = this.state.selects
-    let inputs = this.state.inputs
+    let {selects, selects_facilities, inputs} = this.state
 
     if (input === "userRole") {
       selects[input] = e.target.value
-      inputs[input] = this.state.selects_facilities.role[`${e.target.value}`]
-      this.setState({input: inputs[input], selects: selects})
+      inputs[input] = selects_facilities.role[`${e.target.value}`]
     } else if (input === "status") {
       selects[input] = e.target.value
-      inputs[input] = this.state.selects_facilities.status[`${e.target.value}`]
-      this.setState({input: inputs[input], selects: selects})
+      inputs[input] = selects_facilities.status[`${e.target.value}`]
     }
+
+    this.setState({input: inputs[input], selects: selects})
   }
 
   render() {
     const {classes} = this.props
-    const {selects, isLoading, modal} = this.state
+    const {selects, inputs, isLoading, isModalOpen, modal} = this.state
 
     if (isLoading) {
       return (
@@ -150,8 +143,12 @@ class EditUser extends React.Component {
       )
     }
 
+    if (inputs.email === this.props.userInfo.email) {
+      return <Redirect to="/users_sheet"/>
+    }
+
     return (
-      <Container id="edit-page" component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
+      <Container id="edit-page" component="main" maxWidth="xs" onSubmit={this.contactSubmit.bind(this)}>
         <CssBaseline/>
         <div className={classes.paper}>
           <Avatar className={classes.avatar}/>
@@ -160,7 +157,7 @@ class EditUser extends React.Component {
           </Typography>
           <form className={classes.form} noValidate>
             <div>
-              <FormControl variant="outlined" className={classes.form_control}>
+              <FormControl variant="outlined" className={classes.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">UserRole</InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
@@ -174,7 +171,7 @@ class EditUser extends React.Component {
                   <MenuItem value={30}>superadmin</MenuItem>
                 </Select>
               </FormControl>
-              <FormControl variant="outlined" className={classes.form_control}>
+              <FormControl variant="outlined" className={classes.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">Status</InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
@@ -193,19 +190,19 @@ class EditUser extends React.Component {
               fullWidth
               variant="contained"
               color="primary"
-              className={classes.edit_btn}
+              className={classes.editBtn}
             >
               Edit User
             </Button>
           </form>
         </div>
-        {modal.isOpen ?
+        {isModalOpen ?
           <ModalForm
             head={modal.head}
             body={modal.body}
             redirect_url={modal.redirectURL}
             redirect_btn_name={modal.redirectBtnName}
-            show={modal.isOpen}
+            show={isModalOpen}
             onHide={() => this.changeModalState(false)}
           /> : null}
       </Container>

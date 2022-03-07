@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const isIDValid = (req, res) => {
 
   if (req.params === undefined) {
-    throw ApiError.custom(404, 'Monument id undefined')
+    throw ApiError.custom(404, 'Monument id not found')
   }
 
   const id = req.params.id

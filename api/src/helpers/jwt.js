@@ -10,8 +10,8 @@ generateAccessToken = (req, payload, options={}) => {
 
     req.accessToken = token
   } catch (err) {
-    console.log(err)
-    throw ApiError.custom(403, 'AccessToken generate error')
+    // console.log(err)
+    throw ApiError.custom(403, "AccessToken generate error")
   }
 }
 
@@ -19,14 +19,14 @@ decodeAccessToken = (req, res) => {
   const authHeader = req.headers['authorization']
 
   if (authHeader === undefined) {
-    throw ApiError.custom(401, 'AccessToken undefined')
+    throw ApiError.custom(401, "AccessToken undefined")
   } else {
     const accessToken = req.headers.authorization.split(' ')[1]
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
       if (err) {
-        console.log(err)
-        throw ApiError.custom(403, 'AccessToken decode error')
+        // console.log(err)
+        throw ApiError.custom(403, "JWT decode error")
       } else if (decoded) {
         req.decoded = decoded
       }
@@ -36,16 +36,16 @@ decodeAccessToken = (req, res) => {
 
 verifyAccessToken = (req, res) => {
   const authHeader = req.headers['authorization']
-  
+
   if (authHeader === undefined) {
-    throw ApiError.custom(401, 'AccessToken undefined')
+    throw ApiError.custom(401, "AccessToken undefined")
   } else {
     const accessToken = req.headers.authorization.split(' ')[1];
 
     jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
       if (err) {
-        console.log(err)
-        throw ApiError.custom(403, 'AccessToken validation error')
+        // console.log(err)
+        throw ApiError.custom(403, "JWT validation error")
       }
     })
   }

@@ -30,7 +30,6 @@ class CreateMonument extends React.Component {
       name: ''
     },
     modal: {
-      isOpen: false,
       head: '',
       body: '',
       redirectURL: '',
@@ -40,45 +39,44 @@ class CreateMonument extends React.Component {
       name: '',
       image: ''
     },
+    isModalOpen: false,
     isValid: false
   }
 
-  changeModalState = (state) => {
-    let {modal} = this.state
-    modal["isOpen"] = state
+  changeModalState = () => {
+    let {isModalOpen} = this.state
 
-    this.setState({modal: modal})
+    this.setState({isModalOpen: !isModalOpen})
   }
 
+  isBlank = (str) => {
+    return (!str || /^\s*$/.test(str))
+  }
 
   handleFormValidation = () => {
-    const {errors} = this.state
-    const {inputs} = this.state
+    let {inputs, errors} = this.state
 
-    if (isEmpty(inputs.name)) {
+    if (isEmpty(inputs.name) || this.isBlank(inputs.name)) {
       errors["name"] = 'Cannot be empty!'
-      this.setState({isValid: false, errors: errors})
+      this.setState({isValid: false})
     } else {
       errors["name"] = ''
-      this.setState({isValid: true, errors: errors})
+      this.setState({isValid: true})
     }
+
+    this.setState({errors: errors})
   }
 
   handleChange = (input, e) => {
-    let inputs = this.state.inputs
+    let {inputs} = this.state
 
     inputs[input] = e.target.value
 
     this.setState({input: inputs[input]})
-
-    if (input === "name") {
-      this.handleFormValidation()
-    }
   }
 
   handleFileInputChange = (e) => {
-    let inputs = this.state.inputs
-    let errors = this.state.errors
+    let {inputs, errors} = this.state
 
     const reader = new FileReader()
     const file = e.target.files[0]
@@ -92,45 +90,34 @@ class CreateMonument extends React.Component {
       if (fileType !== 'image') {
         errors["image"] = 'Please insert image!'
         inputs["base64"] = ''
-        this.setState({errors: errors, inputs: inputs})
       } else {
         errors["image"] = ''
         inputs["base64"] = result
-        this.setState({errors: errors, inputs: inputs})
       }
+
+      this.setState({errors: errors, inputs: inputs})
     }
 
     reader.onerror = () => {
       errors["image"] = 'Something going wrong'
       inputs["base64"] = ''
+
       this.setState({errors: errors, inputs: inputs})
     }
   }
 
-  contactSubmit = (e) => {
+  contactSubmit = async (e) => {
     e.preventDefault()
-    this.handleFormValidation()
+
+    await this.handleFormValidation()
 
     if (this.state.isValid) {
-      let {inputs} = this.state
-      let {modal} = this.state
+      let {inputs, modal} = this.state
 
       inputs["token"] = Cookies.get('accessToken')
       MonumentService.createMonument(inputs)
         .then((res) => {
-          const name = res.name
-
-          if (name === undefined) {
-            modal["head"] = 'Monument create error'
-            modal["body"] = 'Something going wrong'
-            modal["redirectURL"] = '/monuments_sheet'
-            modal["redirectBtnName"] = 'Monuments-sheet'
-
-            this.setState({modal: modal})
-            this.changeModalState(true)
-          } else {
-            window.location.href = '/monuments_sheet'
-          }
+          window.location.href = '/monuments_sheet'
         })
         .catch((err) => {
           modal["head"] = 'Server error'
@@ -139,14 +126,14 @@ class CreateMonument extends React.Component {
           modal["redirectBtnName"] = 'Monuments-sheet'
 
           this.setState({modal: modal})
-          this.changeModalState(true)
+          this.changeModalState()
         })
     }
   }
 
   render() {
     const {classes} = this.props
-    const {inputs, errors, modal} = this.state
+    const {isModalOpen, inputs, errors, modal} = this.state
 
     return (
       <Container component="main" maxWidth="xs" onSubmit={this.contactSubmit.bind(this)}>
@@ -168,7 +155,7 @@ class CreateMonument extends React.Component {
               required
               fullWidth
             />
-            <div className={classes.validation_name_error}>{errors.name}</div>
+            <div className={classes.validationNameError}>{errors.name}</div>
             <TextField
               onChange={this.handleChange.bind(this, "description")}
               variant="outlined"
@@ -207,7 +194,7 @@ class CreateMonument extends React.Component {
             <div>
               <Button
                 onChange={this.handleFileInputChange}
-                className={classes.upload_btn}
+                className={classes.uploadBtn}
                 variant="contained"
                 component="label"
               >
@@ -220,12 +207,12 @@ class CreateMonument extends React.Component {
             </div>
             {inputs.base64 && (
               <img
-                className={classes.image_preview}
+                className={classes.imagePreview}
                 src={inputs.base64}
                 alt={inputs.name ? inputs.name : 'monument_image'}
               />
             )}
-            <div className={classes.validation_image_error}>{errors.image}</div>
+            <div className={classes.validationImageError}>{errors.image}</div>
             <Button
               variant="contained"
               color="primary"
@@ -236,13 +223,13 @@ class CreateMonument extends React.Component {
             </Button>
           </form>
         </div>
-        {modal.isOpen ?
+        {isModalOpen ?
           <ModalForm
             head={modal.head}
             body={modal.body}
             redirect_url={modal.redirectURL}
             redirect_btn_name={modal.redirectBtnName}
-            show={modal.isOpen}
+            show={isModalOpen}
             onHide={() => this.changeModalState(false)}
           /> : null}
       </Container>

@@ -39,16 +39,23 @@ class PasswordReset extends React.Component {
       passwordCopy: ''
     },
     modal: {
-      isOpen: '',
       head: '',
       body: '',
       redirectURL: '',
       redirectBtnName: ''
     },
-    errors: {},
+    errors: {
+      specialCharacterCheck: false,
+      uppercaseCheck: false,
+      lowercaseCheck: false,
+      quantityCheck: false,
+      numberCheck: false,
+      passwordCopy: ""
+    },
     token: '',
     isValid: false,
-    isLogged: false
+    isModalOpen: false,
+    isPasswordHidden: true
   }
 
   componentDidMount = () => {
@@ -61,129 +68,105 @@ class PasswordReset extends React.Component {
       modal["redirectURL"] = '/logout'
 
       this.setState({modal: modal})
-      this.changeModalState(true)
+      this.changeModalState()
     }
 
     this.setState({token: this.props.location.search.split('=')[1]})
   }
 
-  changeModalState = (state) => {
-    let {modal} = this.state
-    modal["isOpen"] = state
+  changeModalState = () => {
+    let {isModalOpen} = this.state
 
-    this.setState({modal: modal})
+    this.setState({isModalOpen: !isModalOpen})
   }
 
   handleFieldValidation = () => {
-    let inputs = this.state.inputs;
-    let errors = this.state.errors;
+    let {inputs, errors} = this.state
 
-    this.setState({isValid: passwordValidation(inputs)})
-    this.setState({isValid: passwordCopyValidation(inputs, errors)})
-    document.getElementById('passwordRequirements').hidden = false
+    const isPasswordValid = passwordValidation(inputs, errors)
+    const isPasswordCopyValid = passwordCopyValidation(inputs, errors)
+
+    this.setState({isValid: isPasswordValid})
+    this.setState({isValid: isPasswordCopyValid})
+
   }
 
   handleChange = (input, e) => {
-    let inputs = this.state.inputs;
-    inputs[input] = e.target.value;
-    this.setState({input: inputs[input]});
-    this.handleFieldValidation()
+    let {inputs, errors} = this.state
+
+    inputs[input] = e.target.value
+
+    this.setState({input: inputs[input]})
+    passwordValidation(inputs, errors)
   }
+
 
   showPassword = () => {
-    if (document.getElementById('password').type === 'password') {
-      document.getElementById('password').type = 'text'
-      document.getElementById('passwordCopy').type = 'text'
-    } else {
-      document.getElementById('password').type = 'password'
-      document.getElementById('passwordCopy').type = 'password'
-    }
+    let {isPasswordHidden} = this.state
+
+    this.setState({isPasswordHidden: !isPasswordHidden})
   }
 
-  contactSubmit = (e) => {
+  contactSubmit = async (e) => {
+    let {inputs, token, modal} = this.state
+
     e.preventDefault()
 
-    if (this.state.isValid) {
-      const {inputs} = this.state
-      const {token} = this.state
-      let {modal} = this.state
+    await this.handleFieldValidation()
 
+    if (this.state.isValid) {
       AuthService.updatePassword({token: token, password: inputs.password})
-        .then((res) => {
-          if (res.message) {
-            modal["head"] = 'Link time expired!'
-            modal["body"] = 'Please, try send new reset password link'
-            modal["redirectURL"] = '/reset_request'
-            modal["redirectBtnName"] = 'New-request'
-            console.log(modal)
-            this.setState({modal: modal})
-          } else {
-            modal["head"] = 'Password successfully reset!'
-            modal["body"] = 'From now on you can use a new password'
-            modal["redirectURL"] = '/login'
-            modal["redirectBtnName"] = 'Login'
-            this.setState({modal: modal})
-          }
+        .then(() => {
+          window.location.href = '/login'
         })
         .catch((err) => {
           modal["head"] = 'Server error'
           modal["body"] = err.message
-          modal["redirectURL"] = '/'
-          modal["redirectBtnName"] = 'Home'
+          modal["redirectURL"] = '/reset_request'
+          modal["redirectBtnName"] = 'NEW-REQUEST'
+
           this.setState({modal: modal})
-        })
-        .finally(() => {
-          this.changeModalState(true)
+          this.changeModalState()
         })
     }
   }
 
-  handleChange = (input, e) => {
-    let inputs = this.state.inputs;
-    inputs[input] = e.target.value;
-    this.setState({input: inputs[input]});
-    this.handleFieldValidation()
-  }
-
   render() {
     const {classes} = this.props
-    const {inputs} = this.state
-    const {errors} = this.state
-    const {modal} = this.state
+    const {inputs, errors, modal, isModalOpen, isPasswordHidden} = this.state
 
     return (
-      <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
+      <Container component="main" maxWidth="xs" onSubmit={this.contactSubmit.bind(this)}>
         <CssBaseline />
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
             <EmailIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Reset Password
+            Enter a new password
           </Typography>
           <form className={classes.form} noValidate>
             <TextField
               onChange={this.handleChange.bind(this, "password")}
+              type={isPasswordHidden ? 'password' : 'text'}
               value={inputs["password"]}
               variant="outlined"
               margin="normal"
-              required
-              fullWidth
-              name="password"
               label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
+              name="password"
+              fullWidth
+              required
             />
-            <ul id='passwordRequirements' hidden>
-              <li className={classes.pass_valid_error} id='quantityCheck'>At least 8 characters</li>
-              <li className={classes.pass_valid_error} id='numberCheck'>Contains at least 1 number</li>
-              <li className={classes.pass_valid_error} id='lowercaseCheck'>Contains at least lowercase letter</li>
-              <li className={classes.pass_valid_error} id='uppercaseCheck'>Contains at least uppercase letter</li>
-              <li className={classes.pass_valid_error} id='specialCharacterCheck'>Contains a special character (!@#%&)</li>
+            <ul className={classes.passwordRequirements}>
+              {!errors["quantityCheck"] && <li>At least 8 characters</li>}
+              {!errors["numberCheck"] && <li>Contains at least 1 number</li>}
+              {!errors["lowercaseCheck"] && <li>Contains at least lowercase letter</li>}
+              {!errors["uppercaseCheck"] && <li>Contains at least uppercase letter</li>}
+              {!errors["specialCharacterCheck"] && <li>Contains a special character (!@#%&)</li>}
             </ul>
             <TextField
               onChange={this.handleChange.bind(this, "passwordCopy")}
+              type={isPasswordHidden ? 'password' : 'text'}
               value={inputs["passwordCopy"]}
               InputProps={{
                 endAdornment: (
@@ -195,33 +178,30 @@ class PasswordReset extends React.Component {
               }}
               variant="outlined"
               margin="normal"
-              required
-              fullWidth
-              name="passwordCopy"
               label="Repeat Password"
-              type="password"
-              id="passwordCopy"
-              autoComplete="current-password"
-            />
-            <div className={classes.pass_copy_valid_error}>{errors["passwordCopy"]}</div>
-            <Button
-              type="submit"
+              name="passwordCopy"
               fullWidth
+              required
+            />
+            <div className={classes.passwordCopyRequirements}>{errors["passwordCopy"]}</div>
+            <Button
+              className={classes.submitBtn}
               variant="contained"
               color="primary"
-              className={classes.submitBtn}
+              type="submit"
+              fullWidth
             >
               Change Password
             </Button>
           </form>
         </div>
-        {modal.isOpen ?
+        {isModalOpen ?
           <ModalForm
             head={modal.head}
             body={modal.body}
             redirect_url={modal.redirectURL}
             redirect_btn_name={modal.redirectBtnName}
-            show={modal.isOpen}
+            show={isModalOpen}
             onHide={() => this.changeModalState(false)}
           /> : null}
       </Container>

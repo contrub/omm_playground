@@ -34,14 +34,14 @@ class PasswordResetRequest extends React.Component {
       email: ''
     },
     modal: {
-      isOpen: false,
       head: '',
       body: '',
       redirectURL: '',
       redirectBtnName: ''
     },
     errors: {},
-    isValid: false
+    isValid: false,
+    isModalOpen: false
   }
 
   componentDidMount = () => {
@@ -58,71 +58,63 @@ class PasswordResetRequest extends React.Component {
     }
   }
 
-  changeModalState = (state) => {
-    let {modal} = this.state
-    modal["isOpen"] = state
+  changeModalState = () => {
+    let {isModalOpen} = this.state
 
-    this.setState({modal: modal})
+    this.setState({isModalOpen: !isModalOpen})
   }
 
   handleFieldValidation = () => {
-    let inputs = this.state.inputs
-    let errors = this.state.errors
+    let {inputs, errors} = this.state
 
     this.setState({isValid: emailValidation(inputs, errors)})
   }
 
   contactSubmit = (e) => {
+    const {inputs, errors, isValid, modal} = this.state
+
     e.preventDefault()
 
-    if (this.state.isValid) {
-      const email = this.state.inputs.email
-      const {inputs} = this.state
-      let {modal} = this.state
+    this.handleFieldValidation()
 
-
-      document.getElementById('validError').innerText = ""
-
-      AuthService.resetPassword({email: email})
+    if (isValid) {
+      AuthService.resetPassword({email: inputs.email})
         .then((res) => {
-          if (res.message) {
-            document.getElementById('validError').innerText = res.message
-          } else {
-            modal["head"] = 'Recovery link has been sent!'
-            modal["body"] = `Check your email - ${inputs.email} (will expire in 10 minutes)`
-            modal["redirectURL"] = '/login'
-            modal["redirectBtnName"] = 'Login'
-            this.setState({modal: modal})
+          modal["head"] = 'Recovery link has been sent!'
+          modal["body"] = res.message
+          modal["redirectURL"] = '/login'
+          modal["redirectBtnName"] = 'Login'
+          this.setState({modal: modal, errors: errors})
 
-            this.changeModalState(true)
-          }
+          this.changeModalState()
         })
         .catch((err) => {
           modal["head"] = 'Server error'
           modal["body"] = err.message
           modal["redirectURL"] = '/'
           modal["redirectBtnName"] = 'Home'
-          this.setState({modal: modal})
+          this.setState({modal: modal, errors: errors})
 
-          this.changeModalState(true)
+          this.changeModalState()
         })
+    } else if (!inputs["email"]) {
+      errors["email"] = "Cannot be empty"
+
+      this.setState({errors: errors})
     }
   }
 
   handleChange = (input, e) => {
-    let inputs = this.state.inputs
+    let {inputs} = this.state
 
     inputs[input] = e.target.value
 
     this.setState({input: inputs[input]})
-    this.handleFieldValidation()
   }
 
   render() {
     const {classes} = this.props
-    const {inputs} = this.state
-    const {errors} = this.state
-    const {modal} = this.state
+    const {isModalOpen, inputs, errors, modal} = this.state
 
     return (
       <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
@@ -138,36 +130,34 @@ class PasswordResetRequest extends React.Component {
             <TextField
               onChange={this.handleChange.bind(this, "email")}
               value={inputs["email"]}
+              label="Email Address"
               variant="outlined"
               margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
               name="email"
-              autoComplete="email"
-              autoFocus
+              id="email"
+              fullWidth
+              required
             />
             <Button
               type="submit"
-              fullWidth
+              className={classes.submitBtn}
               variant="contained"
               color="primary"
-              className={classes.submit_btn}
+              fullWidth
             >
               Send reset link
             </Button>
+            <div className={classes.validError}>{errors["email"]}</div>
           </form>
-          <div id='validError' className={classes.valid_error}>{errors["email"]}</div>
         </div>
-        {modal.isOpen ?
+        {isModalOpen ?
           <ModalForm
             head={modal.head}
             body={modal.body}
             redirect_url={modal.redirectURL}
             redirect_btn_name={modal.redirectBtnName}
-            show={modal.isOpen}
-            onHide={() => this.changeModalState(false)}
+            show={isModalOpen}
+            onHide={() => this.changeModalState()}
           /> : null}
       </Container>
     )

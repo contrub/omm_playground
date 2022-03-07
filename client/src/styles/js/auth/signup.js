@@ -14,17 +14,31 @@ const styles = theme => ({
     marginTop: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(1, 0, 2),
   },
   errors: {
     textAlign: 'center',
     color: 'red',
     margin: '0 0 16px'
   },
-  passwordCheck: {
-    color: 'red',
+  emailRequirement: {
+    margin: theme.spacing(1, 0, 1),
     fontFamily: 'Gill Sans',
-    fontSize: '17px'
+    textAlign: 'center',
+    color: 'red',
+  },
+  passwordRequirements: {
+    margin: theme.spacing(1, 0, 1),
+    fontFamily: 'Gill Sans',
+    fontSize: '17px',
+    color: 'red'
+  },
+  passwordCopyRequirement: {
+    margin: theme.spacing(1, 0, 1),
+    fontFamily: 'Gill Sans',
+    textAlign: 'center',
+    fontSize: '17px',
+    color: 'red'
   }
 });
 
