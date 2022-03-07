@@ -1,17 +1,18 @@
-﻿import React from 'react';
+// React components
+import React from "react";
 
-import CssBaseline from '@material-ui/core/CssBaseline';
-import ListItemText from '@material-ui/core/ListItemText';
-
+// Material-UI components
+import ListItemText from "@material-ui/core/ListItemText";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Typography from "@material-ui/core/Typography";
+import Container from "@material-ui/core/Container";
+import ListItem from "@material-ui/core/ListItem";
 import {withStyles} from "@material-ui/core";
+import List from "@material-ui/core/List";
+import Link from "@material-ui/core/Link";
 
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
-import ListItem from '@material-ui/core/ListItem';
-import List from '@material-ui/core/List';
-import Link from '@material-ui/core/Link';
-
-import styles from "../styles/js/about"
+// Custom Styles
+import styles from "../styles/js/about";
 
 function Copyright() {
   return (
@@ -27,9 +28,7 @@ function Copyright() {
 }
 
 class About extends React.Component {
-
   render() {
-
     const { classes } = this.props
 
     return (
@@ -81,7 +80,7 @@ class About extends React.Component {
               <div className={classes.root}>
                 <List aria-label="main mailbox folders">
                   <ListItem>
-                    <ListItemText primary="Онуфрейчук Егор  - Back-end, Front-end (99%)" />
+                    <ListItemText primary="Онуфрейчук Егор  - Back-end, Front-end" />
                   </ListItem>
                   <ListItem>
                     <ListItemText primary="Полищук Даниил - Front-end (monuments, monument pages)" />

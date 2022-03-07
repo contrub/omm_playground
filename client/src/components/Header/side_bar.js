@@ -1,25 +1,28 @@
+// React components
 import React, {Component} from 'react';
-import {Link} from "react-router-dom"
+import {Link} from "react-router-dom";
 
-import {withStyles} from '@material-ui/core';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import Collapse from '@material-ui/core/Collapse';
-import Drawer from '@material-ui/core/Drawer';
-
-import ListSubheader from '@material-ui/core/ListSubheader';
+// Material-UI components
+// import ListSubheader from '@material-ui/core/ListSubheader';
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 import ListItem from '@material-ui/core/ListItem';
-import List from '@material-ui/core/List';
+import Collapse from "@material-ui/core/Collapse";
+import Drawer from "@material-ui/core/Drawer";
+import {withStyles} from "@material-ui/core";
+import List from "@material-ui/core/List";
 
-import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
-import ContactSupportIcon from '@material-ui/icons/ContactSupport';
-import AccountBalanceIcon from '@material-ui/icons/AccountBalance';
-import WebAssetIcon from '@material-ui/icons/WebAsset';
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import HomeIcon from '@material-ui/icons/Home';
+// Material-UI icons
+import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
+import ContactSupportIcon from "@material-ui/icons/ContactSupport";
+import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
+import WebAssetIcon from "@material-ui/icons/WebAsset";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import HomeIcon from "@material-ui/icons/Home";
 
-import styles from '../../styles/js/side_bar'
+// Custom styles
+import styles from '../../styles/js/side_bar';
 
 class Sidebar extends Component {
 
@@ -36,11 +39,11 @@ class Sidebar extends Component {
             <List
               component="nav"
               aria-labelledby="nested-list-subheader"
-              subheader={
-                <ListSubheader component="div" id="nested-list-subheader">
-                  UserRole: {this.props.userRole}
-                </ListSubheader>
-              }
+              // subheader={
+              //   <ListSubheader component="div" id="nested-list-subheader">
+              //     UserRole: {this.props.userRole}
+              //   </ListSubheader>
+              // }
               className={classes.root}
             >
               <ListItem button component={Link} to="/" onClick={this.props.closeDrawer}>
@@ -64,8 +67,13 @@ class Sidebar extends Component {
               {this.checkRole('admin') &&
                 <Collapse in={this.props.isListOpen} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <ListItem button className={classes.nested} component={Link} to="/monuments"
-                              onClick={this.props.closeDrawer}>
+                    <ListItem
+                      button
+                      onClick={this.props.closeDrawer}
+                      className={classes.nested}
+                      component={Link}
+                      to="/monuments_sheet"
+                    >
                       <ListItemIcon>
                         <AccountBalanceIcon/>
                       </ListItemIcon>
@@ -77,7 +85,7 @@ class Sidebar extends Component {
               {this.checkRole('superadmin') &&
                 <Collapse in={this.props.isListOpen} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <ListItem button className={classes.nested} component={Link} to="/monuments"
+                    <ListItem button className={classes.nested} component={Link} to="/monuments_sheet"
                               onClick={this.props.closeDrawer}>
                       <ListItemIcon>
                         <AccountBalanceIcon/>
@@ -86,7 +94,7 @@ class Sidebar extends Component {
                     </ListItem>
                   </List>
                   <List component="div" disablePadding>
-                    <ListItem button className={classes.nested} component={Link} to="/users"
+                    <ListItem button className={classes.nested} component={Link} to="/users_sheet"
                               onClick={this.props.closeDrawer}>
                       <ListItemIcon>
                         <SupervisorAccountIcon/>

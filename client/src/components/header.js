@@ -1,14 +1,19 @@
-import React from 'react';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
-import { withStyles } from '@material-ui/core/styles';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// React components
+import React from "react";
 
+// Material-UI components
+import { withStyles } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import IconButton from "@material-ui/core/IconButton";
+import InputBase from "@material-ui/core/InputBase";
+import Toolbar from "@material-ui/core/Toolbar";
+import MenuIcon from "@material-ui/icons/Menu";
+import AppBar from "@material-ui/core/AppBar";
+
+// Material-UI icons
+import SearchIcon from '@material-ui/icons/Search';
+
+// Custom styles
 import styles from "../styles/js/header";
 
 class Header extends React.Component {

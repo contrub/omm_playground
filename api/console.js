@@ -1,11 +1,21 @@
 require('dotenv').config()
+
+// Third party functions
 const mongoose = require('mongoose');
-const User = require('./models/User');
+const bcrypt = require('bcrypt');
 const fs = require('fs');
-const bcrypt = require('bcrypt')
-const sAdminJSON = './resources/superadmin.json'
+
+// Local models
+const User = require('./src/models/User');
+const Monument = require('./src/models/Monument');
+
+// Local path
+const sAdminJSON = './src/resources/users.json';
+const sMonumentsJSON = './src/resources/monuments.json';
 
 mongoose.Promise = global.Promise
+
+//=================MongoDB=================//
 
 const MongoConnect = async () => {
   await mongoose
@@ -15,14 +25,60 @@ const MongoConnect = async () => {
         useUnifiedTopology: true,
         useNewUrlParser: true
       })
-    // .then(() => console.log('MongoDB connected!'))
+    .then(() => console.log('MongoDB connected!'))
     .catch(err => console.log(err));
 }
 
-const deleteUser = async (email) => {
-  await User
-    .deleteOne({ email: email })
-    .catch(err => console.log(err))
+//=================UsersDB=================//
+
+const seedUsersDB = async () => {
+  await MongoConnect()
+
+  try {
+    const rawUsers = fs.readFileSync(sAdminJSON)
+    const users = JSON.parse(rawUsers)
+
+    await Promise.all(
+      await users.map(async (user) => await createUser(user))
+    )
+      .catch((err) => {
+        console.log(`Promise error: ${err}`)
+      })
+  } catch (err) {
+    console.log(`Parsing error: ${err}`)
+  } finally {
+    process.exit(0)
+  }
+}
+
+const cleanDuplicatesUsersDB = async () => {
+  await MongoConnect()
+
+  try {
+    const rawUsers = fs.readFileSync(sAdminJSON)
+    const users = JSON.parse(rawUsers)
+
+    await Promise.all(
+      await users.map(async (user) => {
+        await User
+          .find({email: user.email})
+          .then(async (user) => {
+            if (user[0].email) {
+              await deleteUser(user[0].email)
+            }
+          })
+          .catch((err) => {
+            console.log(`MongoDB error: ${err}`)
+          })
+      }))
+      .catch((err) => {
+        console.log(`Promise error: ${err}`)
+      })
+  } catch (err) {
+    console.log(`Parsing error: ${err}`)
+  } finally {
+    process.exit(0)
+  }
 }
 
 const createUser = async (data) => {
@@ -37,67 +93,119 @@ const createUser = async (data) => {
 
   await newUser
     .save()
-    .catch(err => console.log(err))
+    .catch((err) => {
+      console.log(`MongoDB error: ${err}`)
+    })
 }
 
-const cleanCopiesDB = async () => {
+const deleteUser = async (email) => {
+  await User
+    .deleteOne({email: email})
+    .catch((err) => {
+      console.log(`MongoDB error: ${err}`)
+    })
+}
+
+const clearUsersDB = async () => {
+  await MongoConnect()
+
+  User
+    .deleteMany({})
+    .then(() => console.log('Successfully cleared UsersDB!'))
+    .catch((err) => {
+      console.log(err)
+    })
+    .finally(() => process.exit(0))
+}
+
+//=================MonumentsDB=================//
+
+const seedMonumentsDB = async () => {
   await MongoConnect()
 
   try {
-    const rawUsers = fs.readFileSync(sAdminJSON)
-    const users = JSON.parse(rawUsers)
+    const rawMonuments = fs.readFileSync(sMonumentsJSON)
+    const monuments = JSON.parse(rawMonuments)
 
     await Promise.all(
-      await users.map(async user => {
-        await User
-          .find({email: user.email})
-          .then(async items => {
-            // рассмотреть случай нескольких копий
-            if (items.length) await deleteUser(items[0].email)
-          })
-          .catch(e => console.log(e))
-    }))
-      .catch(e => console.log(`Promise error: ${e}`))
-
-  } catch (e) {
-
-    console.log(`Parsing error: ${e}`)
-
-  } finally {
-
-    console.log('Successfully removed copies')
-    process.exit(0)
-
-  }
-}
-
-const seedUsersDB = async () => {
-  await MongoConnect()
-
-  try {
-    const rawUsers = fs.readFileSync(sAdminJSON)
-    const users = JSON.parse(rawUsers)
-
-    await Promise.all(
-      await users.map(async user => await createUser(user))
+      await monuments.map(async (monument) => await createMonument(monument))
     )
-      .catch(e => console.log(`Promise error: ${e}`))
-  } catch (e) {
-
-    console.log(`Parsing error: ${e}`)
-
+      .catch((err) => {
+        console.log(`Promise error: ${err}`)
+      })
+  } catch (err) {
+    console.log(`Parsing error: ${err}`)
   } finally {
-
-    console.log('Successfully seeded users')
     process.exit(0)
-
   }
+}
+
+const cleanDuplicatesMonumentsDB = async () => {
+  await MongoConnect()
+
+  try {
+    const rawMonuments = fs.readFileSync(sMonumentsJSON)
+    const monuments = JSON.parse(rawMonuments)
+
+    await Promise.all(
+      await monuments.map(async (monument) => {
+        await Monument
+          .find({name: monument.name})
+          .then(async (monument) => {
+            if (monument.length) {
+              await deleteMonument(monument[0].name)
+            }
+          })
+          .catch((err) => {
+            console.log(`MongoDB error: ${err}`)
+          })
+      }))
+      .catch((err) => {
+        console.log(`Promise error: ${err}`)
+      })
+  } catch (err) {
+    console.log(`Parsing error: ${err}`)
+  } finally {
+    process.exit(0)
+  }
+}
+
+const createMonument = async (data) => {
+  const newMonument = new Monument(data)
+
+  await newMonument
+    .save()
+    .catch((err) => {
+      console.log(`MongoDB error: ${err}`)
+    })
+}
+
+const deleteMonument = async (name) => {
+  await Monument
+    .deleteOne({name: name})
+    .catch((err) => {
+      console.log(`MongoDB error ${err}`)
+    })
+}
+
+const clearMonumentsDB = async () => {
+  await MongoConnect()
+
+  Monument
+    .deleteMany({})
+    .then(() => console.log('Successfully clear MonumentsDB!'))
+    .catch((err) => {
+      console.log(err)
+    })
+    .finally(() => process.exit(0))
 }
 
 module.exports = {
-
-  clean: cleanCopiesDB,
-  seed: seedUsersDB
-
+  clean_users: cleanDuplicatesUsersDB,
+  seed_users: seedUsersDB,
+  clear_users: clearUsersDB,
+  clean_monuments: cleanDuplicatesMonumentsDB,
+  seed_monuments: seedMonumentsDB,
+  clear_monuments: clearMonumentsDB
 }
 

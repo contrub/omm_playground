@@ -1,104 +1,141 @@
+// React components
 import React from "react";
-import { Link }  from "react-router-dom";
+import {Link}  from "react-router-dom";
 
+// Custom components
+import ModalForm from "../../components/modal";
+
+// Material-UI components
 import withStyles from "@material-ui/core/styles/withStyles";
-
-import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
 import Container from "@material-ui/core/Container";
-import Avatar from "@material-ui/core/Avatar";
 import Checkbox from "@material-ui/core/Checkbox";
+import Button from "@material-ui/core/Button";
+import Avatar from "@material-ui/core/Avatar";
+import Grid from "@material-ui/core/Grid";
 
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
+// Material-UI icons
+import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import VisibilityIcon from "@material-ui/icons/Visibility";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
 
-import UserService from '../../services/UserService';
-
-import {emailValidation} from "../../helpers/emailValidation";
-import {passwordValidation} from "../../helpers/passwordValidation";
+// Local functions
 import {passwordCopyValidation} from "../../helpers/passwordCopyValidation";
+import {passwordValidation} from "../../helpers/passwordValidation";
+import {emailValidation} from "../../helpers/emailValidation";
 
-import Cookies from 'js-cookie'
+// Third party modules
+import Cookies from "js-cookie";
 
-import styles from "../../styles/js/signup";
+// Local modules
+import AuthService from "../../services/AuthService";
+
+// Custom styles
+import styles from "../../styles/js/auth/signup";
 
 class SignUp extends React.Component {
-
-  constructor(props){
-    super(props);
-
-    this.state = {
-      inputs: {
-        email: '',
-        password: '',
-        passwordCopy: ''
+  state = {
+    inputs: {
+      email: '',
+      password: '',
+      passwordCopy: ''
+    },
+    modal: {
+      head: '',
+      body: '',
+      redirectURL: '',
+      redirectBtnName: ''
+    },
+    errors: {
+      email: '',
+      password: {
+        passwordRequirements: false,
+        specialCharacterCheck: false,
+        lowercaseCheck: false,
+        uppercaseCheck: false,
+        quantityCheck: false,
+        numberCheck: false
       },
-      errors: {},
-      isValid: false
-    }
+      passwordCopy: '',
+    },
+    isModalOpen: false,
+    isPasswordHidden: true,
+    isValid: false
   }
 
   handleFieldValidation = () => {
-    let inputs = this.state.inputs;
-    let errors = this.state.errors;
+    let {inputs, errors} = this.state
 
-    document.getElementById('validError').innerText = ""
     this.setState({isValid: emailValidation(inputs, errors)})
-    this.setState({isValid: passwordValidation(inputs)})
+    this.setState({isValid: passwordValidation(inputs, errors)})
     this.setState({isValid: passwordCopyValidation(inputs, errors)})
-    document.getElementById('passwordRequirements').hidden = false
   }
 
   contactSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
+
+    let {inputs, modal} = this.state
+
+    this.handleFieldValidation()
 
     if (this.state.isValid) {
-      UserService.signup({
-        email: this.state.inputs.email,
-        password: this.state.inputs.password
-      }).then((res) => {
-        if (res.status) {
-          document.getElementById('validError').innerText = res.status
-        } if (res.message) {
-          document.getElementById('validError').innerText = res.message
-        } else {
-          Cookies.set('accessToken', res.accessToken.split(' ')[1])
-          window.location.href = '/'
-        }
-      })
-    } else {
-      this.handleFieldValidation()
-      document.getElementById('validError').innerText = "Validation error"
+      AuthService.signup({email: inputs.email, password: inputs.password})
+        .then((res) => {
+          const accessToken = res.accessToken
+
+          if (!accessToken) {
+            modal["head"] = 'Registration error'
+            modal["body"] = res.message
+            modal["redirectURL"] = '/login'
+            modal["redirectBtnName"] = 'Login'
+
+            this.setState({modal: modal})
+            this.changeModalState()
+          } else {
+            Cookies.set('accessToken', res.accessToken)
+            window.location.href = '/'
+          }
+        })
+        .catch((err) => {
+          modal["head"] = 'Server error'
+          modal["body"] = err.message
+          modal["redirectBtnName"] = 'Home'
+          modal["redirectURL"] = '/'
+
+          this.setState({modal: modal})
+          this.changeModalState()
+        })
     }
+  }
+
+  changeModalState = () => {
+    let {isModalOpen} = this.state
+
+    this.setState({isModalOpen: !isModalOpen})
   }
 
   handleChange = (input, e) => {
-    let inputs = this.state.inputs;
-    inputs[input] = e.target.value;
-    this.setState({input: inputs[input]});
-    this.handleFieldValidation()
+    let {inputs} = this.state
+
+    inputs[input] = e.target.value
+
+    this.setState({input: inputs[input]})
   }
 
   showPassword = () => {
-    if (document.getElementById('password').type === 'password') {
-      document.getElementById('password').type = 'text'
-      document.getElementById('passwordCopy').type = 'text'
-    } else {
-      document.getElementById('password').type = 'password'
-      document.getElementById('passwordCopy').type = 'password'
-    }
+    let {isPasswordHidden} = this.state
+
+    this.setState({isPasswordHidden: !isPasswordHidden})
   }
 
   render() {
-
-    const { classes } = this.props
+    const {classes} = this.props
+    const {inputs, errors, modal, isModalOpen, isPasswordHidden} = this.state
 
     return (
-      <Container component="main" maxWidth="xs" onSubmit= {this.contactSubmit.bind(this)}>
+      <Container component="main" maxWidth="xs" onSubmit={this.contactSubmit.bind(this)}>
         <CssBaseline />
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
@@ -110,41 +147,19 @@ class SignUp extends React.Component {
           <form className={classes.form} noValidate>
             <TextField
               onChange={this.handleChange.bind(this, "email")}
-              value={this.state.inputs["email"]}
+              value={inputs["email"]}
               variant="outlined"
               margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
+              label="Email"
               name="email"
-              autoComplete="email"
-              autoFocus
+              fullWidth
+              required
             />
-            <div className={classes.errors}>{this.state.errors["email"]}</div>
+            <div className={classes.emailRequirement}>{errors["email"]}</div>
             <TextField
               onChange={this.handleChange.bind(this, "password")}
-              value={this.state.inputs["password"]}
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <ul id='passwordRequirements' hidden>
-              <li className={classes.passwordCheck} id='quantityCheck'>At least 8 characters</li>
-              <li className={classes.passwordCheck} id='numberCheck'>Contains at least 1 number</li>
-              <li className={classes.passwordCheck} id='lowercaseCheck'>Contains at least lowercase letter</li>
-              <li className={classes.passwordCheck} id='uppercaseCheck'>Contains at least uppercase letter</li>
-              <li className={classes.passwordCheck} id='specialCharacterCheck'>Contains a special character (!@#%&)</li>
-            </ul>
-            <TextField
-              onChange={this.handleChange.bind(this, "passwordCopy")}
-              value={this.state.inputs["passwordCopy"]}
+              type={isPasswordHidden ? 'password' : 'text'}
+              value={inputs["password"]}
               InputProps={{
                 endAdornment: (
                   <Checkbox
@@ -155,29 +170,43 @@ class SignUp extends React.Component {
               }}
               variant="outlined"
               margin="normal"
+              label="Password"
+              name="password"
+              fullWidth
               required
-              fullWidth
-              name="passwordCopy"
-              label="Repeat Password"
-              type="password"
-              id="passwordCopy"
-              autoComplete="current-password"
             />
-            <div className={classes.errors}>{this.state.errors["passwordCopy"]}</div>
-            <Button
-              type="submit"
+            <ul className={classes.passwordRequirements}>
+              {!errors["quantityCheck"] && <li>At least 8 characters</li>}
+              {!errors["numberCheck"] && <li>Contains at least 1 number</li>}
+              {!errors["lowercaseCheck"] && <li>Contains at least lowercase letter</li>}
+              {!errors["uppercaseCheck"] && <li>Contains at least uppercase letter</li>}
+              {!errors["specialCharacterCheck"] && <li>Contains a special character (!@#%&)</li>}
+            </ul>
+            <TextField
+              onChange={this.handleChange.bind(this, "passwordCopy")}
+              type={isPasswordHidden ? 'password' : 'text'}
+              value={inputs["passwordCopy"]}
+              variant="outlined"
+              margin="normal"
+              label="Repeat Password"
+              name="passwordCopy"
               fullWidth
+              required
+            />
+            <div className={classes.passwordCopyRequirement}>{errors["passwordCopy"]}</div>
+            <Button
+              className={classes.submit}
               variant="contained"
               color="primary"
-              className={classes.submit}
+              type="submit"
+              fullWidth
             >
               Sign Up
             </Button>
           </form>
-          <div id='validError' className={classes.errors}/>
           <Grid container>
             <Grid item xs>
-              <Link to='/reset'>
+              <Link to='/reset_request'>
                 Forgot password?
               </Link>
             </Grid>
@@ -188,8 +217,17 @@ class SignUp extends React.Component {
             </Grid>
           </Grid>
         </div>
+        {isModalOpen ?
+          <ModalForm
+            head={modal.head}
+            body={modal.body}
+            redirect_url={modal.redirectURL}
+            redirect_btn_name={modal.redirectBtnName}
+            show={isModalOpen}
+            onHide={() => this.changeModalState(false)}
+          /> : null}
       </Container>
-    );
+    )
   }
 }
 
